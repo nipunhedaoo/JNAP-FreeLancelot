@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\nipun\OneDrive\Documents\GitHub\FreeLancelot\app\views\index.scala.html:2:31: not found: type UserRepositoryTopics[0m
+[0m[[0m[31merror[0m] [0m[0m@(searchMap : Map[String,List[UserRepositoryTopics]])[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\nipun\OneDrive\Documents\GitHub\FreeLancelot\app\views\index.scala.html:2:3: not found: value searchMap[0m
+[0m[[0m[31merror[0m] [0m[0m@(searchMap : Map[String,List[UserRepositoryTopics]])[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
