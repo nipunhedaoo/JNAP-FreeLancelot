@@ -28,9 +28,19 @@ package controllers.javascript {
       """
     )
   
+    // @LINE:7
+    def search: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.search",
+      """
+        function() {
+          return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "search"})
+        }
+      """
+    )
+  
   }
 
-  // @LINE:9
+  // @LINE:10
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -38,7 +48,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:9
+    // @LINE:10
     def versioned: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.versioned",
       """

@@ -39,8 +39,8 @@ Seq[Any](_display_(/*5.4*/main("Welcome to Play")/*5.27*/ {_display_(Seq[Any](fo
 </div>
 <div class="container">
     <div>
-    <form action="" method="post">
-      <input type="text" class="input-lg" name="phrase" size="105">
+    <form action=""""),_display_(/*13.20*/routes/*13.26*/.HomeController.search()),format.raw/*13.50*/("""" method="post">
+      <input type="text" class="input-lg" name="searchTerm" size="105">
       <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
     </form>
     </div>
@@ -64,9 +64,9 @@ Seq[Any](_display_(/*5.4*/main("Welcome to Play")/*5.27*/ {_display_(Seq[Any](fo
               /*
                   -- GENERATED --
                   SOURCE: app/views/index.scala.html
-                  HASH: 83dd175a0d3b84d4fcaf3439b3fe21e696a26478
-                  MATRIX: 1047->69|1078->92|1117->94|1145->96|1612->533
-                  LINES: 34->5|34->5|34->5|35->6|48->19
+                  HASH: 20bd3a1d022026c40e77a18867d330bc10dbb015
+                  MATRIX: 1047->69|1078->92|1117->94|1145->96|1384->308|1399->314|1444->338|1704->568
+                  LINES: 34->5|34->5|34->5|35->6|42->13|42->13|42->13|48->19
                   -- GENERATED --
               */
           

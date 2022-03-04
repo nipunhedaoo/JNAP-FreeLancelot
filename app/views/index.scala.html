@@ -10,8 +10,8 @@
 </div>
 <div class="container">
     <div>
-    <form action="" method="post">
-      <input type="text" class="input-lg" name="phrase" size="105">
+    <form action="@routes.HomeController.search()" method="post">
+      <input type="text" class="input-lg" name="searchTerm" size="105">
       <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
     </form>
     </div>
