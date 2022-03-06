@@ -15,7 +15,7 @@ class Routes(
   override val errorHandler: play.api.http.HttpErrorHandler, 
   // @LINE:6
   HomeController_0: controllers.HomeController,
-  // @LINE:10
+  // @LINE:11
   Assets_1: controllers.Assets,
   val prefix: String
 ) extends GeneratedRouter {
@@ -24,7 +24,7 @@ class Routes(
    def this(errorHandler: play.api.http.HttpErrorHandler,
     // @LINE:6
     HomeController_0: controllers.HomeController,
-    // @LINE:10
+    // @LINE:11
     Assets_1: controllers.Assets
   ) = this(errorHandler, HomeController_0, Assets_1, "/")
 
@@ -40,7 +40,7 @@ class Routes(
 
   def documentation = List(
     ("""GET""", this.prefix, """controllers.HomeController.index()"""),
-    ("""POST""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """search""", """controllers.HomeController.search(request:Request)"""),
+    ("""POST""", this.prefix, """controllers.HomeController.search(request:Request)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -67,9 +67,9 @@ class Routes(
     )
   )
 
-  // @LINE:7
+  // @LINE:8
   private[this] lazy val controllers_HomeController_search1_route = Route("POST",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("search")))
+    PathPattern(List(StaticPart(this.prefix)))
   )
   private[this] lazy val controllers_HomeController_search1_invoker = createInvoker(
     
@@ -81,13 +81,13 @@ class Routes(
       "search",
       Seq(classOf[play.mvc.Http.Request]),
       "POST",
-      this.prefix + """search""",
+      this.prefix + """""",
       """""",
-      Seq()
+      Seq("""nocsrf""")
     )
   )
 
-  // @LINE:10
+  // @LINE:11
   private[this] lazy val controllers_Assets_versioned2_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
@@ -114,14 +114,14 @@ class Routes(
         controllers_HomeController_index0_invoker.call(HomeController_0.index())
       }
   
-    // @LINE:7
+    // @LINE:8
     case controllers_HomeController_search1_route(params@_) =>
       call { 
         controllers_HomeController_search1_invoker.call(
           req => HomeController_0.search(req))
       }
   
-    // @LINE:10
+    // @LINE:11
     case controllers_Assets_versioned2_route(params@_) =>
       call(Param[String]("path", Right("/public")), params.fromPath[Asset]("file", None)) { (path, file) =>
         controllers_Assets_versioned2_invoker.call(Assets_1.versioned(path, file))

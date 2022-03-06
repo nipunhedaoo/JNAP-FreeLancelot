@@ -23,22 +23,22 @@ package controllers {
       Call("GET", _prefix)
     }
   
-    // @LINE:7
+    // @LINE:8
     def search(): Call = {
       
-      Call("POST", _prefix + { _defaultPrefix } + "search")
+      Call("POST", _prefix)
     }
   
   }
 
-  // @LINE:10
+  // @LINE:11
   class ReverseAssets(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:10
+    // @LINE:11
     def versioned(file:Asset): Call = {
       implicit lazy val _rrc = new play.core.routing.ReverseRouteContext(Map(("path", "/public"))); _rrc
       Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[play.api.mvc.PathBindable[Asset]].unbind("file", file))
