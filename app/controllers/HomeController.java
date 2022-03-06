@@ -28,13 +28,19 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(views.html.index.render());
+        return ok(views.html.index.render(null));
+//        return ok("Hello");
     }
-    
+
     public Result search(Http.Request request) {
-//    	DynamicForm form = formFactory.form().bindFromRequest(request);
-//		String phrase = form.get("searchTerm");
-		return ok("phrase");
+        DynamicForm form = formFactory.form().bindFromRequest(request);
+
+        if(form.hasErrors()){
+            return ok("Error in form");
+        }else {
+            String phrase = form.get("phrase");
+            return ok(views.html.index.render(phrase));
+        }
     }
 
 }

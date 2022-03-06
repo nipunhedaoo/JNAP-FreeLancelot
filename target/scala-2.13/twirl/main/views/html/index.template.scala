@@ -21,40 +21,45 @@ import play.data._
 import play.core.j.PlayFormsMagicForJava._
 import scala.jdk.CollectionConverters._
 
-object index extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template0[play.twirl.api.HtmlFormat.Appendable] {
+object index extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template1[String,play.twirl.api.HtmlFormat.Appendable] {
 
   /*
 	@(searchMap : Map[String,List[UserRepositoryTopics]])
 */
-  def apply():play.twirl.api.HtmlFormat.Appendable = {
+  def apply/*5.2*/(searchString : String):play.twirl.api.HtmlFormat.Appendable = {
     _display_ {
       {
 
 
-Seq[Any](_display_(/*5.4*/main("Welcome to Play")/*5.27*/ {_display_(Seq[Any](format.raw/*5.29*/("""
-"""),format.raw/*6.1*/("""<div class=".container-fluid">
+Seq[Any](format.raw/*5.25*/("""
+
+  """),_display_(/*7.4*/main("Welcome to Play")/*7.27*/ {_display_(Seq[Any](format.raw/*7.29*/("""
+"""),format.raw/*8.1*/("""<div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
         </div>
 </div>
 <div class="container">
-    <div>
-    <form action=""""),_display_(/*13.20*/routes/*13.26*/.HomeController.search()),format.raw/*13.50*/("""" method="post">
-      <input type="text" class="input-lg" name="searchTerm" size="105">
-      <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
-    </form>
+    <div class="container">
+        <div>
+            <form action=""""),_display_(/*16.28*/routes/*16.34*/.HomeController.search()),format.raw/*16.58*/("""" method="post">
+                <input type="text" class="input-lg" name="phrase" size="105">
+                <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
+            </form>
+            <p>"""),_display_(/*20.17*/searchString),format.raw/*20.29*/("""</p>
+        </div>
     </div>
 </div>
-""")))}),format.raw/*19.2*/("""
+""")))}),format.raw/*24.2*/("""
 
 """))
       }
     }
   }
 
-  def render(): play.twirl.api.HtmlFormat.Appendable = apply()
+  def render(searchString:String): play.twirl.api.HtmlFormat.Appendable = apply(searchString)
 
-  def f:(() => play.twirl.api.HtmlFormat.Appendable) = () => apply()
+  def f:((String) => play.twirl.api.HtmlFormat.Appendable) = (searchString) => apply(searchString)
 
   def ref: this.type = this
 
@@ -64,9 +69,9 @@ Seq[Any](_display_(/*5.4*/main("Welcome to Play")/*5.27*/ {_display_(Seq[Any](fo
               /*
                   -- GENERATED --
                   SOURCE: app/views/index.scala.html
-                  HASH: 20bd3a1d022026c40e77a18867d330bc10dbb015
-                  MATRIX: 1047->69|1078->92|1117->94|1145->96|1384->308|1399->314|1444->338|1704->568
-                  LINES: 34->5|34->5|34->5|35->6|42->13|42->13|42->13|48->19
+                  HASH: 7f056a83bc2a49c37b756d80e1ae00df8b205ee5
+                  MATRIX: 965->67|1083->90|1115->97|1146->120|1185->122|1213->124|1493->377|1508->383|1553->407|1829->656|1862->668|1935->711
+                  LINES: 29->5|34->5|36->7|36->7|36->7|37->8|45->16|45->16|45->16|49->20|49->20|53->24
                   -- GENERATED --
               */
           
