@@ -18,27 +18,21 @@ package controllers {
 
   
     // @LINE:6
-    def index(): Call = {
+    def index(searchKeyword:String = ""): Call = {
       
-      Call("GET", _prefix)
-    }
-  
-    // @LINE:8
-    def search(): Call = {
-      
-      Call("POST", _prefix)
+      Call("GET", _prefix + play.core.routing.queryString(List(if(searchKeyword == "") None else Some(implicitly[play.api.mvc.QueryStringBindable[String]].unbind("searchKeyword", searchKeyword)))))
     }
   
   }
 
-  // @LINE:11
+  // @LINE:10
   class ReverseAssets(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:11
+    // @LINE:10
     def versioned(file:Asset): Call = {
       implicit lazy val _rrc = new play.core.routing.ReverseRouteContext(Map(("path", "/public"))); _rrc
       Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[play.api.mvc.PathBindable[Asset]].unbind("file", file))

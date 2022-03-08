@@ -22,25 +22,15 @@ package controllers.javascript {
     def index: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.HomeController.index",
       """
-        function() {
-          return _wA({method:"GET", url:"""" + _prefix + """"})
-        }
-      """
-    )
-  
-    // @LINE:8
-    def search: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.HomeController.search",
-      """
-        function() {
-          return _wA({method:"POST", url:"""" + _prefix + """"})
+        function(searchKeyword0) {
+          return _wA({method:"GET", url:"""" + _prefix + """" + _qS([(searchKeyword0 == null ? null : (""" + implicitly[play.api.mvc.QueryStringBindable[String]].javascriptUnbind + """)("searchKeyword", searchKeyword0))])})
         }
       """
     )
   
   }
 
-  // @LINE:11
+  // @LINE:10
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -48,7 +38,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:11
+    // @LINE:10
     def versioned: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.versioned",
       """

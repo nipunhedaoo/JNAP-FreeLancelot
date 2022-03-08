@@ -1,11 +1,17 @@
 package controllers;
 
+import play.libs.ws.WSClient;
 import play.mvc.*;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Http;
 import play.mvc.Result;
+import services.FreeLancerServices;
+
 import javax.inject.Inject;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 
 /**
@@ -15,32 +21,33 @@ import javax.inject.Inject;
 public class HomeController extends Controller {
 
 	private final FormFactory formFactory;
-	
+
+    FreeLancerServices freelancerClient;
+
+    @Inject WSClient ws = null;
+
 	@Inject
 	public HomeController(FormFactory formFactory) {
-		this.formFactory = formFactory;
+
+        this.formFactory = formFactory;
+        this.freelancerClient = new FreeLancerServices();
 	}
-	
+
     /**
      * An action that renders an HTML page with a welcome message.
      * The configuration in the <code>routes</code> file means that
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public Result index() {
-        return ok(views.html.index.render(null));
-//        return ok("Hello");
-    }
-
-    public Result search(Http.Request request) {
-        DynamicForm form = formFactory.form().bindFromRequest(request);
-
-        if(form.hasErrors()){
-            return ok("Error in form");
-        }else {
-            String phrase = form.get("phrase");
-            return ok(views.html.index.render(phrase));
+    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
+        if (this.freelancerClient.getWsClient() == null) {
+            this.freelancerClient.setWsClient(ws);
+        }
+        if (searchKeyword == "") {
+            return CompletableFuture.completedFuture(ok(views.html.index.render()));
+        } else {
+            CompletionStage<Map<String, String>> response = this.freelancerClient.searchResults(searchKeyword);
+            return CompletableFuture.completedFuture(ok(views.html.index.render()));
         }
     }
-
 }
