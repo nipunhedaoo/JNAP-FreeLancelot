@@ -41,13 +41,10 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
-        if (this.freelancerClient.getWsClient() == null) {
-            this.freelancerClient.setWsClient(ws);
-        }
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render()));
         } else {
-            CompletionStage<Map<String, String>> response = this.freelancerClient.searchResults(searchKeyword);
+            int response = freelancerClient.searchResults(searchKeyword);
             return CompletableFuture.completedFuture(ok(views.html.index.render()));
         }
     }

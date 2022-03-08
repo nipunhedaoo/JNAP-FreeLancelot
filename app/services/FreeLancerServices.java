@@ -1,36 +1,40 @@
-
 package services;
-import javax.inject.Inject;
 
-import play.libs.Json;
-import play.libs.ws.*;
-import java.util.concurrent.CompletionStage;
+import java.util.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class FreeLancerServices implements WSBodyReadables, WSBodyWritables  {
-    @Inject
-    private WSClient ws = null;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-    public FreeLancerServices() {
+public class FreeLancerServices {
 
-    }
-    public void setWsClient(WSClient ws)
+    String API = "https://www.freelancer.com/api/";
+    static Scanner sc = new Scanner(System.in);
+
+    public int searchResults(String phrase)
     {
-        this.ws=ws;
-    }
-    public WSClient getWsClient()
-    {
-        return this.ws;
-    }
-    public CompletionStage searchResults(String phrase) {
-        WSRequest request = this.ws
-                .url("https://www.freelancer.com/api/projects/0.1/projects/active?query=\"nodejs\"&limit=10&job_details=true")
-                .addQueryParameter("query", phrase)
-                .addQueryParameter("limit", "10")
-                .addQueryParameter("job_details", "true");
+        try
+        {
+            URL url = new URL("https://www.freelancer.com/api/projects/0.1/projects/active?query=\""+ phrase +"\"&limit=10&job_details=true");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if(conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                String temp="";
+                while(scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+                JSONObject json = new JSONObject(temp);
+                JSONObject result = json.getJSONObject("result");
+                JSONArray projects = (JSONArray) result.getJSONArray("projects");
 
-
-        return  request.get().thenApply(WsResponse-> Json.parse(WsResponse.getBody())).toCompletableFuture();
-
+            }
+        } catch (Exception e) {
+        }
+        return 0;
     }
+
 }
 

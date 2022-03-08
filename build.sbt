@@ -12,7 +12,9 @@ libraryDependencies += guice
 libraryDependencies += ehcache
 
 libraryDependencies ++= Seq(
-  javaWs
+  javaWs,
+  "org.json" % "org.json" % "chargebee-1.0"
 )
 
 routesGenerator := InjectedRoutesGenerator
+
