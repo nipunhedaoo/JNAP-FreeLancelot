@@ -9,6 +9,7 @@ import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
