@@ -2,7 +2,7 @@
 	@(searchMap : Map[String,List[UserRepositoryTopics]])
 *@
 
-@(searchString : String)
+@*(searchString : String)*@
 
   @main("Welcome to Play") {
 <div class=".container-fluid">
@@ -13,11 +13,12 @@
 <div class="container">
     <div class="container">
         <div>
-            <form action="@routes.HomeController.search()" method="post">
-                <input type="text" class="input-lg" name="phrase" size="105">
-                <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
+
+
+            <form action="/" method="get">
+                <input type="text" name="searchKeyword" placeholder="Please Search Here" />
+                <input type="submit" name="Search" />
             </form>
-            <p>@searchString</p>
         </div>
     </div>
 </div>
