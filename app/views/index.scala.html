@@ -1,4 +1,4 @@
-@import Models.ProjectDetails
+@import models.ProjectDetails
 @(searchMap : Map[String,List[ProjectDetails]])
 
 @main("Welcome to Play") {
@@ -46,6 +46,11 @@
                     </td>
                     <td>
                         <p>@project.getType()</p>
+                    </td>
+                    <td>
+                    @for(skill<-project.getSkills()){
+                    <a>@skill ,</a>
+                    }
                     </td>
                 </tr>
                 }

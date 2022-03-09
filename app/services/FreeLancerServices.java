@@ -1,6 +1,6 @@
 package services;
 
-import Models.ProjectDetails;
+import models.ProjectDetails;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,12 +44,12 @@ public class FreeLancerServices {
                     String type = object.get("type").toString();
 
                     JSONArray skills = object.getJSONArray("jobs");
-                    HashMap <String, Integer> skillsMap = new HashMap<>();
+                    List <String> skillsList = new ArrayList<>();
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
-                        skillsMap.put(skillObj.get("name").toString(), Integer.parseInt(skillObj.get("id").toString()));
+                        skillsList.add(skillObj.get("name").toString());
                     }
-                    array.add(new ProjectDetails(ownerId, skillsMap, timeSubmitted, title, type));
+                    array.add(new ProjectDetails(ownerId, skillsList, timeSubmitted, title, type));
                 }
             }
 

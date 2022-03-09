@@ -1,6 +1,6 @@
 package controllers;
 
-import Models.ProjectDetails;
+import models.ProjectDetails;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
