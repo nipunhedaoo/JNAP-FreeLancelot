@@ -1,6 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\controllers\HomeController.java:46:1:  error: method render in class index cannot be applied to given types;[0m
-[0m[[0m[31merror[0m] [0m[0m            return CompletableFuture.completedFuture(ok(views.html.index.render(response)));[0m
-[0m[[0m[31merror[0m] [0m[0m                                                                        ^  required: no arguments[0m
-[0m[[0m[31merror[0m] [0m[0m  found: HashMap<String,List<ProjectDetails>>[0m
-[0m[[0m[31merror[0m] [0m[0m  reason: actual and formal argument lists differ in length[0m
-[0m[[0m[31merror[0m] [0m[0m1 error[0m

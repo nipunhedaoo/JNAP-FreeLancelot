@@ -39,7 +39,7 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         if (searchKeyword == "") {
-            return CompletableFuture.completedFuture(ok(views.html.index.render()));
+            return CompletableFuture.completedFuture(ok(views.html.index.render(searchResults)));
         } else {
             HashMap<String, List<ProjectDetails>> response = freelancerClient.searchResults(searchKeyword, searchResults);
             return CompletableFuture.completedFuture(ok(views.html.index.render(response)));

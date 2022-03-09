@@ -1,8 +1,7 @@
-@*
-	@(searchMap : HashMap[String,List[ProjectDetails]])
-*@
+@import Models.ProjectDetails
+@(searchMap : Map[String,List[ProjectDetails]])
 
-  @main("Welcome to Play") {
+@main("Welcome to Play") {
 <div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
@@ -12,10 +11,48 @@
     <div class="container">
         <div>
             <form action="/" method="get">
-                <input type="text" name="searchKeyword" placeholder="Please Search Here" />
-                <input type="submit" name="Search" />
+                <input type="text" class="input-lg" size="105" name="searchKeyword" placeholder="Please Search Here" />
+                <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
             </form>
         </div>
+        @if(searchMap != null && searchMap.size > 0) {
+            @for((phrase, projectList) <- searchMap) {
+            <dl class="row" style="margin-top: 50px;">
+                <dt class="col-sm-3"><h4>Search term : </h4></dt>
+                <dd class="col-sm-9"><h4>@phrase</h4></dd>
+            </dl>
+
+            <table border="1" class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Owner ID</th>
+                        <th>Submission Date</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Skills</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for( project <- projectList ) {
+                <tr>
+                    <td>
+                        <p>@project.getOwnerID()</p>
+                    </td>
+                    <td>
+                        <p>@project.getTimeSubmitted()</p>
+                    </td>
+                    <td>
+                        <p>@project.getTitle()</p>
+                    </td>
+                    <td>
+                        <p>@project.getType()</p>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+            }
+        }
     </div>
 </div>
 }

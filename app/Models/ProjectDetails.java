@@ -26,6 +26,22 @@ public class ProjectDetails {
         this.title = title;
         this.type = type;
     }
+
+    public long getOwnerID() {
+        return this.ownerId;
+    }
+
+    public Date getTimeSubmitted() {
+        return this.timeSubmitted;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getType() {
+        return this.type;
+    }
 }
 
 
