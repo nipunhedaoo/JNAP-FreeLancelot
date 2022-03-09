@@ -1,8 +1,6 @@
 @*
-	@(searchMap : Map[String,List[UserRepositoryTopics]])
+	@(searchMap : HashMap[String,List[ProjectDetails]])
 *@
-
-@*(searchString : String)*@
 
   @main("Welcome to Play") {
 <div class=".container-fluid">
@@ -13,8 +11,6 @@
 <div class="container">
     <div class="container">
         <div>
-
-
             <form action="/" method="get">
                 <input type="text" name="searchKeyword" placeholder="Please Search Here" />
                 <input type="submit" name="Search" />

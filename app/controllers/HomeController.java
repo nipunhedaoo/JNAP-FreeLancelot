@@ -1,16 +1,15 @@
 package controllers;
 
-import play.libs.ws.WSClient;
-import play.mvc.*;
-import play.data.DynamicForm;
+import Models.ProjectDetails;
 import play.data.FormFactory;
+import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
-import java.io.PrintStream;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -24,12 +23,10 @@ public class HomeController extends Controller {
 	private final FormFactory formFactory;
 
     FreeLancerServices freelancerClient;
-
-    @Inject WSClient ws = null;
+    static HashMap<String, List<ProjectDetails>> searchResults = new HashMap<>();
 
 	@Inject
 	public HomeController(FormFactory formFactory) {
-
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
 	}
@@ -44,8 +41,8 @@ public class HomeController extends Controller {
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render()));
         } else {
-            int response = freelancerClient.searchResults(searchKeyword);
-            return CompletableFuture.completedFuture(ok(views.html.index.render()));
+            HashMap<String, List<ProjectDetails>> response = freelancerClient.searchResults(searchKeyword, searchResults);
+            return CompletableFuture.completedFuture(ok(views.html.index.render(response)));
         }
     }
 }

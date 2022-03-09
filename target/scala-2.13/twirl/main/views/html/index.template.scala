@@ -23,14 +23,16 @@ import scala.jdk.CollectionConverters._
 
 object index extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template0[play.twirl.api.HtmlFormat.Appendable] {
 
-  /*(searchString : String)*/
+  /*
+	@(searchMap : Map[String,List[ProjectDetails]])
+*/
   def apply():play.twirl.api.HtmlFormat.Appendable = {
     _display_ {
       {
 
 
-Seq[Any](_display_(/*7.4*/main("Welcome to Play")/*7.27*/ {_display_(Seq[Any](format.raw/*7.29*/("""
-"""),format.raw/*8.1*/("""<div class=".container-fluid">
+Seq[Any](_display_(/*5.4*/main("Welcome to Play")/*5.27*/ {_display_(Seq[Any](format.raw/*5.29*/("""
+"""),format.raw/*6.1*/("""<div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
         </div>
@@ -47,7 +49,7 @@ Seq[Any](_display_(/*7.4*/main("Welcome to Play")/*7.27*/ {_display_(Seq[Any](fo
         </div>
     </div>
 </div>
-""")))}),format.raw/*25.2*/("""
+""")))}),format.raw/*23.2*/("""
 
 """))
       }
@@ -66,9 +68,9 @@ Seq[Any](_display_(/*7.4*/main("Welcome to Play")/*7.27*/ {_display_(Seq[Any](fo
               /*
                   -- GENERATED --
                   SOURCE: app/views/index.scala.html
-                  HASH: ae8d6d5313443ca90ed8f271a9acc6e30dedf8b0
-                  MATRIX: 1012->100|1043->123|1082->125|1110->127|1620->607
-                  LINES: 32->7|32->7|32->7|33->8|50->25
+                  HASH: af4d64ed271c21eeced2617c3e73c8632d524a12
+                  MATRIX: 1041->63|1072->86|1111->88|1139->90|1649->570
+                  LINES: 34->5|34->5|34->5|35->6|52->23
                   -- GENERATED --
               */
           
