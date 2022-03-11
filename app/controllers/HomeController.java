@@ -1,6 +1,9 @@
 package controllers;
 
+import helper.Session;
 import models.ProjectDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -8,7 +11,7 @@ import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -20,16 +23,18 @@ import java.util.concurrent.CompletionStage;
  */
 public class HomeController extends Controller {
 
-	private final FormFactory formFactory;
+    private final FormFactory formFactory;
 
     FreeLancerServices freelancerClient;
-    static HashMap<String, List<ProjectDetails>> searchResults = new HashMap<>();
+    static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
 
-	@Inject
-	public HomeController(FormFactory formFactory) {
+    private static int counter = 1;
+
+    @Inject
+    public HomeController(FormFactory formFactory) {
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
-	}
+    }
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -39,10 +44,22 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         if (searchKeyword == "") {
-            return CompletableFuture.completedFuture(ok(views.html.index.render(searchResults)));
+            if (!Session.isSessionExist(request)) {
+                counter+=1;
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+            }
+            else{
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
+
         } else {
-            HashMap<String, List<ProjectDetails>> response = freelancerClient.searchResults(searchKeyword, searchResults);
-            return CompletableFuture.completedFuture(ok(views.html.index.render(response)));
+            if(!searchResults.containsKey(searchKeyword)) {
+                List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
+                searchResults.put(searchKeyword, response);
+            }
+            Session.setSessionSearchResultsHashMap(request, searchKeyword);
+            return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
         }
+
     }
 }

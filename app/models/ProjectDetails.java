@@ -10,6 +10,8 @@ public class ProjectDetails {
     private String title;
     private String type;
 
+
+
     public ProjectDetails() {
         this.skills = new ArrayList<String>();
         this.ownerId = -1;

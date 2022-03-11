@@ -17,7 +17,7 @@ public class FreeLancerServices {
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
 
-    public HashMap<String, List<ProjectDetails>> searchResults(String phrase, HashMap<String, List<ProjectDetails>> searchResults)
+    public List<ProjectDetails> searchResults(String phrase)
     {
         List<ProjectDetails> array = new ArrayList<>();
         try {
@@ -53,10 +53,9 @@ public class FreeLancerServices {
                 }
             }
 
-            searchResults.put(phrase , array);
         } catch (Exception e) {
         }
-        return searchResults;
+        return array;
     }
 
 }
