@@ -30,6 +30,7 @@
                         <th>Title</th>
                         <th>Type</th>
                         <th>Skills</th>
+                        <th>Project Description</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +52,9 @@
                     @for(skill<-project.getSkills()){
                     <a>@skill ,</a>
                     }
+                    </td>
+                    <td>
+                        <p>@project.getProjectDescription()</p>
                     </td>
                 </tr>
                 }

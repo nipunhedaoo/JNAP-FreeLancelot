@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.*;
 
 public class FreeLancerServices {
 
@@ -42,6 +43,7 @@ public class FreeLancerServices {
                     long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
                     String title = object.get("title").toString() ;
                     String type = object.get("type").toString();
+                    String projectDescription = object.get("preview_description").toString();
 
                     JSONArray skills = object.getJSONArray("jobs");
                     List <String> skillsList = new ArrayList<>();
@@ -49,15 +51,27 @@ public class FreeLancerServices {
                         JSONObject skillObj = skills.getJSONObject(j);
                         skillsList.add(skillObj.get("name").toString());
                     }
-                    array.add(new ProjectDetails(ownerId, skillsList, timeSubmitted, title, type));
+                    array.add(new ProjectDetails(ownerId, skillsList, timeSubmitted, title, type, projectDescription));
                 }
             }
 
             searchResults.put(phrase , array);
         } catch (Exception e) {
         }
+        readabilityIndex(phrase, searchResults);
         return searchResults;
     }
+
+    public double readabilityIndex(String phrase, HashMap<String, List<ProjectDetails>> searchResults)
+    {
+
+
+        Double searchResultUpadted = searchResults.get(phrase).stream().mapToDouble(project -> project.getProjectDescription().length()).sum();
+
+        return searchResultUpadted;
+    }
+
+
 
 }
 
