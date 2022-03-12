@@ -75,7 +75,7 @@ public class FreeLancerServices {
             numOfWords = project.getProjectDescription().trim().split("\\s+").length;
             numOfSentence = project.getProjectDescription().trim().split("([.!?])([\\s\\n])([A-Z]*)").length;
 //            numOfSyllables = project.getProjectDescription().trim()
-             val = 206.835 - 84.6 *((numOfSyllables/numOfWords) - (1.015 *(numOfWords/numOfSentence)));
+             val = 206.835 - 84.6 *((numOfSyllables/numOfWords)) - (1.015 *(numOfWords/numOfSentence));
 
             project.setDescriptionReadability(val);
 
