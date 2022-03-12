@@ -83,27 +83,27 @@ public class FreeLancerServices {
             fkcl = (206.835 - 84.6 *((numOfSyllables/numOfWords)) - (1.015 *(numOfWords/numOfSentence)))/10;
             fkgl = (0.39 *((numOfSyllables/numOfWords)) + (11.8 *(numOfWords/numOfSentence))  -15.59);
 
-            project.setDescriptionReadability(val);
+            project.setDescriptionReadability(fkcl);
 
-            if(val > 100){
+            if(fkcl > 100){
                 educationalLevel = "Early" ;
-            }else if(val > 91){
+            }else if(fkcl > 91 && fkcl <= 100){
                 educationalLevel = "5th grade" ;
-            }else if(val > 81){
+            }else if(fkcl > 81 && fkcl <= 91){
                 educationalLevel = "6th grade" ;
-            }else if(val > 71){
+            }else if(fkcl > 71 && fkcl <= 81){
                 educationalLevel = "7th grade" ;
-            }else if(val > 66){
+            }else if(fkcl > 66 && fkcl <= 71){
                 educationalLevel = "8th grade" ;
-            }else if(val > 61){
+            }else if(fkcl > 61 && fkcl <= 66){
                 educationalLevel = "9th grade" ;
-            }else if(val > 51){
+            }else if(fkcl > 51 && fkcl <= 61){
                 educationalLevel = "High School" ;
-            }else if(val > 31){
+            }else if(fkcl > 31 && fkcl <= 51){
                 educationalLevel = "Some College" ;
-            } else if(val > 0){
+            } else if(fkcl > 0 && fkcl <= 31){
                 educationalLevel = "College Graduate" ;
-            }else if(val <= 0){
+            }else if(fkcl <= 0 ){
                 educationalLevel = "Law School Graduate" ;
             }
 
