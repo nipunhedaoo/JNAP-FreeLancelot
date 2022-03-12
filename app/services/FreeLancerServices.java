@@ -66,7 +66,21 @@ public class FreeLancerServices {
     {
 
 
-        Double searchResultUpadted = searchResults.get(phrase).stream().mapToDouble(project -> project.getProjectDescription().length()).sum();
+        Double searchResultUpadted = searchResults.get(phrase).stream().mapToDouble(project -> {
+            double val = 0;
+            int numOfSentence = 5;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
+
+            numOfWords = project.getProjectDescription().trim().split("\\s+").length;
+            numOfSentence = project.getProjectDescription().trim().split("([.!?])([\\s\\n])([A-Z]*)").length;
+//            numOfSyllables = project.getProjectDescription().trim()
+             val = 206.835 - 84.6 *((numOfSyllables/numOfWords) - (1.015 *(numOfWords/numOfSentence)));
+
+            project.setDescriptionReadability(val);
+
+            return val;
+        }).average().getAsDouble();
 
         return searchResultUpadted;
     }

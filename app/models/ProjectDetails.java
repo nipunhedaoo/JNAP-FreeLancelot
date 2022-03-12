@@ -10,6 +10,7 @@ public class ProjectDetails {
     private String title;
     private String type;
     private String projectDescription;
+    private double descriptionReadability;
 
     public ProjectDetails() {
         this.skills = new ArrayList<String>();
@@ -18,6 +19,7 @@ public class ProjectDetails {
         this.title = null;
         this.type = null;
         this.projectDescription = null;
+        this.descriptionReadability = 0.0;
     }
 
     public ProjectDetails(long ownerId, List<String> skills, long timeSubmitted, String title, String type, String projectDescription) {
@@ -52,6 +54,12 @@ public class ProjectDetails {
     public String getProjectDescription() {
         return this.projectDescription;
     }
+
+    public double getDescriptionReadability() {
+        return this.descriptionReadability;
+    }
+
+    public  void setDescriptionReadability(double descriptionReadability){ this.descriptionReadability = descriptionReadability;}
 }
 
 
