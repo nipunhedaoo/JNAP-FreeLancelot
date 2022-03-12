@@ -11,6 +11,7 @@ public class ProjectDetails {
     private String type;
     private String projectDescription;
     private double descriptionReadability;
+    private String educationalLevel;
 
     public ProjectDetails() {
         this.skills = new ArrayList<String>();
@@ -20,6 +21,7 @@ public class ProjectDetails {
         this.type = null;
         this.projectDescription = null;
         this.descriptionReadability = 0.0;
+        this.educationalLevel = null;
     }
 
     public ProjectDetails(long ownerId, List<String> skills, long timeSubmitted, String title, String type, String projectDescription) {
@@ -60,6 +62,12 @@ public class ProjectDetails {
     }
 
     public  void setDescriptionReadability(double descriptionReadability){ this.descriptionReadability = descriptionReadability;}
+
+    public String getEducationalLevel() {
+        return this.educationalLevel;
+    }
+
+    public  void setEducationalLevel(String educationalLevel){ this.educationalLevel = educationalLevel;}
 }
 
 
