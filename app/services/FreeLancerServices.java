@@ -1,16 +1,14 @@
 package services;
 
 import models.ProjectDetails;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
+import static java.util.stream.Collectors.toMap;
 
 public class FreeLancerServices {
 
@@ -38,10 +36,14 @@ public class FreeLancerServices {
                 for (int i = 0; i < projects.length() ; i++){
                     JSONObject object = projects.getJSONObject(i);
 
+                    long projectID =  Long.parseLong(object.get("id").toString());
                     long ownerId =  Long.parseLong(object.get("owner_id").toString());
                     long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
                     String title = object.get("title").toString() ;
                     String type = object.get("type").toString();
+                    String preview_description = object.get("preview_description").toString();
+
+                    Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
 
                     JSONArray skills = object.getJSONArray("jobs");
                     List <String> skillsList = new ArrayList<>();
@@ -49,13 +51,42 @@ public class FreeLancerServices {
                         JSONObject skillObj = skills.getJSONObject(j);
                         skillsList.add(skillObj.get("name").toString());
                     }
-                    array.add(new ProjectDetails(ownerId, skillsList, timeSubmitted, title, type));
+                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                 }
             }
 
         } catch (Exception e) {
         }
         return array;
+    }
+
+    public Map<String, Integer> wordStatsIndevidual(String description ) {
+        Map<String, Integer> counterMap = new HashMap<>();
+        Map<String, Integer> sortedMap = null;
+        try {
+            Arrays.asList(
+                        description.replaceAll("\\p{Punct}", "").split(" ")
+                    )
+                    .stream()
+                    .forEach(word -> {
+                        if (counterMap.get(word) == null)
+                            counterMap.put(word, 1);
+                        else
+                            counterMap.put(word, counterMap.get(word) + 1);
+                    });
+
+            sortedMap = counterMap
+                    .entrySet()
+                    .stream()
+                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sortedMap;
     }
 
 }

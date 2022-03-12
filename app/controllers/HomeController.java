@@ -2,8 +2,6 @@ package controllers;
 
 import helper.Session;
 import models.ProjectDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -15,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 
 /**
@@ -61,5 +60,14 @@ public class HomeController extends Controller {
             return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
         }
 
+    }
+
+    public Result wordStats(String query,long id) {
+        List<ProjectDetails> results = searchResults.get(query);
+        List<ProjectDetails> project = results
+                                    .stream()
+                                    .filter(item -> item.getProjectID() == id)
+                                    .collect(Collectors.toList());
+        return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
     }
 }

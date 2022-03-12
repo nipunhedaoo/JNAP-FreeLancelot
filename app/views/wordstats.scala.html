@@ -1,0 +1,43 @@
+@import models.ProjectDetails
+@(searchMap : Map[String,Integer], phrase: String)
+
+@main("Welcome to Play") {
+    <div class=".container-fluid">
+        <div class="jumbotron jumbotron-fluid">
+            <h1 id="mainBanner" >FreeLancelot</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container">
+
+            <dl class="row" style="margin-top: 50px;">
+                <dt class="col-sm-3"><h4>Search term : </h4></dt>
+                <dd class="col-sm-9"><h4>@phrase</h4></dd>
+            </dl>
+
+            @if(searchMap != null && searchMap.size > 0) {
+
+            <table border="1" class="table">
+                <thead class="thead-light">
+                <tr>
+                    <th>Word</th>
+                    <th>Frequency</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for((phrase, count) <- searchMap) {
+                <tr>
+                    <td>
+                        <p>@phrase</p>
+                    </td>
+                    <td>
+                        <p>@count</p>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+            }
+        </div>
+    </div>
+}
