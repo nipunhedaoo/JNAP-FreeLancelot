@@ -14,6 +14,7 @@ public class FreeLancerServices {
 
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
+    static LinkedHashMap<String, Map<String, Integer>> wordStats = new LinkedHashMap<>();
 
     public List<ProjectDetails> searchResults(String phrase)
     {
@@ -56,7 +57,6 @@ public class FreeLancerServices {
                     array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                 }
             }
-            Map<String, Integer> global = wordStatsGlobal(descriptionArray);
         } catch (Exception e) {
         }
         return array;
@@ -91,35 +91,59 @@ public class FreeLancerServices {
         return sortedMap;
     }
 
-    public Map<String, Integer> wordStatsGlobal(List<String> arr ) {
+    public Map<String, Integer> wordStatsGlobal(String phrase ) {
+
+        List<String> descriptionArray = new ArrayList<>();
+
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
+
         try {
+            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ phrase +"\"&limit=250&job_details=true");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if(conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                String temp="";
+                while(scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+                JSONObject json = new JSONObject(temp);
+                JSONObject result = json.getJSONObject("result");
+                JSONArray projects = (JSONArray) result.getJSONArray("projects");
 
-            for (String description: arr ) {
-                Arrays.asList(
-                                description.replaceAll("\\p{Punct}", "").split(" ")
-                        )
+                for (int i = 0; i < projects.length() ; i++){
+                    JSONObject object = projects.getJSONObject(i);
+                    String preview_description = object.get("preview_description").toString();
+                    descriptionArray.add(preview_description);
+                }
+
+                for (String description: descriptionArray ) {
+                    Arrays.asList(
+                                    description.replaceAll("\\p{Punct}", "").split(" ")
+                            )
+                            .stream()
+                            .forEach(word -> {
+                                if(!word.equals("") && !word.equals(" ")) {
+                                    if (counterMap.get(word) == null)
+                                        counterMap.put(word, 1);
+                                    else
+                                        counterMap.put(word, counterMap.get(word) + 1);
+                                }
+                            });
+                }
+
+                sortedMap = counterMap
+                        .entrySet()
                         .stream()
-                        .forEach(word -> {
-                            if (counterMap.get(word) == null)
-                                counterMap.put(word, 1);
-                            else
-                                counterMap.put(word, counterMap.get(word) + 1);
-                        });
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
             }
-
-            sortedMap = counterMap
-                    .entrySet()
-                    .stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return sortedMap;
     }
 }

@@ -11,6 +11,7 @@ import services.FreeLancerServices;
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -64,10 +65,15 @@ public class HomeController extends Controller {
 
     public Result wordStats(String query,long id) {
         List<ProjectDetails> results = searchResults.get(query);
-        List<ProjectDetails> project = results
-                                    .stream()
-                                    .filter(item -> item.getProjectID() == id)
-                                    .collect(Collectors.toList());
-        return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
+        if(id != -1) {
+            List<ProjectDetails> project = results
+                                        .stream()
+                                        .filter(item -> item.getProjectID() == id)
+                                        .collect(Collectors.toList());
+            return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
+        } else {
+            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(query);
+            return ok(views.html.wordstats.render(wordMap, query));
+        }
     }
 }
