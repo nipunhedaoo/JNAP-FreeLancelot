@@ -3,7 +3,8 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")
+GET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "", skill :String ?="")
+GET     /projectBySkills/:skillName            controllers.HomeController.searchBySkill(skillName :String)
 + nocsrf
 
 # Map static resources from the /public folder to the /assets URL path

@@ -4,6 +4,7 @@ import helper.Session;
 import models.ProjectDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -42,7 +43,8 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
+    public CompletionStage<Result> index(Http.Request request, String searchKeyword, String skill) {
+        System.out.println("job id" + skill);
         if (searchKeyword == "") {
             if (!Session.isSessionExist(request)) {
                 counter+=1;
@@ -57,9 +59,26 @@ public class HomeController extends Controller {
                 List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
                 searchResults.put(searchKeyword, response);
             }
+            if(!StringUtils.isEmpty(skill))
+            {
+                freelancerClient.searchProjectsBySkill(skill);
+            }
             Session.setSessionSearchResultsHashMap(request, searchKeyword);
-            return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (!Session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+            }
+            else{
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
+
         }
 
+    }
+
+    public CompletionStage<Result> searchBySkill(String skillName) {
+        System.out.println("Skill name is -- ");
+        System.out.println(skillName);
+        List<ProjectDetails> list=freelancerClient.searchProjectsBySkill(skillName);
+        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(list,skillName)));
     }
 }
