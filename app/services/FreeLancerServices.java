@@ -18,6 +18,7 @@ public class FreeLancerServices {
     public List<ProjectDetails> searchResults(String phrase)
     {
         List<ProjectDetails> array = new ArrayList<>();
+        List<String> descriptionArray = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/active?query=\""+ phrase +"\"&limit=10&job_details=true");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -42,6 +43,7 @@ public class FreeLancerServices {
                     String title = object.get("title").toString() ;
                     String type = object.get("type").toString();
                     String preview_description = object.get("preview_description").toString();
+                    descriptionArray.add(preview_description);
 
                     Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
 
@@ -54,7 +56,7 @@ public class FreeLancerServices {
                     array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                 }
             }
-
+            Map<String, Integer> global = wordStatsGlobal(descriptionArray);
         } catch (Exception e) {
         }
         return array;
@@ -89,5 +91,36 @@ public class FreeLancerServices {
         return sortedMap;
     }
 
+    public Map<String, Integer> wordStatsGlobal(List<String> arr ) {
+        Map<String, Integer> counterMap = new HashMap<>();
+        Map<String, Integer> sortedMap = null;
+        try {
+
+            for (String description: arr ) {
+                Arrays.asList(
+                                description.replaceAll("\\p{Punct}", "").split(" ")
+                        )
+                        .stream()
+                        .forEach(word -> {
+                            if (counterMap.get(word) == null)
+                                counterMap.put(word, 1);
+                            else
+                                counterMap.put(word, counterMap.get(word) + 1);
+                        });
+            }
+
+            sortedMap = counterMap
+                    .entrySet()
+                    .stream()
+                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sortedMap;
+    }
 }
 
