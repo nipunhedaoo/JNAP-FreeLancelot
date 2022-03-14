@@ -49,7 +49,6 @@ public class HomeController extends Controller {
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         if (searchKeyword == "") {
             if (!Session.isSessionExist(request)) {
-                counter+=1;
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
             }
             else{
@@ -63,7 +62,7 @@ public class HomeController extends Controller {
             }
             Session.setSessionSearchResultsHashMap(request, searchKeyword);
             if (!Session.isSessionExist(request)) {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
             }
             else{
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));

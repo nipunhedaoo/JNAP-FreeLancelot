@@ -30,7 +30,7 @@ public class Session {
      */
 
 
-    public String generateSessionValue() {
+    public static String generateSessionValue() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
