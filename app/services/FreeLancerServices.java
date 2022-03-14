@@ -7,10 +7,7 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.*;
 
 public class FreeLancerServices {
@@ -63,6 +60,13 @@ public class FreeLancerServices {
         return searchResults;
     }
 
+    public static char lastChar (String aWord)
+    {
+        char aChar = aWord.charAt(aWord.length() - 2);
+        System.out.print (aChar);
+        return aChar;
+    }
+
     public double readabilityIndex(String phrase, HashMap<String, List<ProjectDetails>> searchResults)
     {
 
@@ -75,12 +79,45 @@ public class FreeLancerServices {
             int numOfSyllables = 0;
             String educationalLevel = "";
 
+            String projectDescription = project.getProjectDescription();
+            numOfWords = projectDescription.trim().split("\\s+").length;
+            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-            numOfWords = project.getProjectDescription().trim().split("\\s+").length;
-            numOfSentence = project.getProjectDescription().trim().split("([.!?])([\\s\\n])([A-Z]*)").length;
-//            numOfSyllables = project.getProjectDescription().trim()
+                int syllables = 0;
 
-            fkcl = (206.835 - 84.6 *((numOfSyllables/numOfWords)) - (1.015 *(numOfWords/numOfSentence)))/10;
+                ArrayList<Integer> vowels = new ArrayList<>(Arrays. asList(97,101,105,111,117, 65, 69,73, 79, 85));
+
+                if(word.length() <= 3){
+                    syllables = 1;
+                }else {
+                    char[] alphabets = word.toCharArray();
+
+                    char syllableList [] = {'a', 'e', 'i', 'o', 'u', 'y'};
+
+                    // Syllables
+                    for (int k = 0; k < syllableList.length; k++)
+                    {
+                        for (int i = 0; i < projectDescription.length(); i++)
+                        {
+                            if (projectDescription.charAt(i) == syllableList[k]) {
+                                syllables = syllables + 1;
+                            }
+                            if (lastChar(projectDescription) == 'E' || lastChar(projectDescription) == 'e') {
+                                syllables = syllables - 1;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+
+
+                }
+
+               return syllables;
+            }).sum();
+
+            fkcl = (206.835 - 84.6 *((numOfSyllables/numOfWords)) - (1.015 *(numOfWords/numOfSentence)));
             fkgl = (0.39 *((numOfSyllables/numOfWords)) + (11.8 *(numOfWords/numOfSentence))  -15.59);
 
             project.setDescriptionReadability(fkcl);
