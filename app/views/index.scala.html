@@ -39,7 +39,7 @@
                         <p>@project.getOwnerID()</p>
                     </td>
                     <td>
-                        <p>@project.getTimeSubmitted()</p>
+                        <p>@project.getTimeSubmitted().format("MMMM dd, yyyy")</p>
                     </td>
                     <td>
                         <p>@project.getTitle()</p>
@@ -49,7 +49,7 @@
                     </td>
                     <td>
                     @for(skill<-project.getSkills()){
-                    <a>@skill ,</a>
+                    <a href="projectBySkills/@skill(1)" target="_blank">@skill(1) ,</a>
                     }
                     </td>
                 </tr>

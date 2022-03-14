@@ -5,20 +5,22 @@ import java.util.*;
 public class ProjectDetails {
 
     private long ownerId;
-    private List<String> skills;
+    private List<List<String>> skills;
     private Date timeSubmitted;
     private String title;
     private String type;
 
+
+
     public ProjectDetails() {
-        this.skills = new ArrayList<String>();
+        this.skills = new ArrayList<>();
         this.ownerId = -1;
         this.timeSubmitted = new Date();
         this.title = null;
         this.type = null;
     }
 
-    public ProjectDetails(long ownerId, List<String> skills, long timeSubmitted, String title, String type) {
+    public ProjectDetails(long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type) {
         this.skills = skills;
         this.ownerId = ownerId;
         this.timeSubmitted = new Date(Long.parseLong(timeSubmitted + "000"));
@@ -42,7 +44,7 @@ public class ProjectDetails {
         return this.type;
     }
 
-    public List<String> getSkills() {
+    public List<List<String>> getSkills() {
         return this.skills;
     }
 }
