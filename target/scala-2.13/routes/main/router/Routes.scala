@@ -15,7 +15,7 @@ class Routes(
   override val errorHandler: play.api.http.HttpErrorHandler, 
   // @LINE:6
   HomeController_0: controllers.HomeController,
-  // @LINE:12
+  // @LINE:13
   Assets_1: controllers.Assets,
   val prefix: String
 ) extends GeneratedRouter {
@@ -24,7 +24,7 @@ class Routes(
    def this(errorHandler: play.api.http.HttpErrorHandler,
     // @LINE:6
     HomeController_0: controllers.HomeController,
-    // @LINE:12
+    // @LINE:13
     Assets_1: controllers.Assets
   ) = this(errorHandler, HomeController_0, Assets_1, "/")
 
@@ -42,6 +42,7 @@ class Routes(
     ("""GET""", this.prefix, """controllers.HomeController.index(request:Request, searchKeyword:String ?= "")"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""", """controllers.HomeController.wordStats(query:String, id:Long)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStatsGlobal""", """controllers.HomeController.wordStats(query:String, id:Long ?= -1)"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillId:String, skillName:String)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -106,11 +107,29 @@ class Routes(
     )
   )
 
-  // @LINE:12
-  private[this] lazy val controllers_Assets_versioned3_route = Route("GET",
+  // @LINE:9
+  private[this] lazy val controllers_HomeController_searchBySkill3_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("projectBySkills/"), DynamicPart("skillId", """[^/]+""",true), StaticPart("/"), DynamicPart("skillName", """[^/]+""",true)))
+  )
+  private[this] lazy val controllers_HomeController_searchBySkill3_invoker = createInvoker(
+    HomeController_0.searchBySkill(fakeValue[String], fakeValue[String]),
+    play.api.routing.HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.HomeController",
+      "searchBySkill",
+      Seq(classOf[String], classOf[String]),
+      "GET",
+      this.prefix + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""",
+      """""",
+      Seq()
+    )
+  )
+
+  // @LINE:13
+  private[this] lazy val controllers_Assets_versioned4_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_versioned3_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_versioned4_invoker = createInvoker(
     Assets_1.versioned(fakeValue[String], fakeValue[Asset]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -146,10 +165,16 @@ class Routes(
         controllers_HomeController_wordStats2_invoker.call(HomeController_0.wordStats(query, id))
       }
   
-    // @LINE:12
-    case controllers_Assets_versioned3_route(params@_) =>
+    // @LINE:9
+    case controllers_HomeController_searchBySkill3_route(params@_) =>
+      call(params.fromPath[String]("skillId", None), params.fromPath[String]("skillName", None)) { (skillId, skillName) =>
+        controllers_HomeController_searchBySkill3_invoker.call(HomeController_0.searchBySkill(skillId, skillName))
+      }
+  
+    // @LINE:13
+    case controllers_Assets_versioned4_route(params@_) =>
       call(Param[String]("path", Right("/public")), params.fromPath[Asset]("file", None)) { (path, file) =>
-        controllers_Assets_versioned3_invoker.call(Assets_1.versioned(path, file))
+        controllers_Assets_versioned4_invoker.call(Assets_1.versioned(path, file))
       }
   }
 }

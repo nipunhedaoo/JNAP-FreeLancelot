@@ -6,6 +6,7 @@
 GET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")
 GET     /:query/wordStats/:id       controllers.HomeController.wordStats(query: String, id: Long)
 GET     /:query/wordStatsGlobal     controllers.HomeController.wordStats(query: String, id: Long ?= -1)
+GET     /projectBySkills/:skillId/:skillName            controllers.HomeController.searchBySkill(skillId:String,skillName :String)
 + nocsrf
 
 # Map static resources from the /public folder to the /assets URL path

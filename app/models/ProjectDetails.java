@@ -6,16 +6,17 @@ public class ProjectDetails {
 
     private long projectID;
     private long ownerId;
-    private List<String> skills;
+    private List<List<String>> skills;
     private Date timeSubmitted;
     private String title;
     private String type;
     private String preview_description;
     private Map<String, Integer> wordStats;
+    private String skillName;
 
     public ProjectDetails() {
+        this.skills = new ArrayList<>();
         this.projectID = -1;
-        this.skills = new ArrayList<String>();
         this.ownerId = -1;
         this.timeSubmitted = new Date();
         this.title = null;
@@ -24,7 +25,7 @@ public class ProjectDetails {
         this.wordStats = null;
     }
 
-    public ProjectDetails(long projectID, long ownerId, List<String> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description) {
+    public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description) {
         this.projectID = projectID;
         this.skills = skills;
         this.ownerId = ownerId;
@@ -55,7 +56,7 @@ public class ProjectDetails {
         return this.type;
     }
 
-    public List<String> getSkills() {
+    public List<List<String>> getSkills() {
         return this.skills;
     }
 
@@ -63,8 +64,12 @@ public class ProjectDetails {
         return this.wordStats;
     }
 
-    public String getPreviewDescription(){
+    public String getPreviewDescription() {
         return this.preview_description;
+    }
+
+    public String getSkillName() {
+        return this.skillName;
     }
 }
 

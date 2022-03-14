@@ -2,6 +2,9 @@ package controllers;
 
 import helper.Session;
 import models.ProjectDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -27,6 +30,7 @@ public class HomeController extends Controller {
 
     FreeLancerServices freelancerClient;
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
     private static int counter = 1;
 
@@ -58,22 +62,36 @@ public class HomeController extends Controller {
                 searchResults.put(searchKeyword, response);
             }
             Session.setSessionSearchResultsHashMap(request, searchKeyword);
-            return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (!Session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+            }
+            else{
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
+
         }
 
     }
 
     public Result wordStats(String query,long id) {
         List<ProjectDetails> results = searchResults.get(query);
-        if(id != -1) {
+        if (id != -1) {
             List<ProjectDetails> project = results
-                                        .stream()
-                                        .filter(item -> item.getProjectID() == id)
-                                        .collect(Collectors.toList());
+                    .stream()
+                    .filter(item -> item.getProjectID() == id)
+                    .collect(Collectors.toList());
             return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
         } else {
             Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(query);
             return ok(views.html.wordstats.render(wordMap, query));
         }
+    }
+
+    public CompletionStage<Result> searchBySkill(String skillId,String skillName) {
+        if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
+            List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
+            skillSearchResults.put(skillId,list);
+        }
+        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
     }
 }
