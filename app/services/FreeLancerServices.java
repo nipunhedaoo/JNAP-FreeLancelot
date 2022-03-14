@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +23,7 @@ public class FreeLancerServices {
     {
         List<ProjectDetails> array = new ArrayList<>();
         try {
-            phrase=phrase.replace(" ","%20");
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ phrase +"\"&limit=10&job_details=true");
+            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, StandardCharsets.UTF_8) +"\"&limit=10&job_details=true");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -49,7 +50,7 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add("/?jobid="+skillObj.get("id").toString());
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
@@ -68,8 +69,7 @@ public class FreeLancerServices {
     {
         List<ProjectDetails> array = new ArrayList<>();
         try {
-            skillId=skillId.replace(" ","%20");
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ skillId +"\"&limit=10&job_details=true");
+            URL url = new URL(API + "projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId) +"&limit=10&job_details=true");
            System.out.println(url);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
@@ -98,7 +98,7 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add("/?jobid="+skillObj.get("id").toString());
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 

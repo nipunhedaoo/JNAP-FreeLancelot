@@ -28,6 +28,7 @@ public class HomeController extends Controller {
 
     FreeLancerServices freelancerClient;
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
     private static int counter = 1;
 
@@ -43,8 +44,7 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public CompletionStage<Result> index(Http.Request request, String searchKeyword, String skill) {
-        System.out.println("job id" + skill);
+    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         if (searchKeyword == "") {
             if (!Session.isSessionExist(request)) {
                 counter+=1;
@@ -59,10 +59,6 @@ public class HomeController extends Controller {
                 List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
                 searchResults.put(searchKeyword, response);
             }
-            if(!StringUtils.isEmpty(skill))
-            {
-                freelancerClient.searchProjectsBySkill(skill);
-            }
             Session.setSessionSearchResultsHashMap(request, searchKeyword);
             if (!Session.isSessionExist(request)) {
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
@@ -75,10 +71,11 @@ public class HomeController extends Controller {
 
     }
 
-    public CompletionStage<Result> searchBySkill(String skillName) {
-        System.out.println("Skill name is -- ");
-        System.out.println(skillName);
-        List<ProjectDetails> list=freelancerClient.searchProjectsBySkill(skillName);
-        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(list,skillName)));
+    public CompletionStage<Result> searchBySkill(String skillId,String skillName) {
+        if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
+            List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
+            skillSearchResults.put(skillId,list);
+        }
+        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
     }
 }

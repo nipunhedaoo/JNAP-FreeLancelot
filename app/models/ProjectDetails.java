@@ -9,6 +9,7 @@ public class ProjectDetails {
     private Date timeSubmitted;
     private String title;
     private String type;
+    private String skillName;
 
 
 
@@ -46,6 +47,10 @@ public class ProjectDetails {
 
     public List<List<String>> getSkills() {
         return this.skills;
+    }
+
+    public String getSkillName() {
+        return this.skillName;
     }
 }
 
