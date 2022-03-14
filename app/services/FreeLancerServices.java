@@ -28,7 +28,7 @@ public class FreeLancerServices {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) +"\"&limit=10&job_details=true");
+            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, StandardCharsets.UTF_8) +"\"&limit=10&job_details=true");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
