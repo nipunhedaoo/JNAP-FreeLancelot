@@ -28,7 +28,7 @@ public class FreeLancerServices {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, StandardCharsets.UTF_8) +"\"&limit=10&job_details=true");
+            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) +"\"&limit=10&job_details=true");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -61,14 +61,12 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
                     }
-                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, projectDescription, descriptionReadability,
-                    educationalLevel,
-                    preview_description, wordStats, preview_description));
+                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                 }
             }
         } catch (Exception e) {
@@ -101,8 +99,7 @@ public class FreeLancerServices {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        readabilityIndex(phrase, searchResults);
-        return searchResults;
+        return sortedMap;
     }
 
     public static char lastChar (String aWord)
@@ -112,92 +109,6 @@ public class FreeLancerServices {
         return aChar;
     }
 
-    public double readabilityIndex(String phrase, HashMap<String, List<ProjectDetails>> searchResults)
-    {
-
-
-        Double searchResultUpadted = searchResults.get(phrase).stream().mapToDouble(project -> {
-            double fkcl = 0;
-            double fkgl = 0;
-            int numOfSentence = 5;
-            int numOfWords = 0;
-            int numOfSyllables = 0;
-            String educationalLevel = "";
-
-            String projectDescription = project.getProjectDescription();
-            numOfWords = projectDescription.trim().split("\\s+").length;
-            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
-            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
-
-                int syllables = 0;
-
-                ArrayList<Integer> vowels = new ArrayList<>(Arrays. asList(97,101,105,111,117, 65, 69,73, 79, 85));
-
-                if(word.length() <= 3){
-                    syllables = 1;
-                }else {
-                    char[] alphabets = word.toCharArray();
-
-                    char syllableList [] = {'a', 'e', 'i', 'o', 'u', 'y'};
-
-                    // Syllables
-                    for (int k = 0; k < syllableList.length; k++)
-                    {
-                        for (int i = 0; i < projectDescription.length(); i++)
-                        {
-                            if (projectDescription.charAt(i) == syllableList[k]) {
-                                syllables = syllables + 1;
-                            }
-                            if (lastChar(projectDescription) == 'E' || lastChar(projectDescription) == 'e') {
-                                syllables = syllables - 1;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-
-                }
-
-               return syllables;
-            }).sum();
-
-            fkcl = (206.835 - 84.6 *((numOfSyllables/numOfWords)) - (1.015 *(numOfWords/numOfSentence)));
-            fkgl = (0.39 *((numOfSyllables/numOfWords)) + (11.8 *(numOfWords/numOfSentence))  -15.59);
-
-            project.setDescriptionReadability(fkcl);
-
-            if(fkcl > 100){
-                educationalLevel = "Early" ;
-            }else if(fkcl > 91 && fkcl <= 100){
-                educationalLevel = "5th grade" ;
-            }else if(fkcl > 81 && fkcl <= 91){
-                educationalLevel = "6th grade" ;
-            }else if(fkcl > 71 && fkcl <= 81){
-                educationalLevel = "7th grade" ;
-            }else if(fkcl > 66 && fkcl <= 71){
-                educationalLevel = "8th grade" ;
-            }else if(fkcl > 61 && fkcl <= 66){
-                educationalLevel = "9th grade" ;
-            }else if(fkcl > 51 && fkcl <= 61){
-                educationalLevel = "High School" ;
-            }else if(fkcl > 31 && fkcl <= 51){
-                educationalLevel = "Some College" ;
-            } else if(fkcl > 0 && fkcl <= 31){
-                educationalLevel = "College Graduate" ;
-            }else if(fkcl <= 0 ){
-                educationalLevel = "Law School Graduate" ;
-            }
-
-            project.setEducationalLevel(educationalLevel);
-
-            return fkcl;
-        }).average().getAsDouble();
-
-        return searchResultUpadted;
-
-        return sortedMap;
-    }
 
     public Map<String, Integer> wordStatsGlobal(String phrase ) {
 
@@ -287,7 +198,7 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
