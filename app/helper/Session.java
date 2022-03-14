@@ -5,6 +5,7 @@ import models.ProjectDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
+import java.util.UUID;
 
 import java.util.*;
 
@@ -27,6 +28,12 @@ public class Session {
      * @param request Http Request
      * @return {@link LinkedHashMap} of SearchKeyword and {@link ProjectDetails}
      */
+
+
+    public String generateSessionValue() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 
     public static HashMap<String, List<ProjectDetails>> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, List<ProjectDetails>> searchResults) {
         String key = getSessionValue(request);

@@ -27,7 +27,7 @@ public class FreeLancerServices {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, StandardCharsets.UTF_8) +"\"&limit=10&job_details=true");
+            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) +"\"&limit=10&job_details=true");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -59,7 +59,7 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
@@ -189,7 +189,7 @@ public class FreeLancerServices {
                     for( int j=0; j<skills.length(); j++){
                         JSONObject skillObj = skills.getJSONObject(j);
                         List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), StandardCharsets.UTF_8));
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
