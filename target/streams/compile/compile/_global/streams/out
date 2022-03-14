@@ -1,7 +1,3 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:51:34: illegal start of simple pattern[0m
-[0m[[0m[31merror[0m] [0m[0m                    @for((skill, val)<-project.getSkills()){[0m
-[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:57:8: ')' expected but '}' found.[0m
-[0m[[0m[31merror[0m] [0m[0m                </tbody>[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\nipun\OneDrive\Documents\GitHub\JNAP-FreeLancelot\app\services\FreeLancerServices.java:82:1:  error: constant string too long[0m
+[0m[[0m[31merror[0m] [0m[0m            String projectDescription = "\tROMEO AND JULIET\n" +[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^1 error[0m
