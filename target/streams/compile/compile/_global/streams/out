@@ -1,3 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\nipun\OneDrive\Documents\GitHub\JNAP-FreeLancelot\app\services\FreeLancerServices.java:82:1:  error: constant string too long[0m
-[0m[[0m[31merror[0m] [0m[0m            String projectDescription = "\tROMEO AND JULIET\n" +[0m
-[0m[[0m[31merror[0m] [0m[0m                                        ^1 error[0m
