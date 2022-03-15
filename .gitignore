@@ -7,3 +7,4 @@ target
 /.settings
 /RUNNING_PID
 /bin/
+target/streams/_global/playCommonClassloader/_global/streams/out
