@@ -2,56 +2,56 @@
 @(searchMap : List[ProjectDetails],skillName:String)
 
 @main("Welcome to Play") {
-    <div class=".container-fluid">
-        <div class="jumbotron jumbotron-fluid">
-            <h1 id="mainBanner" >FreeLancelot</h1>
-        </div>
+<div class=".container-fluid">
+    <div class="jumbotron jumbotron-fluid">
+        <h1 id="mainBanner" >FreeLancelot</h1>
     </div>
+</div>
+<div class="container">
     <div class="container">
-        <div class="container">
-            @if(searchMap != null && searchMap.size > 0) {
+        @if(searchMap != null && searchMap.size > 0) {
 
-                    <dl class="row" style="margin-top: 50px;">
-                        <dt class="col-sm-3"><h4>Search term : </h4></dt>
-                        <dd class="col-sm-9"><h4>@skillName</h4></dd>
-                    </dl>
+        <dl class="row" style="margin-top: 50px;">
+            <dt class="col-sm-3"><h4>Search term : </h4></dt>
+            <dd class="col-sm-9"><h4>@skillName</h4></dd>
+        </dl>
 
-                    <table border="1" class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Owner ID</th>
-                                <th>Submission Date</th>
-                                <th>Title</th>
-                                <th>Type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @for( project <- searchMap ) {
-                            <tr>
-                                <td>
-                                    <p>@project.getOwnerID()</p>
-                                </td>
-                                <td>
-                                    <p>@project.getTimeSubmitted().format("MMMM dd, yyyy")</p>
-                                </td>
-                                <td>
-                                    <p>@project.getTitle()</p>
-                                </td>
-                                <td>
-                                    <p>@project.getType()</p>
-                                </td>
-                                <td>
-                                @for(skill<-project.getSkills()){
-                                    <a href="@skill(1)" target="_blank">@skill(1) ,</a>
-                                }
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-
+        <table border="1" class="table">
+            <thead class="thead-light">
+            <tr>
+                <th>Owner ID</th>
+                <th>Submission Date</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Skills</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for( project <- searchMap ) {
+            <tr>
+                <td>
+                    <p>@project.getOwnerID()</p>
+                </td>
+                <td>
+                    <p>@project.getTimeSubmitted().format("MMMM dd, yyyy")</p>
+                </td>
+                <td>
+                    <p>@project.getTitle()</p>
+                </td>
+                <td>
+                    <p>@project.getType()</p>
+                </td>
+                <td>
+                    @for(skill<-project.getSkills()){
+                    <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
+                    }
+                </td>
+            </tr>
             }
-        </div>
-    </div>
-}
+            </tbody>
+        </table>
 
+        }
+    </div>
+</div>
+}

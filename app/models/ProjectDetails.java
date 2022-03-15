@@ -28,6 +28,10 @@ public class ProjectDetails {
         this.type = type;
     }
 
+    public ProjectDetails(String title) {
+        this.title=title;
+    }
+
     public long getOwnerID() {
         return this.ownerId;
     }

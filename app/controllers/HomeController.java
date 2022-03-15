@@ -1,9 +1,8 @@
 package controllers;
 
 import helper.Session;
+import models.EmployerDetails;
 import models.ProjectDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -80,5 +79,11 @@ public class HomeController extends Controller {
         System.out.println(skillName);
         List<ProjectDetails> list=freelancerClient.searchProjectsBySkill(skillName);
         return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(list,skillName)));
+    }
+
+    public CompletionStage<Result> profilePage(Long ownerId) {
+        System.out.println("Employer Details are -- ");
+        List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
+        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
     }
 }

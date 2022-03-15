@@ -1,0 +1,64 @@
+@import models.EmployerDetails
+@(searchMap :List[EmployerDetails],ownerId:Long)
+
+@main("Welcome to Play") {
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class=".container-fluid">
+    <div class="jumbotron jumbotron-fluid">
+        <h4 id="mainBanner">FreeLancelot</h4>
+
+    </div>
+    <h4>Employer Details are: </h4>
+
+
+    @if(searchMap != null && searchMap.size > 0) {
+
+    <table border="1" class="table">
+        <thead class="thead-light">
+<!--           <th>Projects</th>-->
+        </thead>
+        <tbody>
+        @for( details <- searchMap ) {
+        <tr>
+
+            <td>
+                <h5>UserName: @details.getUserName()</h5>
+                <h5>Email: @details.getEmail()</h5>
+                <h5>PrimaryLanguage: @details.getPrimaryLanguage()</h5>
+                <h5>Profile Description: @details.getProfileDescription()</h5>
+                <h5>Registration Date: @details.getRegistrationDate().format("MMMM dd, yyyy")</h5>
+                <h5>HourlyRate: @details.getHourlyRate()</h5>
+            </td>
+
+                @for( project <- searchMap ) {
+                <tr>
+
+                    <td>
+                        @for(title<-project.getTitle()){
+                        <h5>@project.getTitle()</h5>
+                        }
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+
+        </tr>
+        }
+        </tbody>
+
+
+    </table>
+</div>
+
+</body>
+</html>
+}
+
+
+}

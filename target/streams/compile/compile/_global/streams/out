@@ -1,7 +1,7 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:51:34: illegal start of simple pattern[0m
-[0m[[0m[31merror[0m] [0m[0m                    @for((skill, val)<-project.getSkills()){[0m
-[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:57:8: ')' expected but '}' found.[0m
-[0m[[0m[31merror[0m] [0m[0m                </tbody>[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:2:39: ':' expected but '[' found.[0m
+[0m[[0m[31merror[0m] [0m[0m@(searchMap :List[ProjectDetails],List[EmployerDetails],ownerId:Long)[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:64:2: identifier expected but '}' found.[0m
+[0m[[0m[31merror[0m] [0m[0m}[0m
+[0m[[0m[31merror[0m] [0m[0m ^[0m
 [0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
