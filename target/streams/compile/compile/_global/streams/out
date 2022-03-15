@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 [0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:2:39: ':' expected but '[' found.[0m
 [0m[[0m[31merror[0m] [0m[0m@(searchMap :List[ProjectDetails],List[EmployerDetails],ownerId:Long)[0m
 [0m[[0m[31merror[0m] [0m[0m                                      ^[0m
 [0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:64:2: identifier expected but '}' found.[0m
 [0m[[0m[31merror[0m] [0m[0m}[0m
 [0m[[0m[31merror[0m] [0m[0m ^[0m
+=======
+[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:19:27: not found: value projectList[0m
+[0m[[0m[31merror[0m] [0m[0m            @for((phrase, projectList.slice(0, 10)) <- searchMap) {[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:38:34: not found: value projectList[0m
+[0m[[0m[31merror[0m] [0m[0m                @for( project <- projectList ) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+>>>>>>> nipun-task4-1
 [0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

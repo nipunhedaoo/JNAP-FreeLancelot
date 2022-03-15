@@ -13,8 +13,10 @@ import services.FreeLancerServices;
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 
 /**
@@ -27,6 +29,7 @@ public class HomeController extends Controller {
 
     FreeLancerServices freelancerClient;
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
     private static int counter = 1;
 
@@ -42,12 +45,10 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public CompletionStage<Result> index(Http.Request request, String searchKeyword, String skill) {
-        System.out.println("job id" + skill);
+    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         if (searchKeyword == "") {
             if (!Session.isSessionExist(request)) {
-                counter+=1;
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
             }
             else{
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
@@ -58,13 +59,9 @@ public class HomeController extends Controller {
                 List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
                 searchResults.put(searchKeyword, response);
             }
-            if(!StringUtils.isEmpty(skill))
-            {
-                freelancerClient.searchProjectsBySkill(skill);
-            }
             Session.setSessionSearchResultsHashMap(request, searchKeyword);
             if (!Session.isSessionExist(request)) {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Integer.toString(counter)));
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
             }
             else{
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
@@ -74,11 +71,26 @@ public class HomeController extends Controller {
 
     }
 
-    public CompletionStage<Result> searchBySkill(String skillName) {
-        System.out.println("Skill name is -- ");
-        System.out.println(skillName);
-        List<ProjectDetails> list=freelancerClient.searchProjectsBySkill(skillName);
-        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(list,skillName)));
+    public Result wordStats(String query,long id) {
+        List<ProjectDetails> results = searchResults.get(query);
+        if (id != -1) {
+            List<ProjectDetails> project = results
+                    .stream()
+                    .filter(item -> item.getProjectID() == id)
+                    .collect(Collectors.toList());
+            return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
+        } else {
+            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
+            return ok(views.html.wordstats.render(wordMap, query));
+        }
+    }
+
+    public CompletionStage<Result> searchBySkill(String skillId,String skillName) {
+        if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
+            List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
+            skillSearchResults.put(skillId,list);
+        }
+        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
     }
 
     public CompletionStage<Result> profilePage(Long ownerId) {
