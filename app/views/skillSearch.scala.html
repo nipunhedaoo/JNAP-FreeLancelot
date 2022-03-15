@@ -23,6 +23,7 @@
                                 <th>Submission Date</th>
                                 <th>Title</th>
                                 <th>Type</th>
+                                <th>Skills</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,7 +43,7 @@
                                 </td>
                                 <td>
                                 @for(skill<-project.getSkills()){
-                                    <a href="@skill(1)" target="_blank">@skill(1) ,</a>
+                                    <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
                                 }
                                 </td>
                             </tr>

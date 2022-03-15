@@ -19,7 +19,8 @@
             @for((phrase, projectList) <- searchMap) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
-                <dd class="col-sm-9"><h4>@phrase</h4></dd>
+                <dd class="col-sm-3"><h4>@phrase</h4></dd>
+                <dd class="col-sm-6"><h4><a href="/@phrase/wordStatsGlobal" target="_blank">Global Stats</a></h4></dd>
             </dl>
 
             <table border="1" class="table">
@@ -29,11 +30,13 @@
                         <th>Submission Date</th>
                         <th>Title</th>
                         <th>Type</th>
+                        <th>Word Stats</th>
                         <th>Skills</th>
+                        <th>Readability Index</th>
                     </tr>
                 </thead>
                 <tbody>
-                @for( project <- projectList ) {
+                @for( project <- projectList.slice(0, 10) ) {
                 <tr>
                     <td>
                         <p>@project.getOwnerID()</p>
@@ -48,9 +51,15 @@
                         <p>@project.getType()</p>
                     </td>
                     <td>
+                        <p><a href="/@phrase/wordStats/@project.getProjectID()" target="_blank">Stats</a></p>
+                    </td>
+                    <td>
                     @for(skill<-project.getSkills()){
-                    <a href="projectBySkills/@skill(1)" target="_blank">@skill(1) ,</a>
+                    <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
                     }
+                    </td>
+                    <td>
+                        <p>@project.getFleschReadabilityIndex()</p>
                     </td>
                 </tr>
                 }

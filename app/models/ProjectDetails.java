@@ -4,32 +4,49 @@ import java.util.*;
 
 public class ProjectDetails {
 
+    private long projectID;
     private long ownerId;
     private List<List<String>> skills;
     private Date timeSubmitted;
     private String title;
     private String type;
-
-
+    private String preview_description;
+    private Map<String, Integer> wordStats;
+    private String skillName;
+    private double  fleschReadabilityIndex;
+    private double fleschKincaidGradeLevel;
 
     public ProjectDetails() {
         this.skills = new ArrayList<>();
+        this.projectID = -1;
         this.ownerId = -1;
         this.timeSubmitted = new Date();
         this.title = null;
         this.type = null;
+        this.preview_description = null;
+        this.wordStats = null;
+        this.fleschReadabilityIndex = 0.0;
+        this.fleschKincaidGradeLevel = 0.0;
+
     }
 
-    public ProjectDetails(long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type) {
+    public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description) {
+        this.projectID = projectID;
         this.skills = skills;
         this.ownerId = ownerId;
         this.timeSubmitted = new Date(Long.parseLong(timeSubmitted + "000"));
         this.title = title;
         this.type = type;
+        this.wordStats = wordStats;
+        this.preview_description = preview_description;
     }
 
     public long getOwnerID() {
         return this.ownerId;
+    }
+
+    public long getProjectID() {
+        return this.projectID;
     }
 
     public Date getTimeSubmitted() {
@@ -46,6 +63,34 @@ public class ProjectDetails {
 
     public List<List<String>> getSkills() {
         return this.skills;
+    }
+
+    public Map<String, Integer> getWordStats() {
+        return this.wordStats;
+    }
+
+    public String getPreviewDescription() {
+        return this.preview_description;
+    }
+
+    public String getSkillName() {
+        return this.skillName;
+    }
+
+    public double getFleschKincaidGradeLevel() {
+        return this.fleschKincaidGradeLevel;
+    }
+
+    public void setFleschKincaidGradeLevel(double fleschKincaidGradeLevel) {
+        this.fleschKincaidGradeLevel = fleschKincaidGradeLevel;
+    }
+
+    public double getFleschReadabilityIndex() {
+        return this.fleschReadabilityIndex;
+    }
+
+    public void setFleschReadabilityIndex(double fleschReadabilityIndex) {
+        this.fleschReadabilityIndex = fleschReadabilityIndex;
     }
 }
 

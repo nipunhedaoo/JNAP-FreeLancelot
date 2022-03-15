@@ -1,5 +1,6 @@
 logs
-target
+/project
+/target
 /.idea
 /.idea_modules
 /.classpath
@@ -7,3 +8,5 @@ target
 /.settings
 /RUNNING_PID
 /bin/
+target/streams/_global/playCommonClassloader/_global/streams/out
+target/streams/_global/playCommonClassloader/_global/streams/out

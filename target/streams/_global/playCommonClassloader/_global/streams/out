@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [0m[[0m[0mdebug[0m] [0m[0mUsing parent loader for play common classloader: sun.misc.Launcher$ExtClassLoader@5495333e[0m
+=======
+[0m[[0m[0mdebug[0m] [0m[0mUsing parent loader for play common classloader: jdk.internal.loader.ClassLoaders$PlatformClassLoader@70242f38[0m
+>>>>>>> nipun-task4-1
