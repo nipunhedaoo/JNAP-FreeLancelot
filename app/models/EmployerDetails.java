@@ -56,7 +56,7 @@ public class EmployerDetails {
         return this.hourlyRate;
     }
 
-    public List<ProjectDetails> getEmployer_projects() {
+    public List<ProjectDetails> getProjects() {
         return this.employer_projects;
     }
 

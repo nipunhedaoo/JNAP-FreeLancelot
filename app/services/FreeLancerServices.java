@@ -1,5 +1,6 @@
 package services;
 
+
 import models.ProjectDetails;
 import models.EmployerDetails;
 import org.json.JSONArray;
@@ -7,9 +8,6 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -181,6 +179,96 @@ public class FreeLancerServices {
 
         return array;
     }
+
+
+
+    public List<EmployerDetails> employerResults (Long ownerID){
+        List<EmployerDetails> array = new ArrayList<>();
+        try {
+            URL url = new URL(API + "users/0.1/users/" + ownerID );
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                String temp = "";
+                while (scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+                JSONObject json = new JSONObject(temp);
+                JSONObject result = json.getJSONObject("result");
+
+                String username = result.get("username").toString();
+                String email = result.get("email").toString();
+                String primaryLanguage = result.get("primary_language").toString();
+                String profileDescription = result.get("profile_description").toString();
+                long registrationDate = Long.parseLong(result.get("registration_date").toString());
+                Double hourlyRate= Double.valueOf(result.get("hourly_rate").toString());
+                List<ProjectDetails>employer_projects=getProjects(ownerID);
+                array.add(new EmployerDetails(username, email, primaryLanguage, profileDescription,registrationDate,hourlyRate,employer_projects));
+
+            }
+
+
+        } catch (Exception e) {
+        }
+        return array;
+    }
+    public List<ProjectDetails> getProjects (Long ownerID){
+        List<ProjectDetails> array2 = new ArrayList<>();
+        try {
+            URL url = new URL(API + "projects/0.1/projects/?owners[]=" + ownerID + "&limit=10&job_details=true");
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                String temp = "";
+                while (scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+                JSONObject json = new JSONObject(temp);
+                JSONObject result = json.getJSONObject("result");
+                JSONArray projects = (JSONArray) result.getJSONArray("projects");
+
+                for (int i = 0; i < projects.length(); i++) {
+                    JSONObject object = projects.getJSONObject(i);
+
+                    long projectID =  Long.parseLong(object.get("id").toString());
+                    long ownerId =  Long.parseLong(object.get("owner_id").toString());
+                    long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
+                    String title = object.get("title").toString();
+                    String type = object.get("type").toString();
+                    String preview_description = null;
+//                            object.get("preview_description").toString();
+
+
+                    Map<String, Integer> wordStats = null;
+//                    wordStatsIndevidual(object.get("preview_description").toString());
+
+
+                    JSONArray skills = object.getJSONArray("jobs");
+                    List<List<String>> skillsList = new ArrayList<>();
+                    for (int j = 0; j < skills.length(); j++) {
+                        JSONObject skillObj = skills.getJSONObject(j);
+                        List<String> skill=new ArrayList<>();
+                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                        skill.add(skillObj.get("name").toString());
+                        skillsList.add(skill);
+
+                    }
+                    array2.add(new ProjectDetails(projectID,ownerId,skillsList,timeSubmitted,title,type,wordStats,preview_description));
+                }
+            }
+
+        } catch (Exception e) {
+        }
+        return array2;
+    }
+
+
+
 
     public void readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
 
