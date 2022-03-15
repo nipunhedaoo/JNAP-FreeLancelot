@@ -13,15 +13,17 @@
     <div class="jumbotron jumbotron-fluid">
         <h4 id="mainBanner">FreeLancelot</h4>
     </div>
-    <h4>Employer Details are: </h4>
+    <h4><u>Employer Details are: </u></h4>
     @for(details <- searchMap ) {
     <h5>UserName: @details.getUserName()</h5>
     <h5>Email: @details.getEmail()</h5>
     <h5>PrimaryLanguage: @details.getPrimaryLanguage()</h5>
     <h5>Profile Description: @details.getProfileDescription()</h5>
     <h5>Registration Date: @details.getRegistrationDate().format("MMMM dd, yyyy")</h5>
-    <h5>HourlyRate: @details.getHourlyRate()</h5>
-}
+    <h5>Hourly Rate: @details.getHourlyRate()</h5>
+    <h5>First Name: @details.getFirstName()</h5>
+    <h5>Last Name: @details.getLastName()</h5>
+
     @if(searchMap != null && searchMap.size > 0) {
             <table border="1" class="table">
                 <thead class="thead-light">
@@ -30,13 +32,12 @@
                     <th>Submission Date</th>
                     <th>Title</th>
                     <th>Type</th>
-                    <th>Word Stats</th>
                     <th>Skills</th>
-                    <th>Readability Index</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                @for(projectDet <- details.getProjects()){
+                @for(projectDet <- details.getProjects()) {
                 <tr>
                     <td>
                         <p>@projectDet.getOwnerID()</a></p>
@@ -52,7 +53,7 @@
                     </td>
                     <td>
                         @for(skill<-projectDet.getSkills()){
-                        <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
+                        <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1)</a>
                         }
                     </td>
                 </tr>
@@ -62,5 +63,6 @@
 </div>
 </body>
 </html>
+}
 }
 }

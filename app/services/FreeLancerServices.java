@@ -205,7 +205,10 @@ public class FreeLancerServices {
                 long registrationDate = Long.parseLong(result.get("registration_date").toString());
                 Double hourlyRate= Double.valueOf(result.get("hourly_rate").toString());
                 List<ProjectDetails>employer_projects=getProjects(ownerID);
-                array.add(new EmployerDetails(username, email, primaryLanguage, profileDescription,registrationDate,hourlyRate,employer_projects));
+                String firstName = result.get("first_name").toString();
+                String lastName = result.get("last_name").toString();
+
+                array.add(new EmployerDetails(username, email, primaryLanguage, profileDescription,registrationDate,hourlyRate,employer_projects,firstName,lastName));
 
             }
 
