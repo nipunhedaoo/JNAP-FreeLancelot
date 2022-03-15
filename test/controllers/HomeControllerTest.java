@@ -26,7 +26,6 @@ public class HomeControllerTest extends WithApplication {
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
     }
-
     @Mock
     FreeLancerServices freelancerClient;
 
@@ -42,7 +41,7 @@ public class HomeControllerTest extends WithApplication {
 
     @Test
     public void testSearchBySkill() {
-      when(freelancerClient.searchProjectsBySkill("9")).thenReturn(new ArrayList<ProjectDetails>());
+//      when(freelancerClient.searchProjectsBySkill("9")).thenReturn(new ArrayList<ProjectDetails>());
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
                 .uri("/projectBySkills/9/JavaScript");
@@ -50,6 +49,5 @@ public class HomeControllerTest extends WithApplication {
         Result result = route(app, request);
         assertEquals(OK, result.status());
     }
-
 
 }
