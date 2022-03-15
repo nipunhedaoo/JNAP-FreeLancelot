@@ -32,6 +32,7 @@
                         <th>Type</th>
                         <th>Word Stats</th>
                         <th>Skills</th>
+                        <th>Readability Index</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,9 @@
                     @for(skill<-project.getSkills()){
                     <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
                     }
+                    </td>
+                    <td>
+                        <p>@project.getFleschReadabilityIndex()</p>
                     </td>
                 </tr>
                 }

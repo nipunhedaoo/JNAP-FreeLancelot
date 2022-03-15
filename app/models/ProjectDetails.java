@@ -13,6 +13,8 @@ public class ProjectDetails {
     private String preview_description;
     private Map<String, Integer> wordStats;
     private String skillName;
+    private double  fleschReadabilityIndex;
+    private double fleschKincaidGradeLevel;
 
     public ProjectDetails() {
         this.skills = new ArrayList<>();
@@ -23,6 +25,9 @@ public class ProjectDetails {
         this.type = null;
         this.preview_description = null;
         this.wordStats = null;
+        this.fleschReadabilityIndex = 0.0;
+        this.fleschKincaidGradeLevel = 0.0;
+
     }
 
     public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description) {
@@ -70,6 +75,22 @@ public class ProjectDetails {
 
     public String getSkillName() {
         return this.skillName;
+    }
+
+    public double getFleschKincaidGradeLevel() {
+        return this.fleschKincaidGradeLevel;
+    }
+
+    public void setFleschKincaidGradeLevel(double fleschKincaidGradeLevel) {
+        this.fleschKincaidGradeLevel = fleschKincaidGradeLevel;
+    }
+
+    public double getFleschReadabilityIndex() {
+        return this.fleschReadabilityIndex;
+    }
+
+    public void setFleschReadabilityIndex(double fleschReadabilityIndex) {
+        this.fleschReadabilityIndex = fleschReadabilityIndex;
     }
 }
 
