@@ -9,13 +9,47 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletionStage;
 
 import static java.util.stream.Collectors.toMap;
+import play.libs.Json;
 
-public class FreeLancerServices {
+
+import play.libs.ws.WSBodyReadables;
+import play.libs.ws.WSBodyWritables;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
+
+
+public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
+
+    private WSClient wsClient;
+
+    public FreeLancerServices() {
+
+    }
+
+    public void setWsClient(WSClient wsClient)
+    {
+        this.wsClient=wsClient;
+    }
+    public WSClient getWsClient()
+    {
+        return this.wsClient;
+    }
 
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
+
+    public CompletionStage<ProjectDetails> fetchRepos(String phrase){
+        WSRequest request = this.wsClient
+                .url(API)
+                .addQueryParameter("phrase", phrase)
+                .addQueryParameter("limit", "10")
+                .addQueryParameter("job_details", "true");
+
+        return request.get().thenApply(wsResponse -> Json.parse(wsResponse.getBody())).thenApply(wsResponse -> Json.fromJson(wsResponse, ProjectDetails.class)).toCompletableFuture();
+    }
 
     public List<ProjectDetails> searchResults(String phrase)
     {
@@ -135,7 +169,6 @@ public class FreeLancerServices {
         List<ProjectDetails> array = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId) +"&limit=10&job_details=true");
-           System.out.println(url);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -171,8 +204,6 @@ public class FreeLancerServices {
                     array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
                 }
             }
-
-
         } catch (Exception e) {
         }
 
