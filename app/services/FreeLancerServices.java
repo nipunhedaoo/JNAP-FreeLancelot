@@ -1,4 +1,4 @@
-package services;
+spackage services;
 
 import models.ProjectDetails;
 import org.json.JSONArray;
@@ -6,21 +6,16 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
 
 public class FreeLancerServices {
 
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
-    static LinkedHashMap<String, Map<String, Integer>> wordStats = new LinkedHashMap<>();
 
     public List<ProjectDetails> searchResults(String phrase)
     {
@@ -103,55 +98,32 @@ public class FreeLancerServices {
         return sortedMap;
     }
 
-    public Map<String, Integer> wordStatsGlobal(String phrase ) {
-
-        List<String> descriptionArray = new ArrayList<>();
+    public Map<String, Integer> wordStatsGlobal(List<ProjectDetails> results) {
 
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
 
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ phrase +"\"&limit=250&job_details=true");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if(conn.getResponseCode() == 200) {
-                Scanner scan = new Scanner(url.openStream());
-                String temp="";
-                while(scan.hasNext()) {
-                    temp = temp + scan.nextLine();
-                }
-                JSONObject json = new JSONObject(temp);
-                JSONObject result = json.getJSONObject("result");
-                JSONArray projects = (JSONArray) result.getJSONArray("projects");
-                for (int i = 0; i < projects.length() ; i++){
-                    JSONObject object = projects.getJSONObject(i);
-                    String preview_description = object.get("preview_description").toString();
-                    descriptionArray.add(preview_description);
-                }
-
-                for (String description: descriptionArray ) {
-                    Arrays.asList(
-                                    description.replaceAll("\\p{Punct}", "").split(" ")
-                            )
-                            .stream()
-                            .forEach(word -> {
-                                if(!word.equals("") && !word.equals(" ")) {
-                                    if (counterMap.get(word) == null)
-                                        counterMap.put(word, 1);
-                                    else
-                                        counterMap.put(word, counterMap.get(word) + 1);
-                                }
-                            });
-                }
-
-                sortedMap = counterMap
-                        .entrySet()
+            for (ProjectDetails project: results ) {
+                Arrays.asList(
+                                project.getPreviewDescription().replaceAll("\\p{Punct}", "").split(" ")
+                        )
                         .stream()
-                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-
+                        .forEach(word -> {
+                            if(!word.equals("") && !word.equals(" ")) {
+                                if (counterMap.get(word) == null)
+                                    counterMap.put(word, 1);
+                                else
+                                    counterMap.put(word, counterMap.get(word) + 1);
+                            }
+                        });
             }
+
+            sortedMap = counterMap
+                    .entrySet()
+                    .stream()
+                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
         } catch (Exception e) {
             e.printStackTrace();
         }

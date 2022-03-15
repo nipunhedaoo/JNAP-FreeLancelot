@@ -2,8 +2,6 @@ package controllers;
 
 import helper.Session;
 import models.ProjectDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -81,7 +79,7 @@ public class HomeController extends Controller {
                     .collect(Collectors.toList());
             return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
         } else {
-            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(query);
+            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
             return ok(views.html.wordstats.render(wordMap, query));
         }
     }
