@@ -20,6 +20,7 @@ public class FreeLancerServices {
 
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
+    static HttpURLConnection conn;
     static LinkedHashMap<String, Map<String, Integer>> wordStats = new LinkedHashMap<>();
 
     public List<ProjectDetails> searchResults(String phrase)
@@ -160,11 +161,13 @@ public class FreeLancerServices {
     {
         List<ProjectDetails> array = new ArrayList<>();
         try {
+
             URL url = new URL(API + "projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId) +"&limit=10&job_details=true");
-           System.out.println(url);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            System.out.println(url);
+            conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
+
             if(conn.getResponseCode() == 200) {
                 Scanner scan = new Scanner(url.openStream());
                 String temp="";

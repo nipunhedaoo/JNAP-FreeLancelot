@@ -28,7 +28,7 @@ public class HomeController extends Controller {
 
     private final FormFactory formFactory;
 
-    FreeLancerServices freelancerClient;
+    static FreeLancerServices freelancerClient =new FreeLancerServices();
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
@@ -37,8 +37,10 @@ public class HomeController extends Controller {
     @Inject
     public HomeController(FormFactory formFactory) {
         this.formFactory = formFactory;
-        this.freelancerClient = new FreeLancerServices();
+//        this.freelancerClient = new FreeLancerServices();
     }
+
+
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -91,7 +93,9 @@ public class HomeController extends Controller {
         if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
             List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
             skillSearchResults.put(skillId,list);
+            System.out.println("testing " + list);
         }
+
         return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
     }
 }
