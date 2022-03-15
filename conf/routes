@@ -5,7 +5,6 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "", skill :String ?="")
 GET     /profilePage/:ownerId                 controllers.HomeController.profilePage(ownerId: Long)
-GET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")
 GET     /:query/wordStats/:id       controllers.HomeController.wordStats(query: String, id: Long)
 GET     /:query/wordStatsGlobal     controllers.HomeController.wordStats(query: String, id: Long ?= -1)
 GET     /projectBySkills/:skillId/:skillName            controllers.HomeController.searchBySkill(skillId:String,skillName :String)
