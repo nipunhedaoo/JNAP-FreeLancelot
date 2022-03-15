@@ -1,4 +1,4 @@
-spackage services;
+package services;
 
 import models.ProjectDetails;
 import org.json.JSONArray;
