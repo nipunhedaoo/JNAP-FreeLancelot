@@ -9,16 +9,15 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.stream.Collectors.toMap;
-import play.libs.Json;
+import static play.mvc.Results.ok;
 
 
-import play.libs.ws.WSBodyReadables;
-import play.libs.ws.WSBodyWritables;
-import play.libs.ws.WSClient;
-import play.libs.ws.WSRequest;
+import play.Logger;
+import play.libs.ws.*;
 
 
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
@@ -41,67 +40,19 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
 
-    public CompletionStage<ProjectDetails> fetchRepos(String phrase){
-        WSRequest request = this.wsClient
-                .url(API)
-                .addQueryParameter("phrase", phrase)
-                .addQueryParameter("limit", "10")
-                .addQueryParameter("job_details", "true");
 
-        return request.get().thenApply(wsResponse -> Json.parse(wsResponse.getBody())).thenApply(wsResponse -> Json.fromJson(wsResponse, ProjectDetails.class)).toCompletableFuture();
+    public CompletionStage<WSResponse> searchResults(String phrase) {
+        return CompletableFuture.supplyAsync(() -> {
+
+                CompletionStage<WSResponse> wsResponseCompletionStage;
+
+                WSRequest request = wsClient.url(API+"projects/0.1/projects/active?query=\""+URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
+                wsResponseCompletionStage = request.get();
+
+                return wsResponseCompletionStage;
+        });
     }
 
-    public List<ProjectDetails> searchResults(String phrase)
-    {
-        List<ProjectDetails> array = new ArrayList<>();
-        List<String> descriptionArray = new ArrayList<>();
-        try {
-            URL url = new URL(API + "projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) +"\"&limit=10&job_details=true");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if(conn.getResponseCode() == 200) {
-                Scanner scan = new Scanner(url.openStream());
-                String temp="";
-                while(scan.hasNext()) {
-                    temp = temp + scan.nextLine();
-                }
-                JSONObject json = new JSONObject(temp);
-                JSONObject result = json.getJSONObject("result");
-                JSONArray projects = (JSONArray) result.getJSONArray("projects");
-
-                for (int i = 0; i < projects.length() ; i++){
-                    JSONObject object = projects.getJSONObject(i);
-
-                    long projectID =  Long.parseLong(object.get("id").toString());
-                    long ownerId =  Long.parseLong(object.get("owner_id").toString());
-                    long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
-                    String title = object.get("title").toString() ;
-                    String type = object.get("type").toString();
-                    String preview_description = object.get("preview_description").toString();
-                    descriptionArray.add(preview_description);
-
-                    Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
-
-                    JSONArray skills = object.getJSONArray("jobs");
-                    List <List<String>> skillsList = new ArrayList<>();
-                    for( int j=0; j<skills.length(); j++){
-                        JSONObject skillObj = skills.getJSONObject(j);
-                        List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
-                        skill.add(skillObj.get("name").toString());
-                        skillsList.add(skill);
-
-                    }
-                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        readabilityIndex(phrase ,array);
-        return array;
-    }
 
     public Map<String, Integer> wordStatsIndevidual(String description ) {
         Map<String, Integer> counterMap = new HashMap<>();

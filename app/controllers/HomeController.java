@@ -2,14 +2,20 @@ package controllers;
 
 import helper.Session;
 import models.ProjectDetails;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
+import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
+import play.cache.*;
 
 import play.libs.ws.WSClient;
 
@@ -31,6 +38,7 @@ public class HomeController extends Controller {
     WSClient wsClient;
 
     private final FormFactory formFactory;
+    private AsyncCacheApi cache;
 
     FreeLancerServices freelancerClient;
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
@@ -40,6 +48,7 @@ public class HomeController extends Controller {
     public HomeController(FormFactory formFactory) {
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
+        this.cache=cache;
     }
 
     /**
@@ -48,42 +57,74 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-//    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
-//        if (searchKeyword == "") {
-//            if (!Session.isSessionExist(request)) {
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
-//            }
-//            else{
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
-//            }
-//
-//        } else {
-//            if(!searchResults.containsKey(searchKeyword)) {
-//                List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
-//                searchResults.put(searchKeyword, response);
-//            }
-//            Session.setSessionSearchResultsHashMap(request, searchKeyword);
-//            if (!Session.isSessionExist(request)) {
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
-//            }
-//            else{
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
-//            }
-//
-//        }
-//
-//    }
+    public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
+        List<ProjectDetails> array = new ArrayList<>();
+        List<String> descriptionArray = new ArrayList<>();
 
-    public CompletionStage<Result> index(Http.Request request, String searchKeyword)
-    {
-        if (this.freelancerClient.getWsClient() == null)
-        {
-            this.freelancerClient.setWsClient(wsClient);
+
+        if (searchKeyword == "") {
+            if (!Session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
+            }
+            else{
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
+
+        } else {
+            if (freelancerClient.getWsClient() == null) {
+                freelancerClient.setWsClient(wsClient);
+            }
+
+            if(!searchResults.containsKey(searchKeyword)) {
+                CompletionStage<WSResponse> resp = cache.getOrElseUpdate(searchKeyword, () -> freelancerClient.searchResults(searchKeyword));
+                    try{
+                    WSResponse response = resp.toCompletableFuture().get();
+
+                    if(response.getStatus() == 200) {
+                        JSONObject json = new JSONObject(response.getBody());
+                        JSONObject result = json.getJSONObject("result");
+                        JSONArray projects = (JSONArray) result.getJSONArray("projects");
+
+                        for (int i = 0; i < projects.length() ; i++){
+                            JSONObject object = projects.getJSONObject(i);
+
+                            long projectID =  Long.parseLong(object.get("id").toString());
+                            long ownerId =  Long.parseLong(object.get("owner_id").toString());
+                            long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
+                            String title = object.get("title").toString() ;
+                            String type = object.get("type").toString();
+                            String preview_description = object.get("preview_description").toString();
+                            descriptionArray.add(preview_description);
+
+//                            Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
+
+                            JSONArray skills = object.getJSONArray("jobs");
+                            List <List<String>> skillsList = new ArrayList<>();
+                            for( int j=0; j<skills.length(); j++){
+                                JSONObject skillObj = skills.getJSONObject(j);
+                                List<String> skill=new ArrayList<>();
+                                skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                                skill.add(skillObj.get("name").toString());
+                                skillsList.add(skill);
+
+                            }
+                            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
+                        }
+                    }
+//                searchResults.put(searchKeyword, response);
+            }catch (Exception e){
+                    }
+            }
+            Session.setSessionSearchResultsHashMap(request, searchKeyword);
+            if (!Session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
+            }
+            else{
+                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
+
         }
-        CompletionStage<ProjectDetails> response = this.freelancerClient.fetchRepos(searchKeyword);
-        return response.thenApply(resp -> {
-                return ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults)));
-        });
+
     }
 
 
