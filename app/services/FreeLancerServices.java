@@ -48,7 +48,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             try {
                 request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
 
-                wsResponseCompletionStage = request.get().toCompletableFuture();
+                wsResponseCompletionStage = request.stream().toCompletableFuture();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
