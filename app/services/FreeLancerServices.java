@@ -1,5 +1,6 @@
 package services;
 
+import helper.Session;
 import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,9 +25,10 @@ import play.libs.ws.*;
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     private WSClient wsClient;
+    private Session session;
 
     public FreeLancerServices() {
-
+        this.session = new Session();
     }
 
     public void setWsClient(WSClient wsClient)
@@ -48,7 +50,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             try {
                 request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
 
-                wsResponseCompletionStage = request.stream().toCompletableFuture();
+                wsResponseCompletionStage = request.stream();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
