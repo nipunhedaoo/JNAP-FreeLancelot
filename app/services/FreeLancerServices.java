@@ -45,8 +45,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public CompletionStage<WSResponse> searchResults(String phrase) {
         return CompletableFuture.supplyAsync(() -> {
             CompletionStage<WSResponse> wsResponseCompletionStage;
+            WSRequest request = null;
             try {
-                WSRequest request = null;
                 request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
                 wsResponseCompletionStage = request.get().toCompletableFuture();
             } catch (UnsupportedEncodingException e) {
