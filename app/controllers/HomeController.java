@@ -96,6 +96,7 @@ public class HomeController extends Controller {
                         descriptionArray.add(preview_description);
 
                         Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
+                        
 
                         JSONArray skills = object.getJSONArray("jobs");
                         List<List<String>> skillsList = new ArrayList<>();
