@@ -4,6 +4,7 @@ import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -43,13 +44,16 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     public CompletionStage<WSResponse> searchResults(String phrase) {
         return CompletableFuture.supplyAsync(() -> {
+            CompletionStage<WSResponse> wsResponseCompletionStage;
+            try {
+                WSRequest request = null;
+                request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
+                wsResponseCompletionStage = request.get().toCompletableFuture();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
-                CompletionStage<WSResponse> wsResponseCompletionStage;
-
-                WSRequest request = wsClient.url(API+"projects/0.1/projects/active?query=\""+URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
-                wsResponseCompletionStage = request.get();
-
-                return wsResponseCompletionStage;
+            return wsResponseCompletionStage;
         });
     }
 
