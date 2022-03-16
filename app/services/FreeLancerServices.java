@@ -43,22 +43,20 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
 
     public CompletionStage<WSResponse> searchResults(String phrase) {
-        return CompletableFuture.supplyAsync(() -> {
-            CompletionStage<WSResponse> wsResponseCompletionStage;
+            CompletionStage<WSResponse> wsResponseCompletionStage = null;
             WSRequest request = null;
             try {
                 request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=10&job_details=true");
+
                 wsResponseCompletionStage = request.get().toCompletableFuture();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-
             return wsResponseCompletionStage;
-        });
     }
 
 
-    public Map<String, Integer> wordStatsIndevidual(String description ) {
+    public static Map<String, Integer> wordStatsIndevidual(String description ) {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
         try {

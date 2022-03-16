@@ -27,6 +27,8 @@ import play.cache.*;
 
 import play.libs.ws.WSClient;
 
+import static services.FreeLancerServices.wordStatsIndevidual;
+
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -58,10 +60,6 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
-        List<ProjectDetails> array = new ArrayList<>();
-        List<String> descriptionArray = new ArrayList<>();
-
-
         if (searchKeyword == "") {
             if (!Session.isSessionExist(request)) {
                 return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
@@ -76,6 +74,8 @@ public class HomeController extends Controller {
             }
 
             if(!searchResults.containsKey(searchKeyword)) {
+                List<ProjectDetails> array = new ArrayList<>();
+                List<String> descriptionArray = new ArrayList<>();
                 CompletionStage<WSResponse> resp = cache.getOrElseUpdate(searchKeyword, () -> freelancerClient.searchResults(searchKeyword));
                     try{
                     WSResponse response = resp.toCompletableFuture().get();
@@ -96,7 +96,7 @@ public class HomeController extends Controller {
                             String preview_description = object.get("preview_description").toString();
                             descriptionArray.add(preview_description);
 
-//                            Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
+                            Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
 
                             JSONArray skills = object.getJSONArray("jobs");
                             List <List<String>> skillsList = new ArrayList<>();
@@ -108,10 +108,10 @@ public class HomeController extends Controller {
                                 skillsList.add(skill);
 
                             }
-                            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
+                            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                         }
                     }
-//                searchResults.put(searchKeyword, response);
+                searchResults.put(searchKeyword, array);
             }catch (Exception e){
                     }
             }
