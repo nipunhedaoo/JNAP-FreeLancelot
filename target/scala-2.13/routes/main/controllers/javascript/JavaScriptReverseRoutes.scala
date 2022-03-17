@@ -28,9 +28,33 @@ package controllers.javascript {
       """
     )
   
+    // @LINE:7
+    def wordStats: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.wordStats",
+      """
+        function(query0,id1) {
+        
+          if (true) {
+            return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("query", query0)) + "/wordStats/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[Long]].javascriptUnbind + """)("id", id1))})
+          }
+        
+        }
+      """
+    )
+  
+    // @LINE:9
+    def searchBySkill: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.searchBySkill",
+      """
+        function(skillId0,skillName1) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "projectBySkills/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("skillId", skillId0)) + "/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("skillName", skillName1))})
+        }
+      """
+    )
+  
   }
 
-  // @LINE:10
+  // @LINE:13
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -38,7 +62,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:10
+    // @LINE:13
     def versioned: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.versioned",
       """

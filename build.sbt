@@ -16,5 +16,12 @@ libraryDependencies ++= Seq(
   "org.json" % "org.json" % "chargebee-1.0"
 )
 
+
+libraryDependencies += "org.mockito" % "mockito-core" % "4.0.0" % Test
+
+libraryDependencies += "org.powermock" % "powermock-module-junit4" % "2.0.9" % Test
+
+libraryDependencies += "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Test
+
 routesGenerator := InjectedRoutesGenerator
 
