@@ -4,6 +4,7 @@ import helper.Session;
 import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import play.libs.ws.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -11,15 +12,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.stream.Collectors.toMap;
-import static play.mvc.Results.ok;
-
-
-import play.Logger;
-import play.libs.ws.*;
 
 
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
@@ -61,28 +56,23 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public static Map<String, Integer> wordStatsIndevidual(String description ) {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
-        try {
-            Arrays.asList(
+
+        Arrays.asList(
                         description.replaceAll("\\p{Punct}", "").split(" ")
-                    )
-                    .stream()
-                    .forEach(word -> {
-                        if (counterMap.get(word) == null)
-                            counterMap.put(word, 1);
-                        else
-                            counterMap.put(word, counterMap.get(word) + 1);
-                    });
+                )
+                .stream()
+                .forEach(word -> {
+                    if (counterMap.get(word) == null)
+                        counterMap.put(word, 1);
+                    else
+                        counterMap.put(word, counterMap.get(word) + 1);
+                });
 
-            sortedMap = counterMap
-                    .entrySet()
-                    .stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        sortedMap = counterMap
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
 
         return sortedMap;
     }
