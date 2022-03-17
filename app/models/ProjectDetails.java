@@ -102,21 +102,21 @@ public class ProjectDetails {
         String educationalLevel = "";
         if(fkcl > 100){
             educationalLevel = "Early" ;
-        }else if(fkcl > 91 && fkcl <= 100){
+        }else if(fkcl > 91){
             educationalLevel = "5th grade" ;
-        }else if(fkcl > 81 && fkcl <= 91){
+        }else if(fkcl > 81){
             educationalLevel = "6th grade" ;
-        }else if(fkcl > 71 && fkcl <= 81){
+        }else if(fkcl > 71 ){
             educationalLevel = "7th grade" ;
-        }else if(fkcl > 66 && fkcl <= 71){
+        }else if(fkcl > 66 ){
             educationalLevel = "8th grade" ;
-        }else if(fkcl > 61 && fkcl <= 66){
+        }else if(fkcl > 61 ){
             educationalLevel = "9th grade" ;
-        }else if(fkcl > 51 && fkcl <= 61){
+        }else if(fkcl > 51 ){
             educationalLevel = "High School" ;
-        }else if(fkcl > 31 && fkcl <= 51){
+        }else if(fkcl > 31 ){
             educationalLevel = "Some College" ;
-        } else if(fkcl > 0 && fkcl <= 31){
+        } else if(fkcl > 0 ){
             educationalLevel = "College Graduate" ;
         }else{
             educationalLevel = "Law School Graduate" ;
