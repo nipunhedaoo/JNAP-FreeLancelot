@@ -165,7 +165,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
   return array;
     }
 
-    public void readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
+    public OptionalDouble readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
 
         OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
             double fkcl = 0;
@@ -226,6 +226,72 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         }).average();
 
+        return searchResultUpadted;
+    }
+
+    public OptionalDouble fleschKancidGradeLevvel(String phrase, List<ProjectDetails> searchResults) {
+
+        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+            double fkgl = 0;
+            int numOfSentence = 0;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
+
+            String projectDescription = project.getPreviewDescription();
+            numOfWords = projectDescription.trim().split("\\s+").length;
+            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+
+            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+
+                int syllables = 0;
+
+                String vowels = "aeiouy";
+
+                word = word.toLowerCase();
+                char[] alphabets = word.toCharArray();
+
+                if (alphabets.length <= 3)
+                    return 1;
+
+                for (char chr : alphabets) {
+                    if (vowels.indexOf(chr) != -1) {
+                        syllables++;
+                    }
+                }
+
+                for (int i = 0; i < word.length() - 1; i++) {
+                    if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                        syllables--;
+                }
+
+                if (alphabets[alphabets.length - 1] == 'e') {
+                    syllables--;
+                }
+
+                if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                    syllables--;
+                }
+
+                if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                    syllables++;
+                }
+                return syllables;
+
+            }).sum();
+
+            double alpha = numOfSyllables/numOfWords;
+            double beta = numOfWords/numOfSentence;
+
+            fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
+
+
+            project.setFleschKincaidGradeLevel(fkgl);
+
+            return fkgl;
+
+        }).average();
+
+        return searchResultUpadted;
     }
 }
 

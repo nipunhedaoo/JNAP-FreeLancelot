@@ -2,6 +2,7 @@ package controllers;
 
 import helper.Session;
 import models.ProjectDetails;
+import models.SearchResultModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,10 +17,7 @@ import services.FreeLancerServices;
 import javax.inject.Inject;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -29,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import play.cache.*;
 
 import play.libs.ws.WSClient;
+
 
 import static services.FreeLancerServices.wordStatsIndevidual;
 
@@ -49,7 +48,7 @@ public class HomeController extends Controller {
     final Logger logger = LoggerFactory.getLogger("play");
 
     FreeLancerServices freelancerClient;
-    static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
     @Inject
@@ -117,7 +116,12 @@ public class HomeController extends Controller {
                         }
                         array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
                     }
-                    searchResults.put(searchKeyword, array);
+
+
+                    double fkcl = freelancerClient.readabilityIndex(searchKeyword, array).orElse(0.0);
+                    double fkgl = freelancerClient.fleschKancidGradeLevvel(searchKeyword, array).orElse(0.0);
+
+                    searchResults.put(searchKeyword, new SearchResultModel(array, fkcl, fkgl));
 
                 } catch (Exception e) {
                 }
@@ -134,8 +138,8 @@ public class HomeController extends Controller {
     }
 
 
-    public Result wordStats(String query, long id) {
-        List<ProjectDetails> results = searchResults.get(query);
+    public Result wordStats(String query,long id) {
+        List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
