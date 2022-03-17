@@ -17,6 +17,7 @@ import services.FreeLancerServices;
 import javax.inject.Inject;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -67,6 +68,8 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
+        DecimalFormat df = new DecimalFormat("#.##");
+
         if (searchKeyword == "") {
             if (!session.isSessionExist(request)) {
                 return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
