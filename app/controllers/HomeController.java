@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import play.cache.*;
 
@@ -42,6 +44,8 @@ public class HomeController extends Controller {
     private final FormFactory formFactory;
     private AsyncCacheApi cache;
     private final Session session;
+
+    final Logger logger = LoggerFactory.getLogger("play");
 
     FreeLancerServices freelancerClient;
     static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
@@ -80,6 +84,8 @@ public class HomeController extends Controller {
 
             resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
                 try {
+
+                    logger.info("cache");
                     JSONObject json = new JSONObject(res.getBody());
                     JSONObject result = json.getJSONObject("result");
                     JSONArray projects = (JSONArray) result.getJSONArray("projects");
@@ -96,7 +102,7 @@ public class HomeController extends Controller {
                         descriptionArray.add(preview_description);
 
                         Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
-                        
+
 
                         JSONArray skills = object.getJSONArray("jobs");
                         List<List<String>> skillsList = new ArrayList<>();
