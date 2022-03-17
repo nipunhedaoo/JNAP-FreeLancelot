@@ -3,6 +3,7 @@ package controllers;
 import helper.Session;
 import models.ProjectDetails;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
@@ -55,7 +56,7 @@ public class HomeController extends Controller {
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session) {
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
-        this.cache=cache;
+        this.cache = cache;
         this.session = session;
     }
 
@@ -129,11 +130,11 @@ public class HomeController extends Controller {
                 }
             }));
         }
-//        return resultCompletionStage;
+        return resultCompletionStage;
     }
 
 
-    public Result wordStats(String query,long id) {
+    public Result wordStats(String query, long id) {
         List<ProjectDetails> results = searchResults.get(query);
         if (id != -1) {
             List<ProjectDetails> project = results
@@ -147,11 +148,26 @@ public class HomeController extends Controller {
         }
     }
 
-    public CompletionStage<Result> searchBySkill(String skillId,String skillName) {
-        if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
-            List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
-            skillSearchResults.put(skillId,list);
+    public CompletionStage<Result> searchBySkill(String skillId, String skillName) {
+        CompletionStage<Result> resultCompletionStage=null;
+        if (!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
+            if (freelancerClient.getWsClient() == null) {
+                freelancerClient.setWsClient(wsClient);
+            }
+               resultCompletionStage = cache.getOrElseUpdate((skillId), () -> freelancerClient.searchSkillResults(skillId).toCompletableFuture().thenApplyAsync(res -> {
+                        try {
+                            logger.info("Cache");
+                            skillSearchResults.put(skillId,freelancerClient.searchProjectsBySkill(res));
+                        } catch (JSONException e) {
+                          logger.info("Error is parsing",e);
+                        }
+                        return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+                    }
+            ));
         }
-        return CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+        else{
+            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+        }
+        return resultCompletionStage;
     }
 }

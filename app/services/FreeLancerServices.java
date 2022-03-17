@@ -3,6 +3,7 @@ package services;
 import helper.Session;
 import models.ProjectDetails;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -119,21 +120,20 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return sortedMap;
     }
 
-    public List<ProjectDetails> searchProjectsBySkill(String skillId)
-    {
+    public CompletionStage<WSResponse> searchSkillResults(String skillId) {
+        CompletionStage<WSResponse> wsResponseCompletionStage = null;
+        WSRequest request = null;
+        request = wsClient.url(API+"projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId)+"&limit=10&job_details=true");
+        System.out.println("request is "+request.getUrl());
+        wsResponseCompletionStage = request.stream();
+        return wsResponseCompletionStage;
+    }
+
+    public List<ProjectDetails> searchProjectsBySkill(WSResponse res) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId) +"&limit=10&job_details=true");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if(conn.getResponseCode() == 200) {
-                Scanner scan = new Scanner(url.openStream());
-                String temp="";
-                while(scan.hasNext()) {
-                    temp = temp + scan.nextLine();
-                }
-                JSONObject json = new JSONObject(temp);
+                System.out.println("Response + " + res);
+               JSONObject json = new JSONObject(res.getBody());
                 JSONObject result = json.getJSONObject("result");
                 JSONArray projects = (JSONArray) result.getJSONArray("projects");
                 System.out.println("projects are- > "+ projects);
@@ -158,11 +158,11 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     }
                     array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
                 }
+            return array;
             }
-        } catch (Exception e) {
+        catch (Exception e) {
         }
-
-        return array;
+  return array;
     }
 
     public void readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
