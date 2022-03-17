@@ -220,9 +220,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             fkcl = 206.835 - (1.015*beta) - (84.6*alpha);
 
-            project.setFleschReadabilityIndex(fkcl);
+            project.setFleschReadabilityIndex(Math.round(fkcl));
+            project.setReadability(fkcl);
 
-            return fkcl;
+            return Math.round(fkcl);
 
         }).average();
 
@@ -285,9 +286,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
 
 
-            project.setFleschKincaidGradeLevel(fkgl);
+            project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-            return fkgl;
+            return Math.round(fkgl);
 
         }).average();
 
