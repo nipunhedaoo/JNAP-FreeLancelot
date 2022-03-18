@@ -77,35 +77,32 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return sortedMap;
     }
 
-    public Map<String, Integer> wordStatsGlobal(List<ProjectDetails> results) {
+    public static Map<String, Integer> wordStatsGlobal(List<ProjectDetails> results) {
 
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
 
-        try {
-            for (ProjectDetails project: results ) {
-                Arrays.asList(
-                                project.getPreviewDescription().replaceAll("\\p{Punct}", "").split(" ")
-                        )
-                        .stream()
-                        .forEach(word -> {
-                            if(!word.equals("") && !word.equals(" ")) {
-                                if (counterMap.get(word) == null)
-                                    counterMap.put(word, 1);
-                                else
-                                    counterMap.put(word, counterMap.get(word) + 1);
-                            }
-                        });
-            }
-
-            sortedMap = counterMap
-                    .entrySet()
+        for (ProjectDetails project: results ) {
+            Arrays.asList(
+                            project.getPreviewDescription().replaceAll("\\p{Punct}", "").split(" ")
+                    )
                     .stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-        } catch (Exception e) {
-            e.printStackTrace();
+                    .forEach(word -> {
+                        if(!word.equals("") && !word.equals(" ")) {
+                            if (counterMap.get(word) == null)
+                                counterMap.put(word, 1);
+                            else
+                                counterMap.put(word, counterMap.get(word) + 1);
+                        }
+                    });
         }
+
+        sortedMap = counterMap
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
         return sortedMap;
     }
 
