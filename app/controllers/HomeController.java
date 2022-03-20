@@ -68,6 +68,15 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
+
+
+    /**
+     * <p>This function call's the API for the keyword.</p>
+     * @param request It represents the WSResponse of API call made for the search keyword
+     * @searchKeyword It represents the WSResponse of API call made for the search keyword
+     * @return It returns a list of Projects associated with the keyword.
+     * @author Nipun Hedaoo
+     */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
         DecimalFormat df = new DecimalFormat("#.##");
@@ -91,8 +100,8 @@ public class HomeController extends Controller {
 
                     List<ProjectDetails> array = new ArrayList<>();
                     array = freelancerClient.searchModelByKeyWord(res);
-                    double fkcl = freelancerClient.readabilityIndex(searchKeyword, array).orElse(0.0);
-                    double fkgl = freelancerClient.fleschKancidGradeLevvel(searchKeyword, array).orElse(0.0);
+                    double fkcl = freelancerClient.readabilityIndex( array).orElse(0.0);
+                    double fkgl = freelancerClient.fleschKancidGradeLevvel(array).orElse(0.0);
                     searchResults.put(searchKeyword, new SearchResultModel(array, fkcl, fkgl));
                 } catch (Exception e) {
                 }
