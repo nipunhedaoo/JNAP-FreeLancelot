@@ -2,6 +2,7 @@
 package helper;
 
 import models.ProjectDetails;
+import models.SearchResultModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
@@ -35,15 +36,15 @@ public class Session {
         return uuid.toString();
     }
 
-    public static HashMap<String, List<ProjectDetails>> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, List<ProjectDetails>> searchResults) {
+    public static HashMap<String, SearchResultModel> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, SearchResultModel> searchResults) {
         String key = getSessionValue(request);
         logger.info(key);
 
         return getSearchResultsForSession(searchResults, sessionSearchResultsBySearchKeywordHashMap.get(key));
     }
 
-    private static HashMap<String, List<ProjectDetails>> getSearchResultsForSession(LinkedHashMap<String, List<ProjectDetails>> searchResults, Set<String> searchKeywords){
-        HashMap<String, List<ProjectDetails>> result = new HashMap<>();
+    private static HashMap<String, SearchResultModel> getSearchResultsForSession(LinkedHashMap<String, SearchResultModel> searchResults, Set<String> searchKeywords){
+        HashMap<String, SearchResultModel> result = new HashMap<>();
         if(searchKeywords!=null) {
             for (String key : searchKeywords) {
                 result.put(key, searchResults.get(key));

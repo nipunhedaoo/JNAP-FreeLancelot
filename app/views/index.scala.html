@@ -1,5 +1,7 @@
 @import models.ProjectDetails
-@(searchMap : Map[String,List[ProjectDetails]])
+@import models.SearchResultModel
+
+@(searchMap : Map[String, SearchResultModel])
 
 @main("Welcome to Play") {
 <div class=".container-fluid">
@@ -15,12 +17,14 @@
                 <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
             </form>
         </div>
-        @if(searchMap != null && searchMap.size > 0) {
-            @for((phrase, projectList) <- searchMap) {
+        @if(searchMap.size > 0) {
+            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>@phrase</h4></dd>
                 <dd class="col-sm-6"><h4><a href="/@phrase/wordStatsGlobal" target="_blank">Global Stats</a></h4></dd>
+                <dd class="col-sm-3"><h4>FKCL : @projectModal.getfleschReadabilityIndex()</h4></dd>
+                <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
 
             <table border="1" class="table">
@@ -32,11 +36,11 @@
                         <th>Type</th>
                         <th>Word Stats</th>
                         <th>Skills</th>
-                        <th>Readability Index</th>
+                        <th>Readability</th>
                     </tr>
                 </thead>
                 <tbody>
-                @for( project <- projectList.slice(0, 10) ) {
+                @for( project <- projectModal.getprojectDetails().slice(0, 10) ) {
                 <tr>
                     <td>
                         <p><a href="profilePage/@project.getOwnerID()" target="_blank">@project.getOwnerID()</a></p>
@@ -59,7 +63,7 @@
                     }
                     </td>
                     <td>
-                        <p>@project.getFleschReadabilityIndex()</p>
+                        <p>@project.getReadability()</p>
                     </td>
                 </tr>
                 }

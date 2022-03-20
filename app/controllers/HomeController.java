@@ -3,20 +3,34 @@ package controllers;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
+import models.SearchResultModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
+
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import play.cache.*;
+
+import play.libs.ws.WSClient;
+
+
+import static services.FreeLancerServices.wordStatsIndevidual;
 
 
 /**
@@ -25,18 +39,25 @@ import java.util.stream.Collectors;
  */
 public class HomeController extends Controller {
 
+    @Inject
+    WSClient wsClient;
+
     private final FormFactory formFactory;
+    private AsyncCacheApi cache;
+    private final Session session;
+
+    final Logger logger = LoggerFactory.getLogger("play");
 
     FreeLancerServices freelancerClient;
-    static LinkedHashMap<String, List<ProjectDetails>> searchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
-    private static int counter = 1;
-
     @Inject
-    public HomeController(FormFactory formFactory) {
+    public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session) {
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
+        this.cache=cache;
+        this.session = session;
     }
 
     /**
@@ -46,33 +67,82 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
+        CompletionStage<Result> resultCompletionStage = null;
+        DecimalFormat df = new DecimalFormat("#.##");
+
         if (searchKeyword == "") {
-            if (!Session.isSessionExist(request)) {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
-            }
-            else{
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (!session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
+            } else {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
             }
 
         } else {
-            if(!searchResults.containsKey(searchKeyword)) {
-                List<ProjectDetails> response = freelancerClient.searchResults(searchKeyword);
-                searchResults.put(searchKeyword, response);
-            }
-            Session.setSessionSearchResultsHashMap(request, searchKeyword);
-            if (!Session.isSessionExist(request)) {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request,Session.getSessionKey(), Session.generateSessionValue()));
-            }
-            else{
-                return CompletableFuture.completedFuture(ok(views.html.index.render(Session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (freelancerClient.getWsClient() == null) {
+                freelancerClient.setWsClient(wsClient);
             }
 
+            List<ProjectDetails> array = new ArrayList<>();
+            List<String> descriptionArray = new ArrayList<>();
+
+            resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
+                try {
+
+                    logger.info("cache");
+                    JSONObject json = new JSONObject(res.getBody());
+                    JSONObject result = json.getJSONObject("result");
+                    JSONArray projects = (JSONArray) result.getJSONArray("projects");
+
+                    for (int i = 0; i < projects.length(); i++) {
+                        JSONObject object = projects.getJSONObject(i);
+
+                        long projectID = Long.parseLong(object.get("id").toString());
+                        long ownerId = Long.parseLong(object.get("owner_id").toString());
+                        long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
+                        String title = object.get("title").toString();
+                        String type = object.get("type").toString();
+                        String preview_description = object.get("preview_description").toString();
+                        descriptionArray.add(preview_description);
+
+                        Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
+
+
+                        JSONArray skills = object.getJSONArray("jobs");
+                        List<List<String>> skillsList = new ArrayList<>();
+                        for (int j = 0; j < skills.length(); j++) {
+                            JSONObject skillObj = skills.getJSONObject(j);
+                            List<String> skill = new ArrayList<>();
+                            skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                            skill.add(skillObj.get("name").toString());
+                            skillsList.add(skill);
+
+                        }
+                        array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
+                    }
+
+
+                    double fkcl = freelancerClient.readabilityIndex(searchKeyword, array).orElse(0.0);
+                    double fkgl = freelancerClient.fleschKancidGradeLevvel(searchKeyword, array).orElse(0.0);
+
+                    searchResults.put(searchKeyword, new SearchResultModel(array, fkcl, fkgl));
+
+                } catch (Exception e) {
+                }
+
+                session.setSessionSearchResultsHashMap(request, searchKeyword);
+                if (!session.isSessionExist(request)) {
+                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
+                } else {
+                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults)));
+                }
+            }));
         }
-
+        return resultCompletionStage;
     }
 
+
     public Result wordStats(String query,long id) {
-        List<ProjectDetails> results = searchResults.get(query);
+        List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
