@@ -1,8 +1,8 @@
 package services;
 
 
-import models.ProjectDetails;
 import models.EmployerDetails;
+import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +14,7 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 
-//import static jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.title;
+
 public class FreeLancerServices {
 
     String API = "https://www.freelancer.com/api/";
@@ -182,10 +182,10 @@ public class FreeLancerServices {
 
 
 
-    public List<EmployerDetails> employerResults (Long ownerID){
+    public List<EmployerDetails> employerResults (String ownerID){
         List<EmployerDetails> array = new ArrayList<>();
         try {
-            URL url = new URL(API + "users/0.1/users/" + ownerID );
+           URL url = new URL(API + "users/0.1/users/" + ownerID );
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -197,18 +197,25 @@ public class FreeLancerServices {
                 }
                 JSONObject json = new JSONObject(temp);
                 JSONObject result = json.getJSONObject("result");
+                JSONObject location = result.getJSONObject("location");
+                JSONObject country = location.getJSONObject("country");
+                JSONObject status = result.getJSONObject("status");
+                JSONObject currency = result.getJSONObject("primary_currency");
 
+                String id = result.get("id").toString();
                 String username = result.get("username").toString();
-                String email = result.get("email").toString();
-                String primaryLanguage = result.get("primary_language").toString();
-                String profileDescription = result.get("profile_description").toString();
-                long registrationDate = Long.parseLong(result.get("registration_date").toString());
-                Double hourlyRate= Double.valueOf(result.get("hourly_rate").toString());
+                String registrationDate = result.get("registration_date").toString();
+                String limitedAccount=result.get("limited_account").toString();
+                String displayName = result.get("display_name").toString();
+                String countryName=country.get("name").toString();
+                String role = result.get("role").toString();
+                String chosenRole = result.get("chosen_role").toString();
+                String emailVerified= status.get("email_verified").toString();
+                String primaryCurrency=currency.get("name").toString();
                 List<ProjectDetails>employer_projects=getProjects(ownerID);
-                String firstName = result.get("first_name").toString();
-                String lastName = result.get("last_name").toString();
 
-                array.add(new EmployerDetails(username, email, primaryLanguage, profileDescription,registrationDate,hourlyRate,employer_projects,firstName,lastName));
+
+                array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName,countryName,role,chosenRole,emailVerified,primaryCurrency,employer_projects));
 
             }
 
@@ -217,7 +224,7 @@ public class FreeLancerServices {
         }
         return array;
     }
-    public List<ProjectDetails> getProjects (Long ownerID){
+    public List<ProjectDetails> getProjects (String ownerID){
         List<ProjectDetails> array2 = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/?owners[]=" + ownerID + "&limit=10&job_details=true");
@@ -243,12 +250,8 @@ public class FreeLancerServices {
                     long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
                     String title = object.get("title").toString();
                     String type = object.get("type").toString();
-                    String preview_description = null;
-//                            object.get("preview_description").toString();
+                    String preview_description = object.get("preview_description").toString();
 
-
-                    Map<String, Integer> wordStats = null;
-//                    wordStatsIndevidual(object.get("preview_description").toString());
 
 
                     JSONArray skills = object.getJSONArray("jobs");
@@ -261,12 +264,13 @@ public class FreeLancerServices {
                         skillsList.add(skill);
 
                     }
-                    array2.add(new ProjectDetails(projectID,ownerId,skillsList,timeSubmitted,title,type,wordStats,preview_description));
+                    array2.add(new ProjectDetails(projectID,ownerId,skillsList,timeSubmitted,title,type,null,preview_description));
                 }
             }
 
         } catch (Exception e) {
         }
+        readabilityIndex(ownerID ,array2);
         return array2;
     }
 

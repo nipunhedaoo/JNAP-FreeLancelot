@@ -15,11 +15,7 @@ class Routes(
   override val errorHandler: play.api.http.HttpErrorHandler, 
   // @LINE:6
   HomeController_0: controllers.HomeController,
-<<<<<<< HEAD
-  // @LINE:12
-=======
-  // @LINE:13
->>>>>>> nipun-task4-1
+  // @LINE:14
   Assets_1: controllers.Assets,
   val prefix: String
 ) extends GeneratedRouter {
@@ -28,11 +24,7 @@ class Routes(
    def this(errorHandler: play.api.http.HttpErrorHandler,
     // @LINE:6
     HomeController_0: controllers.HomeController,
-<<<<<<< HEAD
-    // @LINE:12
-=======
-    // @LINE:13
->>>>>>> nipun-task4-1
+    // @LINE:14
     Assets_1: controllers.Assets
   ) = this(errorHandler, HomeController_0, Assets_1, "/")
 
@@ -47,16 +39,11 @@ class Routes(
   }
 
   def documentation = List(
-<<<<<<< HEAD
-    ("""GET""", this.prefix, """controllers.HomeController.index(request:Request, searchKeyword:String ?= "", skill:String ?= "")"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillName:String)"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """profilePage/""" + "$" + """ownerId<[^/]+>""", """controllers.HomeController.profilePage(ownerId:Long)"""),
-=======
     ("""GET""", this.prefix, """controllers.HomeController.index(request:Request, searchKeyword:String ?= "")"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """profilePage/""" + "$" + """ownerId<[^/]+>""", """controllers.HomeController.profilePage(ownerId:String)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""", """controllers.HomeController.wordStats(query:String, id:Long)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStatsGlobal""", """controllers.HomeController.wordStats(query:String, id:Long ?= -1)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillId:String, skillName:String)"""),
->>>>>>> nipun-task4-1
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -72,12 +59,12 @@ class Routes(
   private[this] lazy val controllers_HomeController_index0_invoker = createInvoker(
     
     (req:play.mvc.Http.Request) =>
-      HomeController_0.index(fakeValue[play.mvc.Http.Request], fakeValue[String], fakeValue[String]),
+      HomeController_0.index(fakeValue[play.mvc.Http.Request], fakeValue[String]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
       "index",
-      Seq(classOf[play.mvc.Http.Request], classOf[String], classOf[String]),
+      Seq(classOf[play.mvc.Http.Request], classOf[String]),
       "GET",
       this.prefix + """""",
       """ An example controller showing a sample home page""",
@@ -86,24 +73,28 @@ class Routes(
   )
 
   // @LINE:7
-<<<<<<< HEAD
-  private[this] lazy val controllers_HomeController_searchBySkill1_route = Route("GET",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("projectBySkills/"), DynamicPart("skillName", """[^/]+""",true)))
+  private[this] lazy val controllers_HomeController_profilePage1_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("profilePage/"), DynamicPart("ownerId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_HomeController_searchBySkill1_invoker = createInvoker(
-    HomeController_0.searchBySkill(fakeValue[String]),
+  private[this] lazy val controllers_HomeController_profilePage1_invoker = createInvoker(
+    HomeController_0.profilePage(fakeValue[String]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
-      "searchBySkill",
+      "profilePage",
       Seq(classOf[String]),
       "GET",
-      this.prefix + """projectBySkills/""" + "$" + """skillName<[^/]+>""",
-=======
-  private[this] lazy val controllers_HomeController_wordStats1_route = Route("GET",
+      this.prefix + """profilePage/""" + "$" + """ownerId<[^/]+>""",
+      """""",
+      Seq()
+    )
+  )
+
+  // @LINE:8
+  private[this] lazy val controllers_HomeController_wordStats2_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), DynamicPart("query", """[^/]+""",true), StaticPart("/wordStats/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_HomeController_wordStats1_invoker = createInvoker(
+  private[this] lazy val controllers_HomeController_wordStats2_invoker = createInvoker(
     HomeController_0.wordStats(fakeValue[String], fakeValue[Long]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -112,31 +103,16 @@ class Routes(
       Seq(classOf[String], classOf[Long]),
       "GET",
       this.prefix + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""",
->>>>>>> nipun-task4-1
       """""",
       Seq()
     )
   )
 
-  // @LINE:8
-<<<<<<< HEAD
-  private[this] lazy val controllers_HomeController_profilePage2_route = Route("GET",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("profilePage/"), DynamicPart("ownerId", """[^/]+""",true)))
-  )
-  private[this] lazy val controllers_HomeController_profilePage2_invoker = createInvoker(
-    HomeController_0.profilePage(fakeValue[Long]),
-    play.api.routing.HandlerDef(this.getClass.getClassLoader,
-      "router",
-      "controllers.HomeController",
-      "profilePage",
-      Seq(classOf[Long]),
-      "GET",
-      this.prefix + """profilePage/""" + "$" + """ownerId<[^/]+>""",
-=======
-  private[this] lazy val controllers_HomeController_wordStats2_route = Route("GET",
+  // @LINE:9
+  private[this] lazy val controllers_HomeController_wordStats3_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), DynamicPart("query", """[^/]+""",true), StaticPart("/wordStatsGlobal")))
   )
-  private[this] lazy val controllers_HomeController_wordStats2_invoker = createInvoker(
+  private[this] lazy val controllers_HomeController_wordStats3_invoker = createInvoker(
     HomeController_0.wordStats(fakeValue[String], fakeValue[Long]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -150,11 +126,11 @@ class Routes(
     )
   )
 
-  // @LINE:9
-  private[this] lazy val controllers_HomeController_searchBySkill3_route = Route("GET",
+  // @LINE:10
+  private[this] lazy val controllers_HomeController_searchBySkill4_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("projectBySkills/"), DynamicPart("skillId", """[^/]+""",true), StaticPart("/"), DynamicPart("skillName", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_HomeController_searchBySkill3_invoker = createInvoker(
+  private[this] lazy val controllers_HomeController_searchBySkill4_invoker = createInvoker(
     HomeController_0.searchBySkill(fakeValue[String], fakeValue[String]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -163,25 +139,16 @@ class Routes(
       Seq(classOf[String], classOf[String]),
       "GET",
       this.prefix + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""",
->>>>>>> nipun-task4-1
       """""",
       Seq()
     )
   )
 
-<<<<<<< HEAD
-  // @LINE:12
-  private[this] lazy val controllers_Assets_versioned3_route = Route("GET",
+  // @LINE:14
+  private[this] lazy val controllers_Assets_versioned5_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_versioned3_invoker = createInvoker(
-=======
-  // @LINE:13
-  private[this] lazy val controllers_Assets_versioned4_route = Route("GET",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
-  )
-  private[this] lazy val controllers_Assets_versioned4_invoker = createInvoker(
->>>>>>> nipun-task4-1
+  private[this] lazy val controllers_Assets_versioned5_invoker = createInvoker(
     Assets_1.versioned(fakeValue[String], fakeValue[Asset]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -200,52 +167,39 @@ class Routes(
   
     // @LINE:6
     case controllers_HomeController_index0_route(params@_) =>
-      call(params.fromQuery[String]("searchKeyword", Some("")), params.fromQuery[String]("skill", Some(""))) { (searchKeyword, skill) =>
+      call(params.fromQuery[String]("searchKeyword", Some(""))) { (searchKeyword) =>
         controllers_HomeController_index0_invoker.call(
-          req => HomeController_0.index(req, searchKeyword, skill))
+          req => HomeController_0.index(req, searchKeyword))
       }
   
     // @LINE:7
-    case controllers_HomeController_searchBySkill1_route(params@_) =>
-      call(params.fromPath[String]("skillName", None)) { (skillName) =>
-        controllers_HomeController_searchBySkill1_invoker.call(HomeController_0.searchBySkill(skillName))
-      }
-  
-    // @LINE:8
-    case controllers_HomeController_profilePage2_route(params@_) =>
-      call(params.fromPath[Long]("ownerId", None)) { (ownerId) =>
-        controllers_HomeController_profilePage2_invoker.call(HomeController_0.profilePage(ownerId))
-      }
-  
-<<<<<<< HEAD
-    // @LINE:12
-    case controllers_Assets_versioned3_route(params@_) =>
-      call(Param[String]("path", Right("/public")), params.fromPath[Asset]("file", None)) { (path, file) =>
-        controllers_Assets_versioned3_invoker.call(Assets_1.versioned(path, file))
-=======
-    // @LINE:7
-    case controllers_HomeController_wordStats1_route(params@_) =>
-      call(params.fromPath[String]("query", None), params.fromPath[Long]("id", None)) { (query, id) =>
-        controllers_HomeController_wordStats1_invoker.call(HomeController_0.wordStats(query, id))
+    case controllers_HomeController_profilePage1_route(params@_) =>
+      call(params.fromPath[String]("ownerId", None)) { (ownerId) =>
+        controllers_HomeController_profilePage1_invoker.call(HomeController_0.profilePage(ownerId))
       }
   
     // @LINE:8
     case controllers_HomeController_wordStats2_route(params@_) =>
-      call(params.fromPath[String]("query", None), params.fromQuery[Long]("id", Some(-1))) { (query, id) =>
+      call(params.fromPath[String]("query", None), params.fromPath[Long]("id", None)) { (query, id) =>
         controllers_HomeController_wordStats2_invoker.call(HomeController_0.wordStats(query, id))
       }
   
     // @LINE:9
-    case controllers_HomeController_searchBySkill3_route(params@_) =>
-      call(params.fromPath[String]("skillId", None), params.fromPath[String]("skillName", None)) { (skillId, skillName) =>
-        controllers_HomeController_searchBySkill3_invoker.call(HomeController_0.searchBySkill(skillId, skillName))
+    case controllers_HomeController_wordStats3_route(params@_) =>
+      call(params.fromPath[String]("query", None), params.fromQuery[Long]("id", Some(-1))) { (query, id) =>
+        controllers_HomeController_wordStats3_invoker.call(HomeController_0.wordStats(query, id))
       }
   
-    // @LINE:13
-    case controllers_Assets_versioned4_route(params@_) =>
+    // @LINE:10
+    case controllers_HomeController_searchBySkill4_route(params@_) =>
+      call(params.fromPath[String]("skillId", None), params.fromPath[String]("skillName", None)) { (skillId, skillName) =>
+        controllers_HomeController_searchBySkill4_invoker.call(HomeController_0.searchBySkill(skillId, skillName))
+      }
+  
+    // @LINE:14
+    case controllers_Assets_versioned5_route(params@_) =>
       call(Param[String]("path", Right("/public")), params.fromPath[Asset]("file", None)) { (path, file) =>
-        controllers_Assets_versioned4_invoker.call(Assets_1.versioned(path, file))
->>>>>>> nipun-task4-1
+        controllers_Assets_versioned5_invoker.call(Assets_1.versioned(path, file))
       }
   }
 }

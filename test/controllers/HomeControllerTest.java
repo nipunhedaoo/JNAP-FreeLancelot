@@ -39,5 +39,13 @@ public class HomeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
     }
 
+   @Test
+    public void testProfilePage(){
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri("/profilePage/46621342");
+        Result result = route(app,request);
+        assertEquals(OK,result.status());
+   }
 
 }

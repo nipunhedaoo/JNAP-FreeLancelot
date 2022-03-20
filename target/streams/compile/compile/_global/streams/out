@@ -1,16 +1,12 @@
-<<<<<<< HEAD
-[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:2:39: ':' expected but '[' found.[0m
-[0m[[0m[31merror[0m] [0m[0m@(searchMap :List[ProjectDetails],List[EmployerDetails],ownerId:Long)[0m
-[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:64:2: identifier expected but '}' found.[0m
-[0m[[0m[31merror[0m] [0m[0m}[0m
-[0m[[0m[31merror[0m] [0m[0m ^[0m
-=======
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:19:27: not found: value projectList[0m
-[0m[[0m[31merror[0m] [0m[0m            @for((phrase, projectList.slice(0, 10)) <- searchMap) {[0m
-[0m[[0m[31merror[0m] [0m[0m                          ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\views\index.scala.html:38:34: not found: value projectList[0m
-[0m[[0m[31merror[0m] [0m[0m                @for( project <- projectList ) {[0m
-[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
->>>>>>> nipun-task4-1
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:33:10: constructor cannot be instantiated to expected type;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : (T1, T2)[0m
+[0m[[0m[31merror[0m] [0m[0m required: models.EmployerDetails[0m
+[0m[[0m[31merror[0m] [0m[0m    @for((phrase, projectList) <- searchMap) {[0m
+[0m[[0m[31merror[0m] [0m[0m         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:70:57: not found: value project[0m
+[0m[[0m[31merror[0m] [0m[0m                        <p><a href="/@phrase/wordStats/@project.getProjectID()" target="_blank">Stats</a></p>[0m
+[0m[[0m[31merror[0m] [0m[0m                                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\pragy\Documents\JNAP-FreeLancelot\app\views\employerDetails.scala.html:78:29: not found: value project[0m
+[0m[[0m[31merror[0m] [0m[0m                        <p>@project.getFleschReadabilityIndex()</p>[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0mthree errors found[0m

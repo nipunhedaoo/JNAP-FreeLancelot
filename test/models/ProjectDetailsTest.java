@@ -49,4 +49,5 @@ public class ProjectDetailsTest {
     assertEquals(wordStats, projectDetails.getWordStats());
   }
 
+
 }

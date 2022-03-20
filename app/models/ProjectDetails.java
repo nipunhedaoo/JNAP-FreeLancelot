@@ -41,9 +41,7 @@ public class ProjectDetails {
         this.preview_description = preview_description;
     }
 
-//    public ProjectDetails(String title) {
-//        this.title=title;
-//    }
+
 
     public long getOwnerID() {
         return this.ownerId;
