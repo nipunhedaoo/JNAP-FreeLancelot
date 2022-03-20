@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,8 +57,8 @@ public class FreeLancerServicesTest extends WithApplication {
     @Test
     public void testWordStatsGlobal(){
         List <ProjectDetails> testProjectList = new ArrayList<>();
-        testProjectList.add(new ProjectDetails(123, 234, null, 12345, "Test title 1", "Test type 1",null, "Apple banana x y z Apple z z z" ));
-        testProjectList.add(new ProjectDetails(345, 234, null, 12345, "Test title 2", "Test type 2",null, "Apple banana x y z Apple z z z" ));
+        testProjectList.add(new ProjectDetails(123, 234, null, 12345, "Test title 1", "Test type 1",null, "Apple banana x y z Apple z z z", 0.0, 0.0, "Early"));
+        testProjectList.add(new ProjectDetails(345, 234, null, 12345, "Test title 2", "Test type 2",null, "Apple banana x y z Apple z z z", 0.0, 0.0, "Early" ));
 
         String answer = "{z=8, Apple=4, banana=2, x=2, y=2}";
 

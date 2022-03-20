@@ -1,7 +1,7 @@
 package services;
 
-import models.EmployerDetails;
 import helper.Session;
+import models.EmployerDetails;
 import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,12 +17,6 @@ import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.stream.Collectors.toMap;
-import static play.mvc.Results.ok;
-
-
-import play.Logger;
-import play.api.test.WsTestClient;
-import play.libs.ws.*;
 
 
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
@@ -159,7 +153,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                         skillsList.add(skill);
 
                     }
-                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
+                    array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description, 0.0, 0.0, "Early"));
                 }
             return array;
             }
@@ -201,7 +195,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     skillsList.add(skill);
 
                 }
-                array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
+                array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description, 0.0, 0.0, "Early"));
             }
 
             return array;
@@ -294,7 +288,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                         skillsList.add(skill);
 
                     }
-                    array2.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
+                    array2.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description, 0.0, 0.0, "Early"));
                 }
             }
 

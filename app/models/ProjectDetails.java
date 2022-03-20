@@ -12,7 +12,6 @@ public class ProjectDetails {
     private String type;
     private String preview_description;
     private Map<String, Integer> wordStats;
-    private String skillName;
     private double  fleschReadabilityIndex;
     private double fleschKincaidGradeLevel;
     private String readability;
@@ -31,7 +30,7 @@ public class ProjectDetails {
         this.readability = "Early";
     }
 
-    public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description) {
+    public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description, Double fleschReadabilityIndex, Double fleschKincaidGradeLevel, String  readability) {
         this.projectID = projectID;
         this.skills = skills;
         this.ownerId = ownerId;
@@ -40,6 +39,9 @@ public class ProjectDetails {
         this.type = type;
         this.wordStats = wordStats;
         this.preview_description = preview_description;
+        this.fleschReadabilityIndex = fleschReadabilityIndex;
+        this.fleschKincaidGradeLevel = fleschKincaidGradeLevel;
+        this.readability = readability;
     }
 
 
@@ -74,10 +76,6 @@ public class ProjectDetails {
 
     public String getPreviewDescription() {
         return this.preview_description;
-    }
-
-    public String getSkillName() {
-        return this.skillName;
     }
 
     public double getFleschKincaidGradeLevel() {
