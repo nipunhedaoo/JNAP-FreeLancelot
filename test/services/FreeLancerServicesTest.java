@@ -3,24 +3,16 @@ package services;
 import models.ProjectDetails;
 import org.junit.Test;
 
-<<<<<<< HEAD
-import java.util.List;
-
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
->>>>>>> alankrit
 import static org.junit.Assert.assertTrue;
 
 public class FreeLancerServicesTest {
 
     FreeLancerServices freeLancerServices=new FreeLancerServices();
-
-<<<<<<< HEAD
-=======
 //    final Logger logger = LoggerFactory.getLogger("play");
 
     @Test
@@ -42,7 +34,6 @@ public class FreeLancerServicesTest {
         assertEquals(map.toString(), answer);
     }
 
->>>>>>> alankrit
     @Test
     public void testSearchSkills(){
         List<ProjectDetails> list= freeLancerServices.searchProjectsBySkill("9");
@@ -52,11 +43,6 @@ public class FreeLancerServicesTest {
         }
     }
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> alankrit
     public boolean checkSkillType(List<List<String>>skills,String skillname)
     {
         for(List<String>skill : skills)
@@ -68,9 +54,4 @@ public class FreeLancerServicesTest {
         }
         return false;
     }
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> alankrit
