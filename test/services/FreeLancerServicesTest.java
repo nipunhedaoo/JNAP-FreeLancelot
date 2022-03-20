@@ -11,14 +11,23 @@ import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
+import play.libs.ws.WSResponse;
+import play.mvc.Result;
 import play.test.WithApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static play.test.Helpers.running;
+
 @RunWith(MockitoJUnitRunner.class)
 public class FreeLancerServicesTest extends WithApplication {
 
@@ -58,14 +67,7 @@ public class FreeLancerServicesTest extends WithApplication {
         assertEquals(map.toString(), answer);
     }
 
-    @Test
-    public void testSearchSkills(){
-        List<ProjectDetails> list= freeLancerServices.searchProjectsBySkill("9");
-        for(ProjectDetails projectDetails : list)
-        {
-            assertTrue(checkSkillType(projectDetails.getSkills(),"JavaScript"));
-        }
-    }
+
 
     public boolean checkSkillType(List<List<String>>skills,String skillname)
     {
