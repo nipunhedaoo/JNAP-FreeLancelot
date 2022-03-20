@@ -1,6 +1,7 @@
 package controllers;
 
 import helper.Session;
+import models.EmployerDetails;
 import models.ProjectDetails;
 import models.SearchResultModel;
 import org.json.JSONArray;
@@ -187,5 +188,15 @@ public class HomeController extends Controller {
             return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
         }
         return resultCompletionStage;
+    }
+
+    /**
+     * This method is used to get the employer details for a given ownerId
+     * @param ownerId This ownerId is used to get the details of an employer
+     * @return CompletionStage<Result> Returns the details of given ownerId
+     */
+    public CompletionStage<Result> profilePage(String ownerId) {
+        List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
+        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
     }
 }

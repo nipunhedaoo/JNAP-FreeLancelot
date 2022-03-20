@@ -43,7 +43,7 @@
                 @for( project <- projectModal.getprojectDetails().slice(0, 10) ) {
                 <tr>
                     <td>
-                        <p>@project.getOwnerID()</p>
+                        <p><a href="profilePage/@project.getOwnerID()" target="_blank">@project.getOwnerID()</a></p>
                     </td>
                     <td>
                         <p>@project.getTimeSubmitted().format("MMMM dd, yyyy")</p>

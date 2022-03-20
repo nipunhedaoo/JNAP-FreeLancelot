@@ -42,6 +42,8 @@ public class ProjectDetails {
         this.preview_description = preview_description;
     }
 
+
+
     public long getOwnerID() {
         return this.ownerId;
     }

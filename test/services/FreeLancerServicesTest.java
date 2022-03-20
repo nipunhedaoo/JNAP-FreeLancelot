@@ -1,42 +1,24 @@
 package services;
 
 import controllers.HomeController;
-import helper.Session;
 import models.ProjectDetails;
-import org.apache.http.HttpStatus;
-import org.json.JSONException;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import play.Application;
-import play.cache.AsyncCacheApi;
-import play.data.FormFactory;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
-import play.libs.ws.WSResponse;
-import play.mvc.Result;
 import play.test.WithApplication;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static play.test.Helpers.running;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class FreeLancerServicesTest extends WithApplication {
 
@@ -56,29 +38,34 @@ public class FreeLancerServicesTest extends WithApplication {
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
     }
-    @Before
-    public void setUp() throws Exception {
 
-        MockitoAnnotations.openMocks(this);
+    @Test
+    public void testWordStatsIndevidual(){
+        String answer = "{z=4, Apple=2, banana=1, x=1, y=1}";
+        Map<String, Integer> map = freeLancerServices.wordStatsIndevidual("Apple banana x y z Apple z z z");
+        assertEquals(map.toString(), answer);
     }
 
-//   @Test
-//    public void testSearchSkills(){
-//
-//        List<ProjectDetails> list= ((List<ProjectDetails>) freeLancerServices.searchSkillResults("9").toCompletableFuture().thenApplyAsync(wsResponse -> {
-//            try {
-//                return freeLancerServices.searchProjectsBySkill(wsResponse);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }));
-//        for(ProjectDetails projectDetails : list)
-//        {
-//            assertTrue(checkSkillType(projectDetails.getSkills(),"JavaScript"));
-//        }
-//    }
+    @Test
+    public void testWordStatsGlobal(){
+        List <ProjectDetails> testProjectList = new ArrayList<>();
+        testProjectList.add(new ProjectDetails(123, 234, null, 12345, "Test title 1", "Test type 1",null, "Apple banana x y z Apple z z z" ));
+        testProjectList.add(new ProjectDetails(345, 234, null, 12345, "Test title 2", "Test type 2",null, "Apple banana x y z Apple z z z" ));
 
+        String answer = "{z=8, Apple=4, banana=2, x=2, y=2}";
+
+        Map<String, Integer> map = freeLancerServices.wordStatsGlobal(testProjectList);
+        assertEquals(map.toString(), answer);
+    }
+
+    @Test
+    public void testSearchSkills(){
+        List<ProjectDetails> list= freeLancerServices.searchProjectsBySkill("9");
+        for(ProjectDetails projectDetails : list)
+        {
+            assertTrue(checkSkillType(projectDetails.getSkills(),"JavaScript"));
+        }
+    }
 
     public boolean checkSkillType(List<List<String>>skills,String skillname)
     {

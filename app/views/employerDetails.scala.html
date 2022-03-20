@@ -1,0 +1,73 @@
+@import models.EmployerDetails
+@(searchMap :List[EmployerDetails],ownerId:String)
+
+
+@main("Welcome to Play") {
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class=".container-fluid">
+    <div class="jumbotron jumbotron-fluid">
+        <h4 id="mainBanner">FreeLancelot</h4>
+    </div>
+    <h4><u>Employer Details :-</u></h4>
+    @for(details <- searchMap ){
+    <h5>Id: @details.getId()</h5>
+    <h5>UserName: @details.getUserName()</h5>
+    <h5>Registration Date: @details.getRegistrationDate()</h5>
+    <h5>Limited Account: @details.getLimitedAccount()</h5>
+    <h5>Display Name: @details.getDisplayName()</h5>
+    <h5>Country Name: @details.getCountryName()</h5>
+    <h5>Role: @details.getRole()</h5>
+    <h5>Chosen Role: @details.getChosenRole()</h5>
+    <h5>Email Verified: @details.getEmailVerified()</h5>
+    <h5>Primary Currency: @details.getPrimaryCurrency()</h5>
+    <br/>
+
+    <h4><u>Employer Projects :-</u></h4>
+
+    @if(searchMap != null && searchMap.size > 0) {
+    <table border="1" class="table">
+        <thead class="thead-light">
+        <tr>
+            <th>Owner ID</th>
+            <th>Submission Date</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Skills</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @for(projectDet <- details.getProjects()) {
+        <tr>
+            <td>
+                <p>@projectDet.getOwnerID()</a></p>
+            </td>
+            <td>
+                <p>@projectDet.getTimeSubmitted().format("MMMM dd, yyyy")</p>
+            </td>
+            <td>
+                <p>@projectDet.getTitle()</p>
+            </td>
+            <td>
+                <p>@projectDet.getType()</p>
+            </td>
+            <td>
+                @for(skill<-projectDet.getSkills()){
+                <text>@skill(1),</text>
+                }
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+}
+}
+}
