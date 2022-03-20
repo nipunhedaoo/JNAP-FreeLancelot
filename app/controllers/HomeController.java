@@ -85,8 +85,9 @@ public class HomeController extends Controller {
 
             List<String> descriptionArray = new ArrayList<>();
 
-            resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
+            resultCompletionStage = freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
                 try {
+
                     List<ProjectDetails> array = new ArrayList<>();
                     array = freelancerClient.searchProjectByKeyword(res);
                     double fkcl = freelancerClient.readabilityIndex(searchKeyword, array).orElse(0.0);
@@ -103,7 +104,7 @@ public class HomeController extends Controller {
                 } else {
                     return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults)));
                 }
-            }));
+            });
         }
         return resultCompletionStage;
     }

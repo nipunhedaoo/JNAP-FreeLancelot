@@ -75,36 +75,4 @@ public class HomeControllerTest extends WithApplication {
         Result result = route(app, request);
         assertEquals(OK, result.status());
     }
-
-    @Test
-    public void searchResultsTest() throws IOException, ExecutionException, InterruptedException {
-        CompletionStage<WSResponse> repositoryDetails = FreeLancerServicesMock.searchResults("play");
-
-        when(FreeLancerServicesMock.searchResults(any(String.class))).thenReturn(repositoryDetails);
-        assertNotNull(repositoryDetails);
-
-        LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
-        List<ProjectDetails> res1 = new ArrayList<>();
-        WSResponse res = repositoryDetails.toCompletableFuture().get();
-        SearchResultModel repositoryDetails1 = null;
-
-        try{
-            FreeLancerServicesMock.searchProjectsBySkill(res);
-            repositoryDetails1 = searchResults.put("xyz", new SearchResultModel(res1, 0.0, 0.0));
-        }catch (Exception e){
-
-        }
-
-        assertEquals(repositoryDetails1.getprojectDetails(), new ProjectDetails());
-    }
-
-    private SearchResultModel repositoryDetailsObject(){
-            SearchResultModel searchResult = new SearchResultModel();
-            List<ProjectDetails> projectDets = new ArrayList<>();
-            searchResult.setprojectDetails(projectDets);
-            searchResult.setfleschKincaidGradeLevel(0.0);
-            searchResult.setfleschReadabilityIndex(0.0);
-            return searchResult;
-    }
-
 }
