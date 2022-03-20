@@ -82,45 +82,13 @@ public class HomeController extends Controller {
                 freelancerClient.setWsClient(wsClient);
             }
 
-            List<ProjectDetails> array = new ArrayList<>();
+
             List<String> descriptionArray = new ArrayList<>();
 
             resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
                 try {
-
-                    logger.info("cache");
-                    JSONObject json = new JSONObject(res.getBody());
-                    JSONObject result = json.getJSONObject("result");
-                    JSONArray projects = (JSONArray) result.getJSONArray("projects");
-
-                    for (int i = 0; i < projects.length(); i++) {
-                        JSONObject object = projects.getJSONObject(i);
-
-                        long projectID = Long.parseLong(object.get("id").toString());
-                        long ownerId = Long.parseLong(object.get("owner_id").toString());
-                        long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
-                        String title = object.get("title").toString();
-                        String type = object.get("type").toString();
-                        String preview_description = object.get("preview_description").toString();
-                        descriptionArray.add(preview_description);
-
-                        Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
-
-
-                        JSONArray skills = object.getJSONArray("jobs");
-                        List<List<String>> skillsList = new ArrayList<>();
-                        for (int j = 0; j < skills.length(); j++) {
-                            JSONObject skillObj = skills.getJSONObject(j);
-                            List<String> skill = new ArrayList<>();
-                            skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
-                            skill.add(skillObj.get("name").toString());
-                            skillsList.add(skill);
-
-                        }
-                        array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
-                    }
-
-
+                    List<ProjectDetails> array = new ArrayList<>();
+                    array = freelancerClient.searchProjectByKeyword(res);
                     double fkcl = freelancerClient.readabilityIndex(searchKeyword, array).orElse(0.0);
                     double fkgl = freelancerClient.fleschKancidGradeLevvel(searchKeyword, array).orElse(0.0);
 
@@ -163,7 +131,6 @@ public class HomeController extends Controller {
             }
                resultCompletionStage = cache.getOrElseUpdate((skillId), () -> freelancerClient.searchSkillResults(skillId).toCompletableFuture().thenApplyAsync(res -> {
                         try {
-                            logger.info("Cache");
                             skillSearchResults.put(skillId,freelancerClient.searchProjectsBySkill(res));
                         } catch (JSONException e) {
                           logger.info("Error is parsing",e);

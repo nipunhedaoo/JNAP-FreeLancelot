@@ -2,6 +2,7 @@ package services;
 
 import helper.Session;
 import models.ProjectDetails;
+import models.SearchResultModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +48,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     public CompletionStage<WSResponse> searchResults(String phrase) {
             CompletionStage<WSResponse> wsResponseCompletionStage = null;
-            WSRequest request = null;
+            WSRequest request;
             try {
                 request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=250&job_details=true");
 
@@ -163,6 +164,46 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         catch (Exception e) {
         }
   return array;
+    }
+
+    public List<ProjectDetails> searchProjectByKeyword(WSResponse res) throws Exception{
+        List<ProjectDetails> array = new ArrayList<>();
+        try{
+            JSONObject json = new JSONObject(res.getBody());
+            JSONObject result = json.getJSONObject("result");
+            JSONArray projects = (JSONArray) result.getJSONArray("projects");
+
+            for (int i = 0; i < projects.length(); i++) {
+                JSONObject object = projects.getJSONObject(i);
+
+                long projectID = Long.parseLong(object.get("id").toString());
+                long ownerId = Long.parseLong(object.get("owner_id").toString());
+                long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
+                String title = object.get("title").toString();
+                String type = object.get("type").toString();
+                String preview_description = object.get("preview_description").toString();
+
+//                descriptionArray.add(preview_description);
+
+                Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
+
+
+                JSONArray skills = object.getJSONArray("jobs");
+                List<List<String>> skillsList = new ArrayList<>();
+                for (int j = 0; j < skills.length(); j++) {
+                    JSONObject skillObj = skills.getJSONObject(j);
+                    List<String> skill = new ArrayList<>();
+                    skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                    skill.add(skillObj.get("name").toString());
+                    skillsList.add(skill);
+
+                }
+                array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description));
+            }
+        }catch(Exception e) {
+
+        }
+        return array;
     }
 
     public OptionalDouble readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
