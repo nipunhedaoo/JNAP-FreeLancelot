@@ -364,7 +364,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-            return Math.round(fkgl);
+            return fkgl;
 
         }).average();
 
@@ -388,7 +388,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         double alpha = numOfSyllables / numOfWords;
         double beta = numOfWords / numOfSentence;
 
-        fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;;
+        fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
 
         return fkgl;
     }
