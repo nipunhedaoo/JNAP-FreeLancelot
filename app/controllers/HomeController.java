@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 import play.data.FormFactory;
 
+import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -48,7 +49,7 @@ public class HomeController extends Controller {
 
     final Logger logger = LoggerFactory.getLogger("play");
 
-    FreeLancerServices freelancerClient;
+    public  FreeLancerServices freelancerClient;
     static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
@@ -155,22 +156,32 @@ public class HomeController extends Controller {
         }
     }
 
+    /**
+     * <p>With this function all the lastest projects associated with skill can be fetched.</p>
+     * @param skillId It represents the skillId associated with the skill
+     * @param skillName It represents the name of the skill
+     * @return It returns list of maximum 10 projects associated with the skill.
+     * @author Jasleen Kaur
+     */
     public CompletionStage<Result> searchBySkill(String skillId, String skillName) {
         CompletionStage<Result> resultCompletionStage=null;
         if (!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
             if (freelancerClient.getWsClient() == null) {
                 freelancerClient.setWsClient(wsClient);
             }
-               resultCompletionStage = cache.getOrElseUpdate((skillId), () -> freelancerClient.searchSkillResults(skillId).toCompletableFuture().thenApplyAsync(res -> {
+
+            CompletionStage<WSResponse> result1=freelancerClient.searchSkillResults(skillId);
+               resultCompletionStage =  result1.toCompletableFuture().thenApplyAsync(res -> {
                         try {
                             logger.info("Cache");
-                            skillSearchResults.put(skillId,freelancerClient.searchProjectsBySkill(res));
+                           List<ProjectDetails> respo= freelancerClient.searchProjectsBySkill(res);
+                            skillSearchResults.put(skillId,respo);
                         } catch (JSONException e) {
                           logger.info("Error is parsing",e);
                         }
                         return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
                     }
-            ));
+            );
         }
         else{
             return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));

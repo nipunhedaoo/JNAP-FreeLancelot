@@ -20,6 +20,7 @@ import static play.mvc.Results.ok;
 
 
 import play.Logger;
+import play.api.test.WsTestClient;
 import play.libs.ws.*;
 
 
@@ -119,16 +120,26 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         }
         return sortedMap;
     }
-
+    /**
+     * <p>With this function API call is made to fetch the projects associated with skill</p>
+     * @param skillId It represents the skillId associated with the skill
+     * @return It returns the API response for active jobs
+     * @author Jasleen Kaur
+     */
     public CompletionStage<WSResponse> searchSkillResults(String skillId) {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
         WSRequest request = null;
         request = wsClient.url(API+"projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId)+"&limit=10&job_details=true");
-        System.out.println("request is "+request.getUrl());
         wsResponseCompletionStage = request.stream();
         return wsResponseCompletionStage;
     }
 
+    /**
+     * <p>With this function all the lastest projects associated with skill can be fetched.</p>
+     * @param res It represents API response from function searchSkillResults()
+     * @return It returns list of maximum 10 projects associated with the skill.
+     * @author Jasleen Kaur
+     */
     public List<ProjectDetails> searchProjectsBySkill(WSResponse res) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         try {

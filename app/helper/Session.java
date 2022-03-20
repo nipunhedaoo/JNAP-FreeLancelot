@@ -24,17 +24,19 @@ public class Session {
     }
 
     /**
-     * This method returns the SearchResults stored for the current session
-     *
-     * @param request Http Request
-     * @return {@link LinkedHashMap} of SearchKeyword and {@link ProjectDetails}
+     * This method returns the random sessionId
      */
-
-
     public static String generateSessionValue() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
+
+    /**
+     * This method returns the SearchResults stored for the current session
+     *
+     * @param request Http Request
+     * @return {@link HashMap} of SearchKeyword and {@link SearchResultModel}
+     */
 
     public static HashMap<String, SearchResultModel> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, SearchResultModel> searchResults) {
         String key = getSessionValue(request);
@@ -43,6 +45,13 @@ public class Session {
         return getSearchResultsForSession(searchResults, sessionSearchResultsBySearchKeywordHashMap.get(key));
     }
 
+    /**
+     * This method returns the SearchResults stored for the current session
+     *
+     * @param searchResults The search results maps
+     * @param searchKeywords The set of search keywords
+     * @return {@link HashMap} of SearchKeyword and {@link SearchResultModel}
+     */
     private static HashMap<String, SearchResultModel> getSearchResultsForSession(LinkedHashMap<String, SearchResultModel> searchResults, Set<String> searchKeywords){
         HashMap<String, SearchResultModel> result = new HashMap<>();
         if(searchKeywords!=null) {
@@ -79,7 +88,6 @@ public class Session {
      * @param request Http Request
      * @return String Session value or null.
      */
-
     public static String getSessionValue(Http.Request request) {
         return request.session().get(SESSION_KEY).orElse(null);
     }
