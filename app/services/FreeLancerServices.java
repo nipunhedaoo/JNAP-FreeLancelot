@@ -27,12 +27,11 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         this.session = new Session();
     }
 
-    public void setWsClient(WSClient wsClient)
-    {
-        this.wsClient=wsClient;
+    public void setWsClient(WSClient wsClient) {
+        this.wsClient = wsClient;
     }
-    public WSClient getWsClient()
-    {
+
+    public WSClient getWsClient() {
         return this.wsClient;
     }
 
@@ -41,20 +40,20 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
 
     public CompletionStage<WSResponse> searchResults(String phrase) {
-            CompletionStage<WSResponse> wsResponseCompletionStage = null;
-            WSRequest request = null;
-            try {
-                request = wsClient.url(API+"projects/0.1/projects/active?query=\""+ URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8))+"\"&limit=250&job_details=true");
+        CompletionStage<WSResponse> wsResponseCompletionStage = null;
+        WSRequest request = null;
+        try {
+            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
 
-                wsResponseCompletionStage = request.stream();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            return wsResponseCompletionStage;
+            wsResponseCompletionStage = request.stream();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return wsResponseCompletionStage;
     }
 
 
-    public static Map<String, Integer> wordStatsIndevidual(String description ) {
+    public static Map<String, Integer> wordStatsIndevidual(String description) {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
 
@@ -83,13 +82,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
 
-        for (ProjectDetails project: results ) {
+        for (ProjectDetails project : results) {
             Arrays.asList(
                             project.getPreviewDescription().replaceAll("\\p{Punct}", "").split(" ")
                     )
                     .stream()
                     .forEach(word -> {
-                        if(!word.equals("") && !word.equals(" ")) {
+                        if (!word.equals("") && !word.equals(" ")) {
                             if (counterMap.get(word) == null)
                                 counterMap.put(word, 1);
                             else
@@ -110,8 +109,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public List<ProjectDetails> searchProjectsBySkill(String skillId) {
         List<ProjectDetails> array = new ArrayList<>();
         try {
-            URL url = new URL(API + "projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId) +"&limit=10&job_details=true");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            URL url = new URL(API + "projects/0.1/projects/active?jobs[]=" + Integer.parseInt(skillId) + "&limit=10&job_details=true");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
             if (conn.getResponseCode() == 200) {
@@ -123,13 +122,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 JSONObject json = new JSONObject(temp);
                 JSONObject result = json.getJSONObject("result");
                 JSONArray projects = (JSONArray) result.getJSONArray("projects");
-                System.out.println("projects are- > "+ projects);
-                for (int i = 0; i < projects.length() ; i++){
+                System.out.println("projects are- > " + projects);
+                for (int i = 0; i < projects.length(); i++) {
                     JSONObject object = projects.getJSONObject(i);
-                    long projectID =  Long.parseLong(object.get("id").toString());
-                    long ownerId =  Long.parseLong(object.get("owner_id").toString());
+                    long projectID = Long.parseLong(object.get("id").toString());
+                    long ownerId = Long.parseLong(object.get("owner_id").toString());
                     long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
-                    String title = object.get("title").toString() ;
+                    String title = object.get("title").toString();
                     String type = object.get("type").toString();
                     String preview_description = object.get("preview_description").toString();
 
@@ -137,8 +136,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     List<List<String>> skillsList = new ArrayList<>();
                     for (int j = 0; j < skills.length(); j++) {
                         JSONObject skillObj = skills.getJSONObject(j);
-                        List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                        List<String> skill = new ArrayList<>();
+                        skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
@@ -153,11 +152,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     }
 
 
-
-    public List<EmployerDetails> employerResults (String ownerID){
+    public List<EmployerDetails> employerResults(String ownerID) {
         List<EmployerDetails> array = new ArrayList<>();
         try {
-           URL url = new URL(API + "users/0.1/users/" + ownerID );
+            URL url = new URL(API + "users/0.1/users/" + ownerID);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -177,17 +175,17 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 String id = result.get("id").toString();
                 String username = result.get("username").toString();
                 String registrationDate = result.get("registration_date").toString();
-                String limitedAccount=result.get("limited_account").toString();
+                String limitedAccount = result.get("limited_account").toString();
                 String displayName = result.get("display_name").toString();
-                String countryName=country.get("name").toString();
+                String countryName = country.get("name").toString();
                 String role = result.get("role").toString();
                 String chosenRole = result.get("chosen_role").toString();
-                String emailVerified= status.get("email_verified").toString();
-                String primaryCurrency=currency.get("name").toString();
-                List<ProjectDetails>employer_projects=getProjects(ownerID);
+                String emailVerified = status.get("email_verified").toString();
+                String primaryCurrency = currency.get("name").toString();
+                List<ProjectDetails> employer_projects = getProjects(ownerID);
 
 
-                array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName,countryName,role,chosenRole,emailVerified,primaryCurrency,employer_projects));
+                array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName, countryName, role, chosenRole, emailVerified, primaryCurrency, employer_projects));
 
             }
 
@@ -196,7 +194,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         }
         return array;
     }
-    public List<ProjectDetails> getProjects (String ownerID){
+
+    public List<ProjectDetails> getProjects(String ownerID) {
         List<ProjectDetails> array2 = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/?owners[]=" + ownerID + "&limit=10&job_details=true");
@@ -217,167 +216,163 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 for (int i = 0; i < projects.length(); i++) {
                     JSONObject object = projects.getJSONObject(i);
 
-                    long projectID =  Long.parseLong(object.get("id").toString());
-                    long ownerId =  Long.parseLong(object.get("owner_id").toString());
+                    long projectID = Long.parseLong(object.get("id").toString());
+                    long ownerId = Long.parseLong(object.get("owner_id").toString());
                     long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
                     String title = object.get("title").toString();
                     String type = object.get("type").toString();
                     String preview_description = object.get("preview_description").toString();
 
 
-
                     JSONArray skills = object.getJSONArray("jobs");
                     List<List<String>> skillsList = new ArrayList<>();
                     for (int j = 0; j < skills.length(); j++) {
                         JSONObject skillObj = skills.getJSONObject(j);
-                        List<String> skill=new ArrayList<>();
-                        skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                        List<String> skill = new ArrayList<>();
+                        skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                         skill.add(skillObj.get("name").toString());
                         skillsList.add(skill);
 
                     }
-                    array2.add(new ProjectDetails(projectID,ownerId,skillsList,timeSubmitted,title,type,null,preview_description));
+                    array2.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description));
                 }
             }
 
         } catch (Exception e) {
         }
-        readabilityIndex(ownerID ,array2);
+        readabilityIndex(ownerID, array2);
         return array2;
     }
 
 
+        public OptionalDouble readabilityIndex (String phrase, List < ProjectDetails > searchResults){
 
+            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+                double fkcl = 0;
+                int numOfSentence = 0;
+                int numOfWords = 0;
+                int numOfSyllables = 0;
 
-    public void readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
-    public OptionalDouble readabilityIndex(String phrase, List<ProjectDetails> searchResults) {
+                String projectDescription = project.getPreviewDescription();
+                numOfWords = projectDescription.trim().split("\\s+").length;
+                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
 
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-            double fkcl = 0;
-            int numOfSentence = 0;
-            int numOfWords = 0;
-            int numOfSyllables = 0;
+                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-            String projectDescription = project.getPreviewDescription();
-            numOfWords = projectDescription.trim().split("\\s+").length;
-            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+                    int syllables = 0;
 
-            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+                    String vowels = "aeiouy";
 
-                int syllables = 0;
+                    word = word.toLowerCase();
+                    char[] alphabets = word.toCharArray();
 
-                String vowels = "aeiouy";
+                    if (alphabets.length <= 3)
+                        return 1;
 
-                word = word.toLowerCase();
-                char[] alphabets = word.toCharArray();
+                    for (char chr : alphabets) {
+                        if (vowels.indexOf(chr) != -1) {
+                            syllables++;
+                        }
+                    }
 
-                if (alphabets.length <= 3)
-                    return 1;
+                    for (int i = 0; i < word.length() - 1; i++) {
+                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                            syllables--;
+                    }
 
-                for (char chr : alphabets) {
-                    if (vowels.indexOf(chr) != -1) {
+                    if (alphabets[alphabets.length - 1] == 'e') {
+                        syllables--;
+                    }
+
+                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                        syllables--;
+                    }
+
+                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
                         syllables++;
                     }
-                }
+                    return syllables;
 
-                for (int i = 0; i < word.length() - 1; i++) {
-                    if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                        syllables--;
-                }
+                }).sum();
 
-                if (alphabets[alphabets.length - 1] == 'e') {
-                    syllables--;
-                }
+                double alpha = numOfSyllables / numOfWords;
+                double beta = numOfWords / numOfSentence;
 
-                if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                    syllables--;
-                }
+                fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
 
-                if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
-                    syllables++;
-                }
-                return syllables;
+                project.setFleschReadabilityIndex(Math.round(fkcl));
+                project.setReadability(fkcl);
 
-            }).sum();
+                return Math.round(fkcl);
 
-            double alpha = numOfSyllables/numOfWords;
-            double beta = numOfWords/numOfSentence;
+            }).average();
 
-            fkcl = 206.835 - (1.015*beta) - (84.6*alpha);
-
-            project.setFleschReadabilityIndex(Math.round(fkcl));
-            project.setReadability(fkcl);
-
-            return Math.round(fkcl);
-
-        }).average();
-
-        return searchResultUpadted;
+            return searchResultUpadted;
     }
 
-    public OptionalDouble fleschKancidGradeLevvel(String phrase, List<ProjectDetails> searchResults) {
+        public OptionalDouble fleschKancidGradeLevvel (String phrase, List < ProjectDetails > searchResults){
+            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+                double fkgl = 0;
+                int numOfSentence = 0;
+                int numOfWords = 0;
+                int numOfSyllables = 0;
 
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-            double fkgl = 0;
-            int numOfSentence = 0;
-            int numOfWords = 0;
-            int numOfSyllables = 0;
+                String projectDescription = project.getPreviewDescription();
+                numOfWords = projectDescription.trim().split("\\s+").length;
+                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
 
-            String projectDescription = project.getPreviewDescription();
-            numOfWords = projectDescription.trim().split("\\s+").length;
-            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+                    int syllables = 0;
 
-                int syllables = 0;
+                    String vowels = "aeiouy";
 
-                String vowels = "aeiouy";
+                    word = word.toLowerCase();
+                    char[] alphabets = word.toCharArray();
 
-                word = word.toLowerCase();
-                char[] alphabets = word.toCharArray();
+                    if (alphabets.length <= 3)
+                        return 1;
 
-                if (alphabets.length <= 3)
-                    return 1;
+                    for (char chr : alphabets) {
+                        if (vowels.indexOf(chr) != -1) {
+                            syllables++;
+                        }
+                    }
 
-                for (char chr : alphabets) {
-                    if (vowels.indexOf(chr) != -1) {
+                    for (int i = 0; i < word.length() - 1; i++) {
+                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                            syllables--;
+                    }
+
+                    if (alphabets[alphabets.length - 1] == 'e') {
+                        syllables--;
+                    }
+
+                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                        syllables--;
+                    }
+
+                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
                         syllables++;
                     }
-                }
+                    return syllables;
 
-                for (int i = 0; i < word.length() - 1; i++) {
-                    if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                        syllables--;
-                }
+                }).sum();
 
-                if (alphabets[alphabets.length - 1] == 'e') {
-                    syllables--;
-                }
+                double alpha = numOfSyllables / numOfWords;
+                double beta = numOfWords / numOfSentence;
 
-                if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                    syllables--;
-                }
-
-                if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
-                    syllables++;
-                }
-                return syllables;
-
-            }).sum();
-
-            double alpha = numOfSyllables/numOfWords;
-            double beta = numOfWords/numOfSentence;
-
-            fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
+                fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
 
 
-            project.setFleschKincaidGradeLevel(Math.round(fkgl));
+                project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-            return Math.round(fkgl);
+                return Math.round(fkgl);
 
-        }).average();
+            }).average();
 
-        return searchResultUpadted;
-    }
+            return searchResultUpadted;
+        }
+        
 }
 
