@@ -16,7 +16,7 @@ public class ProjectDetails {
     private double fleschKincaidGradeLevel;
     private String readability;
 
-    public ProjectDetails(ArrayList<String> skills, int i, int i1, Date date, Object o, Object o1, Object o2, Object o3, double v, double v1, String early) {
+    public ProjectDetails() {
         this.skills = new ArrayList<>();
         this.projectID = -1;
         this.ownerId = -1;

@@ -14,16 +14,10 @@ import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
 
-import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -45,8 +39,7 @@ public class FreeLancerServicesTest extends WithApplication {
     WSClient wsClient;
     @InjectMocks
     HomeController homeController;
-
-
+    private Class<? extends CompletionStage<WSResponse>> HashMap;
 
 
     @Override
@@ -181,13 +174,13 @@ public class FreeLancerServicesTest extends WithApplication {
 
         FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
 
-        ArrayList<String> skills = new ArrayList<>();
+        List<List<String>> skills = new ArrayList<>();
 
-        ProjectDetails project1 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project1 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project1.setPreviewDescription("The cat sat on the mat.");
-        ProjectDetails project2 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project2 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project2.setPreviewDescription("This sentence, taken as a reading passage unto itself, is being used to prove a point.");
-        ProjectDetails project3 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project3 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project3.setPreviewDescription("The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.");
 
         projectDetails.add(project1);
@@ -208,13 +201,13 @@ public class FreeLancerServicesTest extends WithApplication {
 
         FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
 
-        ArrayList<String> skills = new ArrayList<>();
+        List<List<String>> skills = new ArrayList<>();
 
-        ProjectDetails project1 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project1 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project1.setPreviewDescription("The cat sat on the mat.");
-        ProjectDetails project2 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project2 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project2.setPreviewDescription("This sentence, taken as a reading passage unto itself, is being used to prove a point.");
-        ProjectDetails project3 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        ProjectDetails project3 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project3.setPreviewDescription("The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.");
 
         projectDetails.add(project1);

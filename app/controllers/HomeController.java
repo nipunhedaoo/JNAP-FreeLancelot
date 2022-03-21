@@ -4,12 +4,13 @@ import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
 import models.SearchResultModel;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import play.cache.AsyncCacheApi;
 import play.data.FormFactory;
-
+import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -17,22 +18,14 @@ import play.mvc.Result;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import play.cache.*;
-
-import play.libs.ws.WSClient;
-
-
-import static services.FreeLancerServices.wordStatsIndevidual;
 
 
 /**
