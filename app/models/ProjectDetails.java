@@ -17,7 +17,7 @@ public class ProjectDetails {
     private double fleschKincaidGradeLevel;
     private String readability;
 
-    public ProjectDetails() {
+    public ProjectDetails(ArrayList<String> skills, int i, int i1, Date date, Object o, Object o1, Object o2, Object o3, double v, double v1, String early) {
         this.skills = new ArrayList<>();
         this.projectID = -1;
         this.ownerId = -1;
@@ -125,6 +125,10 @@ public class ProjectDetails {
         }
 
         this.readability =educationalLevel;
+    }
+
+    public void setPreviewDescription(String previewDescription) {
+         this.preview_description = previewDescription;
     }
 }
 

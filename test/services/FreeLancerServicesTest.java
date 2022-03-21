@@ -22,6 +22,7 @@ import play.test.WithApplication;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -193,6 +194,59 @@ public class FreeLancerServicesTest extends WithApplication {
 
         assertEquals( 0, Double.compare(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 109.04000000000002));
         assertNotEquals(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 30);
+    }
+
+    @Test
+    public void fleschKancidGradeLevvelAverage(){
+        List<ProjectDetails> projectDetails = new ArrayList<>();
+
+
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+
+        ArrayList<String> skills = new ArrayList<>();
+
+        ProjectDetails project1 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project1.setPreviewDescription("The cat sat on the mat.");
+        ProjectDetails project2 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project2.setPreviewDescription("This sentence, taken as a reading passage unto itself, is being used to prove a point.");
+        ProjectDetails project3 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project3.setPreviewDescription("The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.");
+
+        projectDetails.add(project1);
+        projectDetails.add(project2);
+        projectDetails.add(project3);
+
+        assertEquals(0, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.7600000000000003));
+        assertNotEquals(0, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 2.0));
+        assertNotEquals(1, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.7600000000000003));
+
+    }
+
+
+    @Test
+    public void fleschReadabilityAverage(){
+        List<ProjectDetails> projectDetails = new ArrayList<>();
+
+
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+
+        ArrayList<String> skills = new ArrayList<>();
+
+        ProjectDetails project1 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project1.setPreviewDescription("The cat sat on the mat.");
+        ProjectDetails project2 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project2.setPreviewDescription("This sentence, taken as a reading passage unto itself, is being used to prove a point.");
+        ProjectDetails project3 = new ProjectDetails(skills, -1, -1, new Date(), null, null, "", null, 0.0, 0.0, "Early");
+        project3.setPreviewDescription("The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.");
+
+        projectDetails.add(project1);
+        projectDetails.add(project2);
+        projectDetails.add(project3);
+
+        assertEquals(0, Double.compare(freeLancerServicesObj.readabilityIndex(projectDetails).getAsDouble(), 110.33333333333333));
+        assertNotEquals(0, Double.compare(freeLancerServicesObj.readabilityIndex(projectDetails).getAsDouble(), 90));
+        assertNotEquals(1, Double.compare(freeLancerServicesObj.readabilityIndex(projectDetails).getAsDouble(), 110.33333333333333));
+        assertEquals(1, Double.compare(freeLancerServicesObj.readabilityIndex(projectDetails).getAsDouble(), 90));
     }
 
 

@@ -391,22 +391,14 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public double calculateFRI(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkcl = 0.0;
 
-        double alpha = numOfSyllables / numOfWords;
-        double beta = numOfWords / numOfSentence;
-
-        fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
+        fkcl = 206.835 - (1.015 * (numOfWords / numOfSentence)) - (84.6 * (numOfSyllables / numOfWords));
 
         return fkcl;
     }
 
     public double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkgl = 0.0;
-
-        double alpha = numOfSyllables / numOfWords;
-        double beta = numOfWords / numOfSentence;
-
-        fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
-
+        fkgl = 0.39 * (numOfWords / numOfSentence) + 11.8 * (numOfSyllables / numOfWords) - 15.59;
         return fkgl;
     }
 
