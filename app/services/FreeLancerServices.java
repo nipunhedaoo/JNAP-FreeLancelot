@@ -19,6 +19,9 @@ import java.util.concurrent.CompletionStage;
 import static java.util.stream.Collectors.toMap;
 
 
+/**
+ * The FreeLancerServices class is used for fetching the project details
+ */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     private WSClient wsClient;
