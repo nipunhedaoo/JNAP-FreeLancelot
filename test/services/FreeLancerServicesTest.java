@@ -14,12 +14,9 @@ import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
 
-import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
