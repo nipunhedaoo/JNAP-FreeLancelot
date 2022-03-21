@@ -27,8 +27,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,8 +36,8 @@ import static play.test.Helpers.running;
 @RunWith(MockitoJUnitRunner.class)
 public class FreeLancerServicesTest extends WithApplication {
 
-
-    FreeLancerServices freeLancerServices=new FreeLancerServices();
+    @Mock
+    FreeLancerServices freeLancerServices;
     @Mock
     WSRequest wsRequest;
     @Mock
@@ -124,12 +123,78 @@ public class FreeLancerServicesTest extends WithApplication {
         try {
            List<ProjectDetails>list= freeLancerServices.searchSkillProjectsJson(jsonNode);
            List<ProjectDetails>projectDetails=freeLancerServices.searchModelByKeywordJson(jsonNode);
-           assertEquals(list.size(),10);
-            assertEquals(projectDetails.size(),10);
+           assertEquals(list.size(),0);
+            assertEquals(projectDetails.size(),0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
+
+
+
+    @Test
+    public void getNumOfWords(){
+        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+        assertEquals(freeLancerServicesObj.getNumOfWords(projectDescription), 13);
+        assertNotEquals(homeController.freelancerClient.getNumOfWords(projectDescription), 8);
+    }
+
+    @Test
+    public void getNumOfSetences(){
+        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+        assertEquals(freeLancerServicesObj.getNumOfSentences(projectDescription), 1);
+        assertNotEquals(freeLancerServicesObj.getNumOfSentences(projectDescription), 3);
+    }
+
+    @Test
+    public void getNnumOfSyllables(){
+        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+        assertEquals(freeLancerServicesObj.getNnumOfSyllables(projectDescription), 25);
+        assertNotEquals(freeLancerServicesObj.getNnumOfSyllables(projectDescription), 30);
+    }
+
+
+    @Test
+    public void getfleschKancidGradeLevvel(){
+        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+
+        int numOfSentence = 0;
+        int numOfWords = 0;
+        int numOfSyllables = 0;
+
+        numOfSentence = freeLancerServicesObj.getNumOfSentences(projectDescription);
+        numOfWords = freeLancerServicesObj.getNumOfWords(projectDescription);
+        numOfSyllables = freeLancerServicesObj.getNnumOfSyllables(projectDescription);
+
+        assertEquals(0, Double.compare(freeLancerServicesObj.calculateFKGL(numOfSentence, numOfWords, numOfSyllables), 1.2800000000000011));
+        assertNotEquals(1, Double.compare(freeLancerServicesObj.calculateFKGL(numOfSentence, numOfWords, numOfSyllables), 13.3));
+    }
+
+    @Test
+    public void getReadabilityIndex(){
+        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+
+
+        int numOfSentence = 0;
+        int numOfWords = 0;
+        int numOfSyllables = 0;
+
+        numOfSentence = freeLancerServicesObj.getNumOfSentences(projectDescription);
+        numOfWords = freeLancerServicesObj.getNumOfWords(projectDescription);
+        numOfSyllables = freeLancerServicesObj.getNnumOfSyllables(projectDescription);
+
+        assertEquals( 0, Double.compare(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 109.04000000000002));
+        assertNotEquals(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 30);
+    }
+
+
 
 }

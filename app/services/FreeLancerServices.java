@@ -60,7 +60,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return wsResponseCompletionStage;
     }
 
-
     public static Map<String, Integer> wordStatsIndevidual(String description) {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
@@ -113,8 +112,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         return sortedMap;
     }
+
     /**
      * <p>With this function API call is made to fetch the projects associated with skill</p>
+     *
      * @param skillId It represents the skillId associated with the skill
      * @return It returns the API response for active jobs
      * @author Jasleen Kaur
@@ -122,7 +123,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public CompletionStage<WSResponse> searchSkillResults(String skillId) {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
         WSRequest request = null;
-        request = wsClient.url(API+"projects/0.1/projects/active?jobs[]="+ Integer.parseInt(skillId)+"&limit=10&job_details=true");
+        request = wsClient.url(API + "projects/0.1/projects/active?jobs[]=" + Integer.parseInt(skillId) + "&limit=10&job_details=true");
         wsResponseCompletionStage = request.stream();
         return wsResponseCompletionStage;
     }
@@ -189,7 +190,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         }
         catch (Exception e) {
         }
-        return array;
+  return array;
     }
 
 
@@ -321,139 +322,145 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         } catch (Exception e) {
         }
-        readabilityIndex(ownerID, array2);
         return array2;
     }
 
+    /**
+     * <p>This function calculates the Flesch Readability Index</p>
+     *
+     * @param searchResults It represents the list of projects associated with the search keyword
+     * @return It updates the Flesch Readability Index for each project and returns average Flesch Readability Index of project description's.
+     * @author Nipun Hedaoo
+     */
+    public OptionalDouble readabilityIndex(List<ProjectDetails> searchResults) {
 
-        public OptionalDouble readabilityIndex (String phrase, List < ProjectDetails > searchResults){
+        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+            double fkcl = 0;
+            int numOfSentence = 0;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
 
-            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-                double fkcl = 0;
-                int numOfSentence = 0;
-                int numOfWords = 0;
-                int numOfSyllables = 0;
+            String projectDescription = project.getPreviewDescription();
+            numOfWords = getNumOfWords(projectDescription);
+            numOfSentence = getNumOfSentences(projectDescription);
 
-                String projectDescription = project.getPreviewDescription();
-                numOfWords = projectDescription.trim().split("\\s+").length;
-                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+            numOfSyllables = getNnumOfSyllables(projectDescription);
 
-                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+            fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
 
-                    int syllables = 0;
+            project.setFleschReadabilityIndex(Math.round(fkcl));
+            project.setReadability(fkcl);
 
-                    String vowels = "aeiouy";
+            return Math.round(fkcl);
 
-                    word = word.toLowerCase();
-                    char[] alphabets = word.toCharArray();
+        }).average();
 
-                    if (alphabets.length <= 3)
-                        return 1;
-
-                    for (char chr : alphabets) {
-                        if (vowels.indexOf(chr) != -1) {
-                            syllables++;
-                        }
-                    }
-
-                    for (int i = 0; i < word.length() - 1; i++) {
-                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                            syllables--;
-                    }
-
-                    if (alphabets[alphabets.length - 1] == 'e') {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
-                        syllables++;
-                    }
-                    return syllables;
-
-                }).sum();
-
-                double alpha = numOfSyllables / numOfWords;
-                double beta = numOfWords / numOfSentence;
-
-                fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
-
-                project.setFleschReadabilityIndex(Math.round(fkcl));
-                project.setReadability(fkcl);
-
-                return Math.round(fkcl);
-
-            }).average();
-
-            return searchResultUpadted;
+        return searchResultUpadted;
     }
 
-        public OptionalDouble fleschKancidGradeLevvel (String phrase, List < ProjectDetails > searchResults){
-            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-                double fkgl = 0;
-                int numOfSentence = 0;
-                int numOfWords = 0;
-                int numOfSyllables = 0;
+    /**
+     * <p>This function calculates the Flesch–Kincaid grade level  </p>
+     *
+     * @param searchResults It represents the list of projects associated with the search keyword
+     * @return It updates the Flesch–Kincaid grade level   for each project and returns average Flesch–Kincaid grade level of project description's.
+     * @author Nipun Hedaoo
+     */
+    public OptionalDouble fleschKancidGradeLevvel(List<ProjectDetails> searchResults) {
+        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+            double fkgl = 0;
+            int numOfSentence = 0;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
 
-                String projectDescription = project.getPreviewDescription();
-                numOfWords = projectDescription.trim().split("\\s+").length;
-                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+            String projectDescription = project.getPreviewDescription();
+            numOfWords = getNumOfWords(projectDescription);
+            numOfSentence = getNumOfSentences(projectDescription);
+            numOfSyllables = getNnumOfSyllables((projectDescription));
 
-                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+            fkgl = calculateFKGL(numOfSentence, numOfWords, numOfSyllables);
 
-                    int syllables = 0;
+            project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-                    String vowels = "aeiouy";
+            return fkgl;
 
-                    word = word.toLowerCase();
-                    char[] alphabets = word.toCharArray();
+        }).average();
 
-                    if (alphabets.length <= 3)
-                        return 1;
+        return searchResultUpadted;
+    }
 
-                    for (char chr : alphabets) {
-                        if (vowels.indexOf(chr) != -1) {
-                            syllables++;
-                        }
-                    }
+    public double calculateFRI(int numOfSentence, int numOfWords, int numOfSyllables) {
+        double fkcl = 0.0;
 
-                    for (int i = 0; i < word.length() - 1; i++) {
-                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                            syllables--;
-                    }
+        double alpha = numOfSyllables / numOfWords;
+        double beta = numOfWords / numOfSentence;
 
-                    if (alphabets[alphabets.length - 1] == 'e') {
-                        syllables--;
-                    }
+        fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
 
-                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                        syllables--;
-                    }
+        return fkcl;
+    }
 
-                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
-                        syllables++;
-                    }
-                    return syllables;
+    public double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
+        double fkgl = 0.0;
 
-                }).sum();
+        double alpha = numOfSyllables / numOfWords;
+        double beta = numOfWords / numOfSentence;
 
-                double alpha = numOfSyllables / numOfWords;
-                double beta = numOfWords / numOfSentence;
+        fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
 
-                fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
+        return fkgl;
+    }
 
+    public int getNumOfWords(String projectDescription) {
+        int word = 0;
+        word = projectDescription.trim().split("\\s+").length;
+        return word;
+    }
 
-                project.setFleschKincaidGradeLevel(Math.round(fkgl));
+    public int getNumOfSentences(String projectDescription) {
+        return projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+    }
 
-                return Math.round(fkgl);
+    public int getNnumOfSyllables(String projectDescription) {
+        int numOfSyllables = 0;
 
-            }).average();
+        numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-            return searchResultUpadted;
-        }
+            int syllables = 0;
+
+            String vowels = "aeiouy";
+
+            word = word.toLowerCase();
+            char[] alphabets = word.toCharArray();
+
+            if (alphabets.length <= 3)
+                return 1;
+
+            for (char chr : alphabets) {
+                if (vowels.indexOf(chr) != -1) {
+                    syllables++;
+                }
+            }
+
+            for (int i = 0; i < word.length() - 1; i++) {
+                if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                    syllables--;
+            }
+
+            if (alphabets[alphabets.length - 1] == 'e') {
+                syllables--;
+            }
+
+            if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                syllables--;
+            }
+
+            if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                syllables++;
+            }
+            return syllables;
+        }).sum();
+
+        return numOfSyllables;
+    }
 
 }
-
