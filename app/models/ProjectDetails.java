@@ -41,14 +41,17 @@ public class ProjectDetails {
     /**
      *
      * Parametrized Constructor with projectID, ownerId,skills,timeSubmitted,title,type,wordstats and preview_description
-     * @param projectID
-     * @param ownerId
-     * @param skills
-     * @param timeSubmitted
-     * @param title
-     * @param type
-     * @param wordStats
-     * @param preview_description
+     * @param projectID projectID
+     * @param ownerId ownerId
+     * @param skills skills
+     * @param timeSubmitted timeSubmitted
+     * @param title title
+     * @param type type
+     * @param wordStats wordStats
+     * @param preview_description preview_description
+     * @param fleschKincaidGradeLevel  fleschKincaidGradeLevel
+     * @param fleschReadabilityIndex  fleschReadabilityIndex
+     * @param readability  readability
      */
 
     public ProjectDetails(long projectID, long ownerId, List<List<String>> skills, long timeSubmitted, String title, String type, Map<String, Integer> wordStats, String preview_description, Double fleschReadabilityIndex, Double fleschKincaidGradeLevel, String  readability) {

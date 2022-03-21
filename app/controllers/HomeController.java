@@ -55,20 +55,14 @@ public class HomeController extends Controller {
         this.session = session;
     }
 
-    /**
-     * An action that renders an HTML page with a welcome message.
-     * The configuration in the <code>routes</code> file means that
-     * this method will be called when the application receives a
-     * <code>GET</code> request with a path of <code>/</code>.
-     */
-
 
     /**
-     * <p>This function call's the API for the keyword.</p>
+     * <p>An action that renders an HTML page with a welcome message.</p>
      * @param request It represents the WSResponse of API call made for the search keyword
-     * @searchKeyword It represents the WSResponse of API call made for the search keyword
+     * @param searchKeyword It represents the WSResponse of API call made for the search keyword
      * @return It returns a list of Projects associated with the keyword.
      * @author Nipun Hedaoo
+     * @author Alankrit Gupta
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
@@ -115,6 +109,7 @@ public class HomeController extends Controller {
      * @param query The query to get the word stats.
      * @param id The ProjectId used to get the word stats.
      * @return Returns the word stats for a given query and an id.
+     * @author Alankrit Gupta
      */
     public Result wordStats(String query,long id) {
         List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
@@ -166,7 +161,8 @@ public class HomeController extends Controller {
     /**
      * This method is used to get the employer details for a given ownerId
      * @param ownerId This ownerId is used to get the details of an employer
-     * @return CompletionStage<Result> Returns the details of given ownerId
+     * @return CompletionStage Returns the details of given ownerId
+     * @author Pragya Tomar
      */
     public CompletionStage<Result> profilePage(String ownerId) {
         List<EmployerDetails> details=freelancerClient.employerResults(ownerId);

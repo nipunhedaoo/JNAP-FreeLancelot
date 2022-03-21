@@ -21,6 +21,10 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * The FreeLancerServices class is used for fetching the project details
+ *   @author Nipun Hedaoo
+ *   @author Alankrit Gupta
+ *   @author Jasleen Kaur
+ *   @author Pragya Tomar
  */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
@@ -42,6 +46,14 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
 
+    /**
+     * <p>With this function API call is made for main page search results</p>
+     *
+     * @param phrase It represents the search phrase
+     * @return It returns the API response for active projects
+     * @author Nipun Hedaoo
+     * @author Alankrit Gupta
+     */
 
     public CompletionStage<WSResponse> searchResults(String phrase) {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
@@ -56,6 +68,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return wsResponseCompletionStage;
     }
 
+    /**
+     * <p>With this function word stats for individual projects are calculated</p>
+     *
+     * @param description It represents escription of each project
+     * @return It returns the hashmap of wordstats
+     * @author Alankrit Gupta
+     */
     public static Map<String, Integer> wordStatsIndevidual(String description) {
         Map<String, Integer> counterMap = new HashMap<>();
         Map<String, Integer> sortedMap = null;
@@ -80,6 +99,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return sortedMap;
     }
 
+    /**
+     * <p>With this function global word stats for projects are calculated</p>
+     *
+     * @param results It represents list of projects
+     * @return It returns the hashmap of wordstats
+     * @author Alankrit Gupta
+     */
     public static Map<String, Integer> wordStatsGlobal(List<ProjectDetails> results) {
 
         Map<String, Integer> counterMap = new HashMap<>();
@@ -111,6 +137,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     /**
      * <p>With this function API call is made to fetch the projects associated with skill</p>
+     *
      * @param skillId It represents the skillId associated with the skill
      * @return It returns the API response for active jobs
      * @author Jasleen Kaur
@@ -125,6 +152,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     /**
      * <p>With this function all the lastest projects associated with skill can be fetched.</p>
+     *
      * @param res It represents API response from function searchSkillResults()
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
@@ -142,6 +170,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
   return array;
     }
 
+    /**
+     * <p>With this function all the lastest projects associated with skills are parsed.</p>
+     *
+     * @param json It represents API response in JSON format for computation
+     * @return It returns list of maximum 10 projects associated with the skill.
+     * @author Jasleen Kaur
+     */
 
     public List<ProjectDetails> searchSkillProjectsJson(JSONObject json) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
@@ -176,7 +211,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return array;
     }
 
-
+    /**
+     * <p>With this function all the lastest projects associated can be fetched.</p>
+     *
+     * @param res It represents API response for search keywords
+     * @return It returns list of maximum 10 projects associated with the skill.
+     * @author Nipun Hedaoo
+     */
     public List<ProjectDetails> searchModelByKeyWord(WSResponse res) throws JSONException {
         List<ProjectDetails> array =new ArrayList<>();
         try {
@@ -188,7 +229,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
   return array;
     }
 
-
+    /**
+     * <p>With this function all the lastest projects are parsed</p>
+     *
+     * @param json It represents API response in JSON format for computation
+     * @return It returns list of maximum 10 projects associated with the skill.
+     * @author Alankrit Gupta
+     */
 
     public List<ProjectDetails>  searchModelByKeywordJson(JSONObject json) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
@@ -229,6 +276,14 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         return array;
     }
+
+    /**
+     * <p>With this function all the lastest employer results are returned</p>
+     *
+     * @param ownerID It represents the owner id of the employer
+     * @return It returns list of maximum 10 projects associated with the ownerid.
+     * @author Pragya Tomar
+     */
     public List<EmployerDetails> employerResults(String ownerID) {
         List<EmployerDetails> array = new ArrayList<>();
         try {
@@ -272,6 +327,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return array;
     }
 
+    /**
+     * <p>With this function API call for fetching employer details is made</p>
+     *
+     * @param ownerID It represents the owner id of the employer
+     * @return It returns list of latest 10 projects associated with the ownerid.
+     * @author Pragya Tomar
+     */
     public List<ProjectDetails> getProjects(String ownerID) {
         List<ProjectDetails> array2 = new ArrayList<>();
         try {
