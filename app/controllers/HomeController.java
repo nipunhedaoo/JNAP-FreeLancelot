@@ -6,9 +6,12 @@ import models.ProjectDetails;
 import models.SearchResultModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import play.cache.AsyncCacheApi;
 import play.data.FormFactory;
-
+import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -18,24 +21,25 @@ import javax.inject.Inject;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import play.cache.*;
-
-import play.libs.ws.WSClient;
-
 
 import static services.FreeLancerServices.wordStatsIndevidual;
 
 
 /**
- * This controller contains an action to handle HTTP requests
- * to the application's home page.
+ * This controller contains an action to handle HTTP requests for searching projects on the given skill,for fetching the
+ * employer details,for displaying the word level statistics, and for determining the index readability.
+ *
+ * @author Jasleen Kaur
+ * @author Pragya Tomar
+ * @author Alankrit Gupta
+ * @author Nipun Hedaoo
  */
 public class HomeController extends Controller {
 
@@ -52,6 +56,13 @@ public class HomeController extends Controller {
     static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
 
+
+    /**
+     * Parametrized Constructor with formFactory, cache and session
+     * @param formFactory Form Factory
+     * @param cache AsyncCacheApi
+     * @param session Session
+     */
     @Inject
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session) {
         this.formFactory = formFactory;
@@ -65,6 +76,7 @@ public class HomeController extends Controller {
      * The configuration in the <code>routes</code> file means that
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
+     *
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
@@ -141,6 +153,12 @@ public class HomeController extends Controller {
     }
 
 
+    /**
+     * This method is used to get the wordStats for a given query and Project Id.
+     * @param query The query to get the word stats.
+     * @param id The ProjectId used to get the word stats.
+     * @return Returns the word stats for a given query and an id.
+     */
     public Result wordStats(String query,long id) {
         List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
         if (id != -1) {
@@ -155,6 +173,11 @@ public class HomeController extends Controller {
         }
     }
 
+    /**
+     * @param skillId This skillId is used to get the projects from a particular skillId
+     * @param skillName The skillName for searching projects for a given skillName
+     * @return CompletionStage<Result> Return the projects for th given skillId and skillName
+     */
     public CompletionStage<Result> searchBySkill(String skillId,String skillName) {
         if(!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
             List<ProjectDetails> list = freelancerClient.searchProjectsBySkill(skillId);
@@ -165,8 +188,8 @@ public class HomeController extends Controller {
 
     /**
      * This method is used to get the employer details for a given ownerId
-     * @param ownerId This ownerId is used to get the details of an employer
-     * @return CompletionStage<Result> Returns the details of given ownerId
+     * @param ownerId This ownerId is used to get the details and projects of an employer
+     * @return CompletionStage<Result> Returns the employer details from given ownerId
      */
     public CompletionStage<Result> profilePage(String ownerId) {
         List<EmployerDetails> details=freelancerClient.employerResults(ownerId);

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-[0m[[0m[0mdebug[0m] [0m[0mUsing parent loader for play common classloader: sun.misc.Launcher$ExtClassLoader@4816278d[0m
-=======
-[0m[[0m[0mdebug[0m] [0m[0mUsing parent loader for play common classloader: jdk.internal.loader.ClassLoaders$PlatformClassLoader@65fd6708[0m
->>>>>>> alankrit
+[0m[[0m[0mdebug[0m] [0m[0mUsing parent loader for play common classloader: sun.misc.Launcher$ExtClassLoader@6c0d7c83[0m

@@ -36,6 +36,7 @@ public class Session {
         return uuid.toString();
     }
 
+
     public static HashMap<String, SearchResultModel> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, SearchResultModel> searchResults) {
         String key = getSessionValue(request);
         logger.info(key);

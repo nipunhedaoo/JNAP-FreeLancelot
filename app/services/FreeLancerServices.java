@@ -18,6 +18,9 @@ import java.util.concurrent.CompletionStage;
 import static java.util.stream.Collectors.toMap;
 
 
+/**
+ * The FreeLancerServices class is used for fetching the project details
+ */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     private WSClient wsClient;
@@ -245,134 +248,133 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     }
 
 
-        public OptionalDouble readabilityIndex (String phrase, List < ProjectDetails > searchResults){
+    public OptionalDouble readabilityIndex (String phrase, List < ProjectDetails > searchResults){
 
-            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-                double fkcl = 0;
-                int numOfSentence = 0;
-                int numOfWords = 0;
-                int numOfSyllables = 0;
+        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+            double fkcl = 0;
+            int numOfSentence = 0;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
 
-                String projectDescription = project.getPreviewDescription();
-                numOfWords = projectDescription.trim().split("\\s+").length;
-                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+            String projectDescription = project.getPreviewDescription();
+            numOfWords = projectDescription.trim().split("\\s+").length;
+            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
 
-                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-                    int syllables = 0;
+                int syllables = 0;
 
-                    String vowels = "aeiouy";
+                String vowels = "aeiouy";
 
-                    word = word.toLowerCase();
-                    char[] alphabets = word.toCharArray();
+                word = word.toLowerCase();
+                char[] alphabets = word.toCharArray();
 
-                    if (alphabets.length <= 3)
-                        return 1;
+                if (alphabets.length <= 3)
+                    return 1;
 
-                    for (char chr : alphabets) {
-                        if (vowels.indexOf(chr) != -1) {
-                            syllables++;
-                        }
-                    }
-
-                    for (int i = 0; i < word.length() - 1; i++) {
-                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                            syllables--;
-                    }
-
-                    if (alphabets[alphabets.length - 1] == 'e') {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                for (char chr : alphabets) {
+                    if (vowels.indexOf(chr) != -1) {
                         syllables++;
                     }
-                    return syllables;
+                }
 
-                }).sum();
+                for (int i = 0; i < word.length() - 1; i++) {
+                    if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                        syllables--;
+                }
 
-                double alpha = numOfSyllables / numOfWords;
-                double beta = numOfWords / numOfSentence;
+                if (alphabets[alphabets.length - 1] == 'e') {
+                    syllables--;
+                }
 
-                fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
+                if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                    syllables--;
+                }
 
-                project.setFleschReadabilityIndex(Math.round(fkcl));
-                project.setReadability(fkcl);
+                if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                    syllables++;
+                }
+                return syllables;
 
-                return Math.round(fkcl);
+            }).sum();
 
-            }).average();
+            double alpha = numOfSyllables / numOfWords;
+            double beta = numOfWords / numOfSentence;
 
-            return searchResultUpadted;
+            fkcl = 206.835 - (1.015 * beta) - (84.6 * alpha);
+
+            project.setFleschReadabilityIndex(Math.round(fkcl));
+            project.setReadability(fkcl);
+
+            return Math.round(fkcl);
+
+        }).average();
+
+        return searchResultUpadted;
     }
 
-        public OptionalDouble fleschKancidGradeLevvel (String phrase, List < ProjectDetails > searchResults){
-            OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-                double fkgl = 0;
-                int numOfSentence = 0;
-                int numOfWords = 0;
-                int numOfSyllables = 0;
+    public OptionalDouble fleschKancidGradeLevvel (String phrase, List < ProjectDetails > searchResults){
+        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+            double fkgl = 0;
+            int numOfSentence = 0;
+            int numOfWords = 0;
+            int numOfSyllables = 0;
 
-                String projectDescription = project.getPreviewDescription();
-                numOfWords = projectDescription.trim().split("\\s+").length;
-                numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
+            String projectDescription = project.getPreviewDescription();
+            numOfWords = projectDescription.trim().split("\\s+").length;
+            numOfSentence = projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
 
-                numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
+            numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
 
-                    int syllables = 0;
+                int syllables = 0;
 
-                    String vowels = "aeiouy";
+                String vowels = "aeiouy";
 
-                    word = word.toLowerCase();
-                    char[] alphabets = word.toCharArray();
+                word = word.toLowerCase();
+                char[] alphabets = word.toCharArray();
 
-                    if (alphabets.length <= 3)
-                        return 1;
+                if (alphabets.length <= 3)
+                    return 1;
 
-                    for (char chr : alphabets) {
-                        if (vowels.indexOf(chr) != -1) {
-                            syllables++;
-                        }
-                    }
-
-                    for (int i = 0; i < word.length() - 1; i++) {
-                        if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
-                            syllables--;
-                    }
-
-                    if (alphabets[alphabets.length - 1] == 'e') {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
-                        syllables--;
-                    }
-
-                    if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                for (char chr : alphabets) {
+                    if (vowels.indexOf(chr) != -1) {
                         syllables++;
                     }
-                    return syllables;
+                }
 
-                }).sum();
+                for (int i = 0; i < word.length() - 1; i++) {
+                    if (vowels.indexOf(alphabets[i]) != -1 && vowels.indexOf(alphabets[i + 1]) != -1)
+                        syllables--;
+                }
 
-                double alpha = numOfSyllables / numOfWords;
-                double beta = numOfWords / numOfSentence;
+                if (alphabets[alphabets.length - 1] == 'e') {
+                    syllables--;
+                }
 
-                fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
+                if ((alphabets[alphabets.length - 2] == 'e') && (alphabets[alphabets.length - 1] == 's' || alphabets[alphabets.length - 1] == 'd')) {
+                    syllables--;
+                }
+
+                if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+                    syllables++;
+                }
+                return syllables;
+
+            }).sum();
+
+            double alpha = numOfSyllables / numOfWords;
+            double beta = numOfWords / numOfSentence;
+
+            fkgl = 0.39 * (beta) + 11.8 * (alpha) - 15.59;
 
 
-                project.setFleschKincaidGradeLevel(Math.round(fkgl));
+            project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-                return Math.round(fkgl);
+            return Math.round(fkgl);
 
-            }).average();
+        }).average();
 
-            return searchResultUpadted;
-        }
-        
+        return searchResultUpadted;
+    }
+
 }
-
