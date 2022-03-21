@@ -29,15 +29,15 @@ public class HomeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
     }
 
-//    @Test
-//    public void testSearchBySkill() {
-//        Http.RequestBuilder request = new Http.RequestBuilder()
-//                .method(GET)
-//                .uri("/projectBySkills/9/JavaScript");
-//
-//        Result result = route(app, request);
-//        assertEquals(OK, result.status());
-//    }
+    @Test
+    public void testSearchBySkill() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri("/projectBySkills/9/JavaScript");
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+    }
 
    @Test
     public void testProfilePage(){
