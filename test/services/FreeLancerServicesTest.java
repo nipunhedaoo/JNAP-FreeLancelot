@@ -122,8 +122,8 @@ public class FreeLancerServicesTest extends WithApplication {
         }
 
         try {
-           List<ProjectDetails>list= freeLancerServices.searchSkillProjects(jsonNode);
-           List<ProjectDetails>projectDetails=freeLancerServices.searchModelByKeyword(jsonNode);
+           List<ProjectDetails>list= freeLancerServices.searchSkillProjectsJson(jsonNode);
+           List<ProjectDetails>projectDetails=freeLancerServices.searchModelByKeywordJson(jsonNode);
            assertEquals(list.size(),10);
             assertEquals(projectDetails.size(),10);
         } catch (JSONException e) {

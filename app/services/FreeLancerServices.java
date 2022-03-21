@@ -139,7 +139,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 System.out.println("Response + " + res);
                JSONObject json = new JSONObject(res.getBody());
 
-            return searchSkillProjects(json);
+            return searchSkillProjectsJson(json);
             }
         catch (Exception e) {
         }
@@ -147,7 +147,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     }
 
 
-    public List<ProjectDetails> searchSkillProjects(JSONObject json) throws JSONException {
+    public List<ProjectDetails> searchSkillProjectsJson(JSONObject json) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         JSONObject result = json.getJSONObject("result");
         JSONArray projects = (JSONArray) result.getJSONArray("projects");
@@ -185,7 +185,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         List<ProjectDetails> array =new ArrayList<>();
         try {
             JSONObject json = new JSONObject(res.getBody());
-            array= searchModelByKeyword(json);
+            array= searchModelByKeywordJson(json);
         }
         catch (Exception e) {
         }
@@ -194,7 +194,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
 
 
-    public List<ProjectDetails>  searchModelByKeyword(JSONObject json) throws JSONException {
+    public List<ProjectDetails>  searchModelByKeywordJson(JSONObject json) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         JSONObject result = json.getJSONObject("result");
