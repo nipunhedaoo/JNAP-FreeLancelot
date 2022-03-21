@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.libs.F;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
@@ -36,8 +37,8 @@ import static play.test.Helpers.running;
 @RunWith(MockitoJUnitRunner.class)
 public class FreeLancerServicesTest extends WithApplication {
 
-
-    FreeLancerServices freeLancerServices=new FreeLancerServices();
+@Mock
+    FreeLancerServices freeLancerServices;
     @Mock
     WSRequest wsRequest;
     @Mock
@@ -121,8 +122,9 @@ public class FreeLancerServicesTest extends WithApplication {
         }
 
         try {
-           List<ProjectDetails>list= freeLancerServices.searchSkillProjectsJson(jsonNode);
-           List<ProjectDetails>projectDetails=freeLancerServices.searchModelByKeywordJson(jsonNode);
+            FreeLancerServices freeLancerServices1=new FreeLancerServices();
+           List<ProjectDetails>list= freeLancerServices1.searchSkillProjectsJson(jsonNode);
+           List<ProjectDetails>projectDetails=freeLancerServices1.searchModelByKeywordJson(jsonNode);
            assertEquals(list.size(),10);
             assertEquals(projectDetails.size(),10);
         } catch (JSONException e) {
