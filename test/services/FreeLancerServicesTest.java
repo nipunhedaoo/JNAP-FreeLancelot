@@ -18,10 +18,12 @@ import play.libs.F;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
 
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static play.test.Helpers.running;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FreeLancerServicesTest extends WithApplication {
 
 @Mock
@@ -45,8 +47,6 @@ public class FreeLancerServicesTest extends WithApplication {
     WSClient wsClient;
     @InjectMocks
     HomeController homeController;
-
-
 
 
     @Override
@@ -74,18 +74,6 @@ public class FreeLancerServicesTest extends WithApplication {
     }
 
 
-
-    public boolean checkSkillType(List<List<String>>skills,String skillname)
-    {
-        for(List<String>skill : skills)
-        {
-            if(skill.get(1).equalsIgnoreCase(skillname))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
     @Test
     public void testSkills() {
 
@@ -95,17 +83,9 @@ public class FreeLancerServicesTest extends WithApplication {
             when(freeLancerServices.searchSkillResults(any())).thenReturn(obj);
             when(obj.toCompletableFuture()).thenReturn(completableFuture);
             CompletionStage<Result> resultCompletionStage=homeController.searchBySkill("9","Java");
-//            Result result = null;
-//            try {
-//                result = resultCompletionStage.toCompletableFuture().get();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//            assertEquals(HttpStatus.SC_OK,result.status());
-            });
+       });
     }
+
 
     @Test
     public void testIndSkills()
@@ -193,6 +173,25 @@ public class FreeLancerServicesTest extends WithApplication {
         assertEquals( 0, Double.compare(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 109.04000000000002));
         assertNotEquals(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 30);
     }
+
+//    @Test
+//    public void testSession(){
+//        String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
+//        FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
+//
+//
+//        int numOfSentence = 0;
+//        int numOfWords = 0;
+//        int numOfSyllables = 0;
+//
+//        numOfSentence = freeLancerServicesObj.getNumOfSentences(projectDescription);
+//        numOfWords = freeLancerServicesObj.getNumOfWords(projectDescription);
+//        numOfSyllables = freeLancerServicesObj.getNnumOfSyllables(projectDescription);
+//
+//        assertEquals( 0, Double.compare(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 109.04000000000002));
+//        assertNotEquals(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 30);
+//    }
+
 
 
 
