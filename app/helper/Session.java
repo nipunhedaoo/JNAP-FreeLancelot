@@ -12,6 +12,7 @@ import java.util.*;
 
 /**
  * This class manages session for the Application.
+ * @author Jasleen Kaur
  */
 
 public class Session {
@@ -25,6 +26,7 @@ public class Session {
 
     /**
      * This method returns the random sessionId
+     * @return random session id
      */
     public static String generateSessionValue() {
         UUID uuid = UUID.randomUUID();
@@ -35,6 +37,7 @@ public class Session {
      * This method returns the SearchResults stored for the current session
      *
      * @param request Http Request
+     * @param searchResults HM for searh results
      * @return {@link HashMap} of SearchKeyword and {@link SearchResultModel}
      */
 

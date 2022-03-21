@@ -65,7 +65,7 @@ public class SearchResultModel {
 
     /**
      * This method is used to set the project Details
-     * @param projectDetails
+     * @param projectDetails for projectDetails
      */
     public void setprojectDetails(List<ProjectDetails> projectDetails) {
          this.projectDetails = projectDetails;
@@ -73,7 +73,7 @@ public class SearchResultModel {
 
     /**
      * This method is used to set the Flesch Readability Index
-     * @param fleschReadabilityIndex
+     * @param fleschReadabilityIndex for fleschReadabilityIndex
      */
     public void setfleschReadabilityIndex(double fleschReadabilityIndex) {
          this.fleschReadabilityIndex = fleschReadabilityIndex;
@@ -81,15 +81,15 @@ public class SearchResultModel {
 
     /**
      * This method is used to set the Flesch Kincaid Grade Level
-     * @param fleschKincaidGradeLevel
+     * @param fleschKincaidGradeLevel for fleschKincaidGradeLevel
      */
     public void setfleschKincaidGradeLevel(double fleschKincaidGradeLevel) {
         this.fleschKincaidGradeLevel = fleschKincaidGradeLevel;
     }
 
     /**
-     *
-     * @return
+     *This method is used to return Search Model
+     * @return SearchResultModel
      */
     public SearchResultModel getSearchResultModel(){
         return this;

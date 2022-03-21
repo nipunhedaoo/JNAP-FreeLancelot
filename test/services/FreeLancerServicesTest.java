@@ -49,6 +49,10 @@ public class FreeLancerServicesTest extends WithApplication {
         return new GuiceApplicationBuilder().build();
     }
 
+    /**
+     * Test the Words stats individual count
+     * @author Alankrit Gupta
+     */
     @Test
     public void testWordStatsIndevidual(){
         String answer = "{z=4, Apple=2, banana=1, x=1, y=1}";
@@ -56,6 +60,10 @@ public class FreeLancerServicesTest extends WithApplication {
         assertEquals(map.toString(), answer);
     }
 
+    /**
+     * Test the Words stats global count
+     * @author Alankrit Gupta
+     */
     @Test
     public void testWordStatsGlobal(){
         List <ProjectDetails> testProjectList = new ArrayList<>();
@@ -68,7 +76,10 @@ public class FreeLancerServicesTest extends WithApplication {
         assertEquals(map.toString(), answer);
     }
 
-
+    /**
+     * Test the search skills function for fetching skills
+     * @author Jasleen Kaur
+     */
     @Test
     public void testSkills() {
 
@@ -81,7 +92,10 @@ public class FreeLancerServicesTest extends WithApplication {
        });
     }
 
-
+    /**
+     * Test the search skills function for computing skills
+     * @author Jasleen Kaur
+     */
     @Test
     public void testIndSkills()
     {
@@ -106,7 +120,10 @@ public class FreeLancerServicesTest extends WithApplication {
     }
 
 
-
+    /**
+     * Test the number of words in project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void getNumOfWords(){
         String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
@@ -115,6 +132,10 @@ public class FreeLancerServicesTest extends WithApplication {
         assertNotEquals(homeController.freelancerClient.getNumOfWords(projectDescription), 8);
     }
 
+    /**
+     * Test the number of sentences in project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void getNumOfSetences(){
         String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
@@ -123,6 +144,11 @@ public class FreeLancerServicesTest extends WithApplication {
         assertNotEquals(freeLancerServicesObj.getNumOfSentences(projectDescription), 3);
     }
 
+
+    /**
+     * Test the number of syllables in project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void getNnumOfSyllables(){
         String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
@@ -133,6 +159,11 @@ public class FreeLancerServicesTest extends WithApplication {
     }
 
 
+
+    /**
+     * Test the flesch kancid grade level for project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void getfleschKancidGradeLevvel(){
         String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
@@ -151,6 +182,10 @@ public class FreeLancerServicesTest extends WithApplication {
         assertNotEquals(1, Double.compare(freeLancerServicesObj.calculateFKGL(numOfSentence, numOfWords, numOfSyllables), 13.3));
     }
 
+    /**
+     * Test the readibility index for project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void getReadabilityIndex(){
         String projectDescription = "The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.";
@@ -169,15 +204,16 @@ public class FreeLancerServicesTest extends WithApplication {
         assertNotEquals(freeLancerServicesObj.calculateFRI(numOfSentence, numOfWords, numOfSyllables), 30);
     }
 
+    /**
+     * Test the flesch kancid grade level average for project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void fleschKancidGradeLevvelAverage(){
         List<ProjectDetails> projectDetails = new ArrayList<>();
 
-
         FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
-
         List<List<String>> skills = new ArrayList<>();
-
         ProjectDetails project1 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project1.setPreviewDescription("The cat sat on the mat.");
         ProjectDetails project2 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
@@ -196,15 +232,15 @@ public class FreeLancerServicesTest extends WithApplication {
     }
 
 
+    /**
+     * Test the flesch readibility average for project description
+     * @author Nipun Hedaoo
+     */
     @Test
     public void fleschReadabilityAverage(){
         List<ProjectDetails> projectDetails = new ArrayList<>();
-
-
         FreeLancerServices freeLancerServicesObj = new FreeLancerServices();
-
         List<List<String>> skills = new ArrayList<>();
-
         ProjectDetails project1 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");
         project1.setPreviewDescription("The cat sat on the mat.");
         ProjectDetails project2 = new ProjectDetails(-1, -1, skills, 1, "title", "type", null, null, 0.0, 0.0, "Early");

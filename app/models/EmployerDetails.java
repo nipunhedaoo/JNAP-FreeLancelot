@@ -21,17 +21,17 @@ public class EmployerDetails {
 
 
     /**
-     * @param id
-     * @param username
-     * @param registrationDate
-     * @param limitedAccount
-     * @param displayName
-     * @param countryName
-     * @param role
-     * @param chosenRole
-     * @param emailVerified
-     * @param primaryCurrency
-     * @param employer_projects
+     * @param id id
+     * @param username username
+     * @param registrationDate registrationDate
+     * @param limitedAccount limitedAccount
+     * @param displayName displayName
+     * @param countryName countryName
+     * @param role role
+     * @param chosenRole chosenRole
+     * @param emailVerified emailVerified
+     * @param primaryCurrency primaryCurrency
+     * @param employer_projects employer_projects
      */
     public EmployerDetails( String id,String username,String registrationDate,String limitedAccount,String displayName,String countryName,String role, String chosenRole,String emailVerified,String primaryCurrency, List<ProjectDetails> employer_projects) {
         this.id=id;
