@@ -392,7 +392,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     public double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkgl = 0.0;
-        fkgl = 0.39 * ( numOfWords / numOfSentence ) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59;
+        fkgl = (0.39 * ( numOfWords / numOfSentence )) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59;
         return fkgl;
     }
 
@@ -440,7 +440,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 syllables--;
             }
 
-            if ((alphabets[alphabets.length - 1] == 'e') && (alphabets[alphabets.length - 2] == 'l')) {
+            if ((alphabets[alphabets.length - 2] == 'l') && (alphabets[alphabets.length - 1] == 'e')) {
                 syllables++;
             }
             return syllables;

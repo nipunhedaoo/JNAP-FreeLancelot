@@ -189,9 +189,9 @@ public class FreeLancerServicesTest extends WithApplication {
         projectDetails.add(project2);
         projectDetails.add(project3);
 
-        assertEquals(0, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.7600000000000003));
+        assertEquals(0, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.6666666666666666));
         assertNotEquals(0, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 2.0));
-        assertNotEquals(1, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.7600000000000003));
+        assertNotEquals(1, Double.compare(freeLancerServicesObj.fleschKancidGradeLevvel(projectDetails).getAsDouble(), 0.6666666666666666));
 
     }
 
