@@ -110,7 +110,12 @@ public class HomeController extends Controller {
         return resultCompletionStage;
     }
 
-
+    /**
+     * This method is used to get the wordStats for a given query and Project Id.
+     * @param query The query to get the word stats.
+     * @param id The ProjectId used to get the word stats.
+     * @return Returns the word stats for a given query and an id.
+     */
     public Result wordStats(String query,long id) {
         List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
         if (id != -1) {
@@ -140,13 +145,13 @@ public class HomeController extends Controller {
             }
 
             CompletionStage<WSResponse> result1=freelancerClient.searchSkillResults(skillId);
-               resultCompletionStage =  result1.toCompletableFuture().thenApplyAsync(res -> {
+            resultCompletionStage =  result1.toCompletableFuture().thenApplyAsync(res -> {
                         try {
                             logger.info("Cache");
-                           List<ProjectDetails> respo= freelancerClient.searchProjectsBySkill(res);
+                            List<ProjectDetails> respo= freelancerClient.searchProjectsBySkill(res);
                             skillSearchResults.put(skillId,respo);
                         } catch (JSONException e) {
-                          logger.info("Error is parsing",e);
+                            logger.info("Error is parsing",e);
                         }
                         return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
                     }

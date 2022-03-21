@@ -19,6 +19,9 @@ import java.util.concurrent.CompletionStage;
 import static java.util.stream.Collectors.toMap;
 
 
+/**
+ * The FreeLancerServices class is used for fetching the project details
+ */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
     private WSClient wsClient;
@@ -341,7 +344,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
 
             project.setFleschReadabilityIndex(Math.round(fkcl));
-            project.setReadability(fkcl);
+            project.setReadability(Math.round(fkcl));
 
             return Math.round(fkcl);
 
@@ -373,7 +376,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             project.setFleschKincaidGradeLevel(Math.round(fkgl));
 
-            return fkgl;
+            return Math.round(fkgl);
 
         }).average();
 
@@ -383,14 +386,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public double calculateFRI(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkcl = 0.0;
 
-        fkcl = 206.835 - (1.015 * (numOfWords / numOfSentence)) - (84.6 * (numOfSyllables / numOfWords));
-
+        fkcl = 206.835 - 1.015 * ( numOfWords / numOfSentence) - 84.6 * ( numOfSyllables / numOfWords );
         return fkcl;
     }
 
     public double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkgl = 0.0;
-        fkgl = 0.39 * (numOfWords / numOfSentence) + 11.8 * (numOfSyllables / numOfWords) - 15.59;
+        fkgl = 0.39 * ( numOfWords / numOfSentence ) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59;
         return fkgl;
     }
 
