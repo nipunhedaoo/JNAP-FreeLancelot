@@ -36,8 +36,8 @@ import static play.test.Helpers.running;
 @RunWith(MockitoJUnitRunner.class)
 public class FreeLancerServicesTest extends WithApplication {
 
-    @Mock
-    FreeLancerServices freeLancerServices;
+
+    FreeLancerServices freeLancerServices=new FreeLancerServices();
     @Mock
     WSRequest wsRequest;
     @Mock
@@ -123,8 +123,8 @@ public class FreeLancerServicesTest extends WithApplication {
         try {
            List<ProjectDetails>list= freeLancerServices.searchSkillProjectsJson(jsonNode);
            List<ProjectDetails>projectDetails=freeLancerServices.searchModelByKeywordJson(jsonNode);
-           assertEquals(list.size(),0);
-            assertEquals(projectDetails.size(),0);
+           assertEquals(list.size(),10);
+            assertEquals(projectDetails.size(),10);
         } catch (JSONException e) {
             e.printStackTrace();
         }
