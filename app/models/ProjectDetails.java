@@ -25,12 +25,12 @@ public class ProjectDetails {
 
     public ProjectDetails() {
         this.skills = new ArrayList<>();
-        this.projectID = -1;
+        this.projectID = -2;
         this.ownerId = -1;
         this.timeSubmitted = new Date();
         this.title = null;
         this.type = null;
-        this.preview_description = null;
+        this.preview_description = "testing";
         this.wordStats = null;
         this.fleschReadabilityIndex = 0.0;
         this.fleschKincaidGradeLevel = 0.0;

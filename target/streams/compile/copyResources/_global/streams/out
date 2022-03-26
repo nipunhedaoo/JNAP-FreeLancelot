@@ -1,4 +1,4 @@
 [0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/conf/logback.xml,/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/target/scala-2.13/classes/logback.xml)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/conf/application.conf,/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/target/scala-2.13/classes/application.conf)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/conf/routes,/Users/jasleensroa/SCM_WorkSpace/JNAP-FreeLancelot/target/scala-2.13/classes/routes)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\application.conf,C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\target\scala-2.13\classes\application.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\logback.xml,C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\target\scala-2.13\classes\logback.xml)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\routes,C:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\target\scala-2.13\classes\routes)[0m

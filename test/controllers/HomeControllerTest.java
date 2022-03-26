@@ -40,6 +40,23 @@ public class HomeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
     }
 
+    @Test
+    public void testWordStats() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri("/react/wordStatsGlobal");
+
+        Result result = route(app, request);
+        assertEquals(OK,result.status());
+
+        Http.RequestBuilder request2 = new Http.RequestBuilder()
+                .method(GET)
+                .uri("/react/wordStats/-2");
+
+        Result result2 = route(app, request2);
+        assertEquals(OK,result2.status());
+    }
+
    @Test
     public void testProfilePage(){
         Http.RequestBuilder request = new Http.RequestBuilder()

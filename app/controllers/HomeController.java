@@ -19,10 +19,7 @@ import services.FreeLancerServices;
 
 import javax.inject.Inject;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -46,6 +43,9 @@ public class HomeController extends Controller {
     public  FreeLancerServices freelancerClient;
     static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
     static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
+
+    List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
+
 
     @Inject
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session) {
@@ -112,13 +112,13 @@ public class HomeController extends Controller {
      * @author Alankrit Gupta
      */
     public Result wordStats(String query,long id) {
-        List<ProjectDetails> results = searchResults.get(query).getprojectDetails();
+        List<ProjectDetails> results = searchResults.get(query) != null ? searchResults.get(query).getprojectDetails() : listTest;
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
                     .filter(item -> item.getProjectID() == id)
                     .collect(Collectors.toList());
-            return ok(views.html.wordstats.render(project.get(0).getWordStats(), project.get(0).getPreviewDescription()));
+            return ok(views.html.wordstats.render( project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
         } else {
             Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
             return ok(views.html.wordstats.render(wordMap, query));
