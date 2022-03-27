@@ -1,6 +1,7 @@
 package services;
 
 import controllers.HomeController;
+import models.EmployerDetails;
 import models.ProjectDetails;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +24,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -259,5 +260,99 @@ public class FreeLancerServicesTest extends WithApplication {
     }
 
 
+    /**
+     * Test the employer details from ownerId
+     * @author Pragya Tomar
+     */
+    @Test
+    public void testEmployerResults() {
+        FreeLancerServices freeLancerServices2 = new FreeLancerServices();
+        List<EmployerDetails> list = freeLancerServices2.employerResults("29118257");
+        for (EmployerDetails employerDetails : list) {
+            assertTrue(checkId(employerDetails.getId(), "29118257"));
+            assertTrue(checkUsername(employerDetails.getUserName(),"VIPCorp"));
+            assertTrue(checkRegistrationDate(employerDetails.getRegistrationDate(),"1523461380"));
+            assertTrue(checkLimitedAccount(employerDetails.getLimitedAccount(),"false"));
+            assertTrue(checkDisplayName(employerDetails.getDisplayName(),"VIPCorp"));
+            assertTrue(checkCountryName(employerDetails.getCountryName(),"India"));
+            assertTrue(checkRole(employerDetails.getRole(),"employer"));
+            assertTrue(checkChosenRole(employerDetails.getChosenRole(),"employer"));
+            assertTrue(checkEmailVerified(employerDetails.getEmailVerified(),"true"));
+            assertTrue(checkPrimaryCurrency(employerDetails.getPrimaryCurrency(),"Indian Rupee"));
+
+        }
+    }
+    public boolean checkId(String Id, String i_d) {
+        if (Id.equalsIgnoreCase(i_d)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkUsername(String username, String user_name) {
+        if (username.equalsIgnoreCase(user_name)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkRegistrationDate(String regdate, String reg_date) {
+        if (regdate.equalsIgnoreCase(reg_date)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkLimitedAccount(String limaccount, String lim_account) {
+        if (limaccount.equalsIgnoreCase(lim_account)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkDisplayName(String displayname, String display_name) {
+        if (displayname.equalsIgnoreCase(display_name)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkCountryName(String countryname, String country_name) {
+        if (countryname.equalsIgnoreCase(country_name)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkRole(String role, String ro_le) {
+        if (role.equalsIgnoreCase(ro_le)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkChosenRole(String chosenrole, String chosen_role) {
+        if (chosenrole.equalsIgnoreCase(chosen_role)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkEmailVerified(String emailverified, String email_verified) {
+        if (emailverified.equalsIgnoreCase(email_verified)) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkPrimaryCurrency(String primarycurrency, String primary_currency) {
+        if (primarycurrency.equalsIgnoreCase(primary_currency)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Test the project details of employers
+     * @author Pragya Tomar
+     */
+    @Test
+    public void testProjectResults(){
+        FreeLancerServices freeLancerServices2 = new FreeLancerServices();
+        List<ProjectDetails> projectDetailsList = freeLancerServices2.getProjects("29118257");
+        assertEquals(projectDetailsList.size(),10);
+    }
 
 }

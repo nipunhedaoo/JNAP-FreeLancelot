@@ -281,7 +281,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * <p>With this function all the lastest employer results are returned</p>
      *
      * @param ownerID It represents the owner id of the employer
-     * @return It returns list of maximum 10 projects associated with the ownerid.
+     * @return It returns employer details associated with the ownerId.
      * @author Pragya Tomar
      */
     public List<EmployerDetails> employerResults(String ownerID) {
@@ -328,10 +328,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     }
 
     /**
-     * <p>With this function API call for fetching employer details is made</p>
+     * <p>With this function API call for fetching employer projects is made</p>
      *
      * @param ownerID It represents the owner id of the employer
-     * @return It returns list of latest 10 projects associated with the ownerid.
+     * @return It returns list of latest 10 projects associated with the ownerId.
      * @author Pragya Tomar
      */
     public List<ProjectDetails> getProjects(String ownerID) {
