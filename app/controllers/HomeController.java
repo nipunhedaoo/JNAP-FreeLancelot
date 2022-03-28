@@ -89,7 +89,7 @@ public class HomeController extends Controller {
                     array = freelancerClient.searchModelByKeyWord(res);
                     double fkcl = freelancerClient.readabilityIndex( array).orElse(0.0);
                     double fkgl = freelancerClient.fleschKancidGradeLevvel(array).orElse(0.0);
-                    searchResults.put(searchKeyword, new SearchResultModel(array, fkcl, fkgl));
+                    searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
                 } catch (Exception e) {
                 }
 
