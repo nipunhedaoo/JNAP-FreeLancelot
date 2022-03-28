@@ -148,12 +148,12 @@ public class HomeController extends Controller {
                         } catch (JSONException e) {
                             logger.info("Error is parsing",e);
                         }
-                        return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+                        return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName.replace("+", " "))));
                     }
             );
         }
         else{
-            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName.replace("+", " "))));
         }
         return resultCompletionStage;
     }
