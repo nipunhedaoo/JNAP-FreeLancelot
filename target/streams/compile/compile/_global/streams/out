@@ -1,5 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\routes:6:1: class HomeController takes type parameters[0m
-[0m[[0m[31merror[0m] [0m[0mGET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\routes:6:1: class HomeController takes type parameters[0m
-[0m[[0m[31merror[0m] [0m[0mGET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

@@ -30,6 +30,7 @@ public class HomeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
     }
 
+
     @Test
     public void testSearchBySkill() {
         Http.RequestBuilder request = new Http.RequestBuilder()
@@ -56,6 +57,7 @@ public class HomeControllerTest extends WithApplication {
         Result result2 = route(app, request2);
         assertEquals(OK,result2.status());
     }
+
 
    @Test
     public void testProfilePage(){
