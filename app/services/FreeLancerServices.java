@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
-    private WSClient wsClient;
+    private static WSClient wsClient;
     private Session session;
 
     public FreeLancerServices() {
@@ -43,7 +43,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         return this.wsClient;
     }
 
-    String API = "https://www.freelancer.com/api/";
+    static String API = "https://www.freelancer.com/api/";
     static Scanner sc = new Scanner(System.in);
 
     /**
@@ -55,7 +55,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Alankrit Gupta
      */
 
-    public CompletionStage<WSResponse> searchResults(String phrase) {
+    public static CompletionStage<WSResponse> searchResults(String phrase) {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
         WSRequest request = null;
         try {
