@@ -1,7 +1,7 @@
 @import models.ProjectDetails
-@(searchMap : Map[String,Integer], phrase: String)
+@(request : play.mvc.Http.Request,searchMap : Map[String,Integer], phrase: String)
 
-@main("Welcome to Play") {
+@main(request,"Welcome to Play") {
     <div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>

@@ -271,7 +271,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         JSONObject result = json.getJSONObject("result");
         JSONArray projects = (JSONArray) result.getJSONArray("projects");
 
-        System.out.println("Inside search model by keyword"+ json.toString());
+//        System.out.println("Inside search model by keyword"+ json.toString());
         for (int i = 0; i < projects.length(); i++) {
             JSONObject object = projects.getJSONObject(i);
 
@@ -302,7 +302,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             }
             array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description,0.0, 0.0, "Early"));
         }
-        System.out.println("Inside search model by keyword arrays is"+ array);
+//        System.out.println("Inside search model by keyword arrays is"+ array);
 
         return array;
     }

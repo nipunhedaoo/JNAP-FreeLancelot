@@ -1,8 +1,8 @@
 @import models.EmployerDetails
-@(searchMap :List[EmployerDetails],ownerId:String)
+@(request : play.mvc.Http.Request,searchMap :List[EmployerDetails],ownerId:String)
 
 
-@main("Welcome to Play") {
+@main(request,"Welcome to Play") {
 
 <html>
 <head lang="en">

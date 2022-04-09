@@ -1,5 +1,6 @@
 package controllers;
 
+import actors.MyWebSocketActor;
 import actors.SearchActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -127,7 +128,7 @@ public class HomeController extends Controller {
 //        return resultCompletionStage;
 
         if (searchKeyword == "") {
-            return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
+            return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {
             if (freelancerClient.getWsClient() == null) {
                 freelancerClient.setWsClient(wsClient);
@@ -148,7 +149,7 @@ public class HomeController extends Controller {
                         } catch (Exception e) {
 System.out.println("Exception in home controller "+e);
                         }
-                        return ok(views.html.index.render(searchResults));
+                        return ok(views.html.index.render(request,searchResults));
                     }
                     );
             return resultCompletionStage;
@@ -162,17 +163,17 @@ System.out.println("Exception in home controller "+e);
      * @return Returns the word stats for a given query and an id.
      * @author Alankrit Gupta
      */
-    public Result wordStats(String query,long id) {
+    public Result wordStats(String query,long id,Http.Request request) {
         List<ProjectDetails> results = searchResults.get(query) != null ? searchResults.get(query).getprojectDetails() : listTest;
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
                     .filter(item -> item.getProjectID() == id)
                     .collect(Collectors.toList());
-            return ok(views.html.wordstats.render( project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
+            return ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
         } else {
             Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
-            return ok(views.html.wordstats.render(wordMap, query));
+            return ok(views.html.wordstats.render(request,wordMap, query));
         }
     }
 
@@ -183,7 +184,7 @@ System.out.println("Exception in home controller "+e);
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
      */
-    public CompletionStage<Result> searchBySkill(String skillId, String skillName) {
+    public CompletionStage<Result> searchBySkill(String skillId, String skillName,Http.Request request) {
         CompletionStage<Result> resultCompletionStage=null;
         if (!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
             if (freelancerClient.getWsClient() == null) {
@@ -199,12 +200,12 @@ System.out.println("Exception in home controller "+e);
                         } catch (JSONException e) {
                             logger.info("Error is parsing",e);
                         }
-                        return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName.replace("+", " "))));
+                        return (ok(views.html.skillSearch.render(request,skillSearchResults.get(skillId), skillName.replace("+", " "))));
                     }
             );
         }
         else{
-            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName.replace("+", " "))));
+            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(request,skillSearchResults.get(skillId), skillName.replace("+", " "))));
         }
         return resultCompletionStage;
     }
@@ -215,12 +216,12 @@ System.out.println("Exception in home controller "+e);
      * @return CompletionStage Returns the details of given ownerId
      * @author Pragya Tomar
      */
-    public CompletionStage<Result> profilePage(String ownerId) {
+    public CompletionStage<Result> profilePage(String ownerId,Http.Request request) {
         List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
-        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
+        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
     }
 
     public WebSocket socket() {
-        return WebSocket.Json.accept(request -> ActorFlow.actorRef(null, actorSystem, materializer));
+        return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
     }
 }
