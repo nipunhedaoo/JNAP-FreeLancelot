@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import play.libs.ws.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,24 +58,41 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Alankrit Gupta
      */
 
-    public static CompletionStage<WSResponse> searchResults(String phrase) throws ExecutionException, InterruptedException {
+    public static Object searchResults(String phrase) throws ExecutionException, InterruptedException, JSONException, IOException {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
         WSRequest request = null;
+        JSONObject json=null;
         try {
+            String temp="";
+//            System.out.println("Phrase is " + phrase);
+//            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
+//            System.out.println("Request is " + request);
+//            wsResponseCompletionStage = request.stream();
+//
 
-            System.out.println("Phrase is " + phrase);
+            URL url = new URL(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
 
-            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
-            System.out.println("Request is " + request);
-            wsResponseCompletionStage = request.stream();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                while (scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+            }
+                 json = new JSONObject(temp);
         } catch (UnsupportedEncodingException e) {
 
             System.out.println("Error is " + e);
             e.printStackTrace();
         }
 
-        return wsResponseCompletionStage;
+        return json;
     }
+
+
+
 
     /**
      * <p>With this function word stats for individual projects are calculated</p>
@@ -226,13 +244,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Nipun Hedaoo
      */
-    public List<ProjectDetails> searchModelByKeyWord(WSResponse res) throws JSONException {
+    public List<ProjectDetails> searchModelByKeyWord(JSONObject res) throws JSONException {
         System.out.println("Inside search model1");
         List<ProjectDetails> array =new ArrayList<>();
         try {
-            JSONObject json = new JSONObject(res.getBody());
-            System.out.println("Inside search model"+ json.toString());
-            array= searchModelByKeywordJson(json);
+//            JSONObject json = new JSONObject(res.getBody());
+//            System.out.println("Inside search model"+ json.toString());
+            array= searchModelByKeywordJson(res);
         }
         catch (Exception e) {
         }

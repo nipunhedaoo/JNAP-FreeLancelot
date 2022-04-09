@@ -40,7 +40,7 @@ public class SearchActor extends AbstractActor {
                         keywords -> {
                             try {
                                 System.out.println(keywords);
-                                CompletionStage<WSResponse> results = FreeLancerServices.searchResults(keywords);
+                                Object results = FreeLancerServices.searchResults(keywords);
                                 System.out.println(" Result is " +results );
                                 sender().tell(results, self());
                             } catch (Exception e) {

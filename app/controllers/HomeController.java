@@ -9,6 +9,7 @@ import models.EmployerDetails;
 import models.ProjectDetails;
 import models.SearchResultModel;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -132,12 +133,13 @@ public class HomeController extends Controller {
                 freelancerClient.setWsClient(wsClient);
             }
 
-            resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000)).toCompletableFuture()
-                    .thenApplyAsync(response ->  {
+            resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
+                    .thenApply(response ->
+                    {
                         try {
-                            System.out.println("Array1 is ");
+
                             List<ProjectDetails> array = new ArrayList<>();
-                            array = freelancerClient.searchModelByKeyWord((WSResponse) response);
+                            array = freelancerClient.searchModelByKeyWord((JSONObject) response);
 
                             System.out.println("Array is "+array);
                             double fkcl = 0;
@@ -147,7 +149,8 @@ public class HomeController extends Controller {
 System.out.println("Exception in home controller "+e);
                         }
                         return ok(views.html.index.render(searchResults));
-                    });
+                    }
+                    );
             return resultCompletionStage;
         }
     }
