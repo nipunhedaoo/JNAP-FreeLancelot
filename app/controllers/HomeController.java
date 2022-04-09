@@ -211,7 +211,7 @@ public class HomeController extends Controller {
         return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
     }
 
-    public WebSocket ws() {
+    public WebSocket socket() {
         return WebSocket.Json.accept(request -> ActorFlow.actorRef(null, actorSystem, materializer));
     }
 }
