@@ -41,6 +41,7 @@ public class SearchActor extends AbstractActor {
                             try {
                                 System.out.println(keywords);
                                 CompletionStage<WSResponse> results = FreeLancerServices.searchResults(keywords);
+                                System.out.println(" Result is " +results );
                                 sender().tell(results, self());
                             } catch (Exception e) {
                                 System.out.println("Error: Websocket Actor parsing error(" + keywords + ") " + e);

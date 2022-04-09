@@ -128,17 +128,23 @@ public class HomeController extends Controller {
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {
-            resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000)).toCompletableFuture()
-                    .thenApply(response ->  {
-                        try {
+            if (freelancerClient.getWsClient() == null) {
+                freelancerClient.setWsClient(wsClient);
+            }
 
+            resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000)).toCompletableFuture()
+                    .thenApplyAsync(response ->  {
+                        try {
+                            System.out.println("Array1 is ");
                             List<ProjectDetails> array = new ArrayList<>();
                             array = freelancerClient.searchModelByKeyWord((WSResponse) response);
+
+                            System.out.println("Array is "+array);
                             double fkcl = 0;
                             double fkgl = 0;
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
                         } catch (Exception e) {
-
+System.out.println("Exception in home controller "+e);
                         }
                         return ok(views.html.index.render(searchResults));
                     });
