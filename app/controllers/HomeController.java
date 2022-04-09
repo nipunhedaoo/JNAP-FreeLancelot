@@ -14,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import play.cache.AsyncCacheApi;
 import play.data.FormFactory;
+import play.libs.streams.ActorFlow;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
 import services.FreeLancerServices;
 
@@ -207,5 +209,9 @@ public class HomeController extends Controller {
     public CompletionStage<Result> profilePage(String ownerId) {
         List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
         return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
+    }
+
+    public WebSocket ws() {
+        return WebSocket.Json.accept(request -> ActorFlow.actorRef(null, actorSystem, materializer));
     }
 }
