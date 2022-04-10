@@ -1,9 +1,9 @@
 @import models.ProjectDetails
 @import models.SearchResultModel
 
-@(searchMap : Map[String, SearchResultModel])
+@(request : play.mvc.Http.Request,searchMap : Map[String, SearchResultModel])
 
-@main("Welcome to Play") {
+@main(request,"Welcome to Play") {
 <div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
@@ -27,6 +27,30 @@
                 <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
 
+                <script>
+
+
+                     let ws = new WebSocket("ws://localhost:9000/ws");
+                     ws.onopen = () => {
+                          console.log('WebSocket opened');
+                         searchKeywords();
+                     };
+
+                     function searchKeywords() {
+
+                         ws.send(JSON.stringify({
+                             "type": "Jasleen",
+                             "data": "Kaur"
+                         }));
+                     }
+
+
+
+                     ws.onmessage = function (msg) {
+                          console.log("WebSocket message received:", msg);
+
+                     };
+                </script>
             <table border="1" class="table">
                 <thead class="thead-light">
                     <tr>

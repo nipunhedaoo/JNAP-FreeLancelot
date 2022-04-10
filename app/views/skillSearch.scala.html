@@ -1,7 +1,7 @@
 @import models.ProjectDetails
-@(searchMap : List[ProjectDetails],skillName:String)
+@(request : play.mvc.Http.Request,searchMap : List[ProjectDetails],skillName:String)
 
-@main("Welcome to Play") {
+@main(request,"Welcome to Play") {
 <div class=".container-fluid">
     <div class="jumbotron jumbotron-fluid">
         <h1 id="mainBanner" >FreeLancelot</h1>
@@ -50,42 +50,6 @@
                         }
                         </tbody>
                     </table>
-
-        <table border="1" class="table">
-            <thead class="thead-light">
-            <tr>
-                <th>Owner ID</th>
-                <th>Submission Date</th>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Skills</th>
-            </tr>
-            </thead>
-            <tbody>
-            @for( project <- searchMap ) {
-            <tr>
-                <td>
-                    <p>@project.getOwnerID()</p>
-                </td>
-                <td>
-                    <p>@project.getTimeSubmitted().format("MMMM dd, yyyy")</p>
-                </td>
-                <td>
-                    <p>@project.getTitle()</p>
-                </td>
-                <td>
-                    <p>@project.getType()</p>
-                </td>
-                <td>
-                    @for(skill<-project.getSkills()){
-                    <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
-                    }
-                </td>
-            </tr>
-            }
-            </tbody>
-        </table>
-
         }
     </div>
 </div>

@@ -1,28 +1,38 @@
 package controllers;
 
+import actors.MyWebSocketActor;
+import actors.SearchActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.stream.Materializer;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
 import models.SearchResultModel;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import play.cache.AsyncCacheApi;
 import play.data.FormFactory;
+import play.libs.streams.ActorFlow;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.WebSocket;
+import scala.compat.java8.FutureConverters;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+
+import static akka.pattern.Patterns.ask;
 
 
 /**
@@ -46,15 +56,29 @@ public class HomeController extends Controller {
 
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
+    final ActorRef searchActor;
+
+    private final ActorSystem actorSystem;
+    private final Materializer materializer;
 
     @Inject
-    public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session) {
+    public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session, ActorSystem actorSystem, Materializer materializer) {
         this.formFactory = formFactory;
         this.freelancerClient = new FreeLancerServices();
         this.cache = cache;
         this.session = session;
+
+        this.actorSystem = actorSystem;
+        this.materializer = materializer;
+        searchActor = actorSystem.actorOf(SearchActor.getProps());
     }
 
+//    @Inject
+//    public HomeController(ActorSystem actorSystem, Materializer materializer) {
+//        this.actorSystem = actorSystem;
+//        this.materializer = materializer;
+//        searchActor = actorSystem.actorOf(SearchActor.getProps());
+//    }
 
     /**
      * <p>An action that renders an HTML page with a welcome message.</p>
@@ -66,42 +90,70 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
-        DecimalFormat df = new DecimalFormat("#.##");
+//        DecimalFormat df = new DecimalFormat("#.##");
+//
+//        if (searchKeyword == "") {
+//            if (!session.isSessionExist(request)) {
+//                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
+//            } else {
+//                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
+//            }
+//
+//        } else {
+//            if (freelancerClient.getWsClient() == null) {
+//                freelancerClient.setWsClient(wsClient);
+//            }
+//
+//
+//
+//            resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
+//                try {
+//
+//                    List<ProjectDetails> array = new ArrayList<>();
+//                    array = freelancerClient.searchModelByKeyWord(res);
+//                    double fkcl = freelancerClient.readabilityIndex( array).orElse(0.0);
+//                    double fkgl = freelancerClient.fleschKancidGradeLevvel(array).orElse(0.0);
+//                    searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
+//                } catch (Exception e) {
+//                }
+//
+//                session.setSessionSearchResultsHashMap(request, searchKeyword);
+//                if (!session.isSessionExist(request)) {
+//                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
+//                } else {
+//                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults)));
+//                }
+//            }));
+//        }
+//        return resultCompletionStage;
 
         if (searchKeyword == "") {
-            if (!session.isSessionExist(request)) {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
-            } else {
-                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
-            }
-
+            return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {
             if (freelancerClient.getWsClient() == null) {
                 freelancerClient.setWsClient(wsClient);
             }
 
+            resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
+                    .thenApply(response ->
+                    {
+                        try {
 
+                            List<ProjectDetails> array = new ArrayList<>();
+                            array = freelancerClient.searchModelByKeyWord((JSONObject) response);
 
-            resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
-                try {
-
-                    List<ProjectDetails> array = new ArrayList<>();
-                    array = freelancerClient.searchModelByKeyWord(res);
-                    double fkcl = freelancerClient.readabilityIndex( array).orElse(0.0);
-                    double fkgl = freelancerClient.fleschKancidGradeLevvel(array).orElse(0.0);
-                    searchResults.put(searchKeyword, new SearchResultModel(array, fkcl, fkgl));
-                } catch (Exception e) {
-                }
-
-                session.setSessionSearchResultsHashMap(request, searchKeyword);
-                if (!session.isSessionExist(request)) {
-                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
-                } else {
-                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults)));
-                }
-            }));
+                            System.out.println("Array is "+array);
+                            double fkcl = 0;
+                            double fkgl = 0;
+                            searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
+                        } catch (Exception e) {
+System.out.println("Exception in home controller "+e);
+                        }
+                        return ok(views.html.index.render(request,searchResults));
+                    }
+                    );
+            return resultCompletionStage;
         }
-        return resultCompletionStage;
     }
 
     /**
@@ -111,17 +163,17 @@ public class HomeController extends Controller {
      * @return Returns the word stats for a given query and an id.
      * @author Alankrit Gupta
      */
-    public Result wordStats(String query,long id) {
+    public Result wordStats(String query,long id,Http.Request request) {
         List<ProjectDetails> results = searchResults.get(query) != null ? searchResults.get(query).getprojectDetails() : listTest;
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
                     .filter(item -> item.getProjectID() == id)
                     .collect(Collectors.toList());
-            return ok(views.html.wordstats.render( project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
+            return ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
         } else {
             Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
-            return ok(views.html.wordstats.render(wordMap, query));
+            return ok(views.html.wordstats.render(request,wordMap, query));
         }
     }
 
@@ -132,7 +184,7 @@ public class HomeController extends Controller {
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
      */
-    public CompletionStage<Result> searchBySkill(String skillId, String skillName) {
+    public CompletionStage<Result> searchBySkill(String skillId, String skillName,Http.Request request) {
         CompletionStage<Result> resultCompletionStage=null;
         if (!StringUtils.isEmpty(skillId) && !skillSearchResults.containsKey(skillId)) {
             if (freelancerClient.getWsClient() == null) {
@@ -148,12 +200,12 @@ public class HomeController extends Controller {
                         } catch (JSONException e) {
                             logger.info("Error is parsing",e);
                         }
-                        return (ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+                        return (ok(views.html.skillSearch.render(request,skillSearchResults.get(skillId), skillName.replace("+", " "))));
                     }
             );
         }
         else{
-            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(skillSearchResults.get(skillId), skillName)));
+            return  CompletableFuture.completedFuture(ok(views.html.skillSearch.render(request,skillSearchResults.get(skillId), skillName.replace("+", " "))));
         }
         return resultCompletionStage;
     }
@@ -164,8 +216,12 @@ public class HomeController extends Controller {
      * @return CompletionStage Returns the details of given ownerId
      * @author Pragya Tomar
      */
-    public CompletionStage<Result> profilePage(String ownerId) {
+    public CompletionStage<Result> profilePage(String ownerId,Http.Request request) {
         List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
-        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(details,ownerId)));
+        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
+    }
+
+    public WebSocket socket() {
+        return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
     }
 }

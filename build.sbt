@@ -25,3 +25,4 @@ libraryDependencies += "org.powermock" % "powermock-api-mockito2" % "2.0.9" % Te
 
 routesGenerator := InjectedRoutesGenerator
 
+libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.6.14" % Test
