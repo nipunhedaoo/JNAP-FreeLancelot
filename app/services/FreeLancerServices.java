@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
@@ -419,30 +420,42 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It updates the Flesch Readability Index for each project and returns average Flesch Readability Index of project description's.
      * @author Nipun Hedaoo
      */
-    public OptionalDouble readabilityIndex(List<ProjectDetails> searchResults) {
+    public Double readabilityIndex(List<ProjectDetails> searchResults) {
+            double searchResultUpadted = 0.0;
+            try {
+                 searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+                    double fkcl = 0;
+                    int numOfSentence = 0;
+                    int numOfWords = 0;
+                    int numOfSyllables = 0;
 
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-            double fkcl = 0;
-            int numOfSentence = 0;
-            int numOfWords = 0;
-            int numOfSyllables = 0;
+                    String projectDescription = project.getPreviewDescription();
+                    numOfWords = getNumOfWords(projectDescription);
+                    numOfSentence = getNumOfSentences(projectDescription);
 
-            String projectDescription = project.getPreviewDescription();
-            numOfWords = getNumOfWords(projectDescription);
-            numOfSentence = getNumOfSentences(projectDescription);
+                    numOfSyllables = getNnumOfSyllables(projectDescription);
 
-            numOfSyllables = getNnumOfSyllables(projectDescription);
+                    fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
 
-            fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
+                    project.setFleschReadabilityIndex(Math.round(fkcl));
+                    project.setReadability(Math.round(fkcl));
 
-            project.setFleschReadabilityIndex(Math.round(fkcl));
-            project.setReadability(Math.round(fkcl));
+                    return Math.round(fkcl);
 
-            return Math.round(fkcl);
+                }).average().getAsDouble();
 
-        }).average();
 
-        return searchResultUpadted;
+            }catch(Exception e){
+
+            }
+
+            return searchResultUpadted;
+    }
+
+    public double returnValue (JSONObject json){
+        System.out.println(json);
+
+        return 0.0;
     }
 
     /**
@@ -452,8 +465,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It updates the Flesch–Kincaid grade level   for each project and returns average Flesch–Kincaid grade level of project description's.
      * @author Nipun Hedaoo
      */
-    public OptionalDouble fleschKancidGradeLevvel(List<ProjectDetails> searchResults) {
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+    public Double fleschKancidGradeLevvel(List<ProjectDetails> searchResults) {
+        Double searchResultUpadted = searchResults.stream().mapToDouble(project -> {
             double fkgl = 0;
             int numOfSentence = 0;
             int numOfWords = 0;
@@ -470,7 +483,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             return Math.round(fkgl);
 
-        }).average();
+        }).average().getAsDouble();
 
         return searchResultUpadted;
     }
