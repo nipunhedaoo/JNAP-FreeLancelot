@@ -168,12 +168,37 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns the API response for active jobs
      * @author Jasleen Kaur
      */
-    public CompletionStage<WSResponse> searchSkillResults(String skillId) {
-        CompletionStage<WSResponse> wsResponseCompletionStage = null;
-        WSRequest request = null;
-        request = wsClient.url(API + "projects/0.1/projects/active?jobs[]=" + Integer.parseInt(skillId) + "&limit=10&job_details=true");
-        wsResponseCompletionStage = request.stream();
-        return wsResponseCompletionStage;
+    public static Object searchSkillResults(String skillId) {
+    JSONObject json=null;
+
+        try {
+            String temp="";
+//            System.out.println("Phrase is " + phrase);
+//            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
+//            System.out.println("Request is " + request);
+//            wsResponseCompletionStage = request.stream();
+//
+
+            URL url = new URL(API + "projects/0.1/projects/active?jobs[]=" + Integer.parseInt(skillId) + "&limit=10&job_details=true");
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (conn.getResponseCode() == 200) {
+                Scanner scan = new Scanner(url.openStream());
+                while (scan.hasNext()) {
+                    temp = temp + scan.nextLine();
+                }
+            }
+            json = new JSONObject(temp);
+        } catch (Exception e) {
+
+            System.out.println("Error is " + e);
+            e.printStackTrace();
+        }
+
+        return json;
+
     }
 
     /**
@@ -183,13 +208,12 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
      */
-    public List<ProjectDetails> searchProjectsBySkill(WSResponse res) throws JSONException {
+    public List<ProjectDetails> searchProjectsBySkill(JSONObject res) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         try {
                 System.out.println("Response + " + res);
-               JSONObject json = new JSONObject(res.getBody());
 
-            return searchSkillProjectsJson(json);
+            return searchSkillProjectsJson(res);
             }
         catch (Exception e) {
         }

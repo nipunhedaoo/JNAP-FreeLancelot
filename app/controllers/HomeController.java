@@ -2,6 +2,7 @@ package controllers;
 
 import actors.MyWebSocketActor;
 import actors.SearchActor;
+import actors.SkillActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
@@ -57,6 +58,7 @@ public class HomeController extends Controller {
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
     final ActorRef searchActor;
+    final ActorRef skillActor;
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
@@ -71,6 +73,7 @@ public class HomeController extends Controller {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
+        skillActor=actorSystem.actorOf(SkillActor.getProps());
     }
 
 //    @Inject
@@ -191,11 +194,10 @@ System.out.println("Exception in home controller "+e);
                 freelancerClient.setWsClient(wsClient);
             }
 
-            CompletionStage<WSResponse> result1=freelancerClient.searchSkillResults(skillId);
-            resultCompletionStage =  result1.toCompletableFuture().thenApplyAsync(res -> {
+            resultCompletionStage =  FutureConverters.toJava(ask(skillActor, skillId, 1000000)).thenApply(res -> {
                         try {
                             logger.info("Cache");
-                            List<ProjectDetails> respo= freelancerClient.searchProjectsBySkill(res);
+                            List<ProjectDetails> respo= freelancerClient. searchProjectsBySkill((JSONObject)res);
                             skillSearchResults.put(skillId,respo);
                         } catch (JSONException e) {
                             logger.info("Error is parsing",e);
