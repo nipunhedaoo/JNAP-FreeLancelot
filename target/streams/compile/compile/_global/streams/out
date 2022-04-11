@@ -1,5 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\routes:6:1: class HomeController takes type parameters[0m
-[0m[[0m[31merror[0m] [0m[0mGET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\conf\routes:6:1: class HomeController takes type parameters[0m
-[0m[[0m[31merror[0m] [0m[0mGET     /                           controllers.HomeController.index(request: Request,searchKeyword: String ?= "")[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[0minfo[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\actors\FleschKincadGradingActor.java: Some input files use unchecked or unsafe operations.[0m
+[0m[[0m[0minfo[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\actors\FleschKincadGradingActor.java: Recompile with -Xlint:unchecked for details.[0m
+[0m[[0m[0minfo[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\actors\FleschKincadGradingActor.java: Some input files use unchecked or unsafe operations.[0m
+[0m[[0m[0minfo[0m] [0m[0mC:\Users\alank\Documents\APP Project\JNAP-FreeLancelot\app\actors\FleschKincadGradingActor.java: Recompile with -Xlint:unchecked for details.[0m

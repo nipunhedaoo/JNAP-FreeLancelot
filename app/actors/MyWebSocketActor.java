@@ -37,6 +37,11 @@ public class MyWebSocketActor extends AbstractActor {
                         if (type.equals("searchKeyword")) {
                             actor = getContext().actorOf((SearchActor.getProps()));
                         }
+
+                        if(type.equals("readabilityIndex")){
+                            actor = getContext().actorOf((FleschReadingIndexActor.getProps()));
+                        }
+
                         if (scheduled != null) {
                             scheduled.cancel();
                         }

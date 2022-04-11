@@ -1,11 +1,14 @@
 package controllers;
 
+import actors.*;
 import actors.MyWebSocketActor;
 import actors.SearchActor;
 import actors.SkillActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.pattern.Patterns;
 import akka.stream.Materializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
@@ -25,15 +28,24 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
+import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import scala.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static akka.pattern.Patterns.ask;
+import akka.dispatch.*;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.Future;
+import scala.concurrent.Await;
+import scala.concurrent.Promise;
+import akka.util.Timeout;
 
 
 /**
@@ -58,6 +70,9 @@ public class HomeController extends Controller {
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
     final ActorRef searchActor;
+    final ActorRef wordstatsGlobalActor;
+    final ActorRef fleschReadabilityActor;
+    final ActorRef fleschKincadGradingActor;
     final ActorRef skillActor;
 
     private final ActorSystem actorSystem;
@@ -66,13 +81,16 @@ public class HomeController extends Controller {
     @Inject
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session, ActorSystem actorSystem, Materializer materializer) {
         this.formFactory = formFactory;
-        this.freelancerClient = new FreeLancerServices();
+        this.freelancerClient = new FreeLancerServices(actorSystem, materializer);
         this.cache = cache;
         this.session = session;
 
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
+        wordstatsGlobalActor = actorSystem.actorOf(WordStatsGlobalActor.getProps());
+        fleschReadabilityActor = actorSystem.actorOf(FleschReadingIndexActor.getProps());
+        fleschKincadGradingActor = actorSystem.actorOf(FleschKincadGradingActor.getProps());
         skillActor=actorSystem.actorOf(SkillActor.getProps());
     }
 
@@ -133,9 +151,6 @@ public class HomeController extends Controller {
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {
-            if (freelancerClient.getWsClient() == null) {
-                freelancerClient.setWsClient(wsClient);
-            }
 
             resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
                     .thenApply(response ->
@@ -148,9 +163,16 @@ public class HomeController extends Controller {
                             System.out.println("Array is "+array);
                             double fkcl = 0;
                             double fkgl = 0;
+                            Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+                            Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
+                            fkcl =  (Double) Await.result(futureFKCL, timeout.duration());
+
+                            Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
+                            fkgl = (Double) Await.result(futureFKGL, timeout.duration());
+
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
                         } catch (Exception e) {
-System.out.println("Exception in home controller "+e);
+                            System.out.println("Exception in home controller "+e);
                         }
                         return ok(views.html.index.render(request,searchResults));
                     }
@@ -166,17 +188,25 @@ System.out.println("Exception in home controller "+e);
      * @return Returns the word stats for a given query and an id.
      * @author Alankrit Gupta
      */
-    public Result wordStats(String query,long id,Http.Request request) {
+    public CompletionStage<Result> wordStats(String query,long id,Http.Request request) {
         List<ProjectDetails> results = searchResults.get(query) != null ? searchResults.get(query).getprojectDetails() : listTest;
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
                     .filter(item -> item.getProjectID() == id)
                     .collect(Collectors.toList());
-            return ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
+            return CompletableFuture.completedFuture(ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription())));
         } else {
-            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
-            return ok(views.html.wordstats.render(request,wordMap, query));
+            return FutureConverters.toJava(ask(wordstatsGlobalActor, results, 1000000)).toCompletableFuture()
+                    .thenApply(response ->
+                            {
+                                System.out.println("In func");
+                                ObjectMapper oMapper = new ObjectMapper();
+                                Map<String, Integer> map = oMapper.convertValue(response, Map.class);
+                                System.out.println("Map is " +map);
+                                return ok(views.html.wordstats.render(request,map, query));
+                            }
+                    );
         }
     }
 
