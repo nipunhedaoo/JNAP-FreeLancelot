@@ -1,5 +1,11 @@
 package services;
 
+import actors.WordStatsIndividualActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.pattern.Patterns;
+import akka.stream.Materializer;
+import akka.util.Timeout;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
@@ -7,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import play.libs.ws.*;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,10 +25,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static java.util.stream.Collectors.toMap;
-
 
 /**
  * The FreeLancerServices class is used for fetching the project details
@@ -30,12 +38,19 @@ import static java.util.stream.Collectors.toMap;
  */
 public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
+    final ActorRef wordstatsIndividualActor;
+
+    private final ActorSystem actorSystem;
+    private final Materializer materializer;
 
     private static WSClient wsClient;
     private Session session;
 
-    public FreeLancerServices() {
+    public FreeLancerServices(ActorSystem actorSystem, Materializer materializer) {
         this.session = new Session();
+        this.actorSystem = actorSystem;
+        this.materializer = materializer;
+        wordstatsIndividualActor = actorSystem.actorOf(WordStatsIndividualActor.getProps());
     }
 
     public void setWsClient(WSClient wsClient) {
@@ -58,17 +73,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Alankrit Gupta
      */
 
-    public static Object searchResults(String phrase) throws ExecutionException, InterruptedException, JSONException, IOException {
-        CompletionStage<WSResponse> wsResponseCompletionStage = null;
-        WSRequest request = null;
+    public static Object searchResults(String phrase) throws  JSONException, IOException {
         JSONObject json=null;
         try {
             String temp="";
-//            System.out.println("Phrase is " + phrase);
-//            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
-//            System.out.println("Request is " + request);
-//            wsResponseCompletionStage = request.stream();
-//
 
             URL url = new URL(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
 
@@ -90,9 +98,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         return json;
     }
-
-
-
 
     /**
      * <p>With this function word stats for individual projects are calculated</p>
@@ -265,13 +270,12 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Alankrit Gupta
      */
 
-    public List<ProjectDetails>  searchModelByKeywordJson(JSONObject json) throws JSONException {
+    public List<ProjectDetails>  searchModelByKeywordJson(JSONObject json) throws JSONException, InterruptedException, TimeoutException {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         JSONObject result = json.getJSONObject("result");
         JSONArray projects = (JSONArray) result.getJSONArray("projects");
 
-//        System.out.println("Inside search model by keyword"+ json.toString());
         for (int i = 0; i < projects.length(); i++) {
             JSONObject object = projects.getJSONObject(i);
 
@@ -283,8 +287,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             String preview_description = object.get("preview_description").toString();
             descriptionArray.add(preview_description);
 
-            Map<String, Integer> wordStats = wordStatsIndevidual(object.get("preview_description").toString());
-
+            Timeout timeout =  new Timeout(Duration.create(5, "seconds"));
+            Future<Object> future = Patterns.ask(wordstatsIndividualActor, object.get("preview_description").toString(), timeout);
+            Map<String, Integer> wordStats = (Map<String, Integer>) Await.result(future, timeout.duration());
 
             JSONArray skills = object.getJSONArray("jobs");
             List<List<String>> skillsList = new ArrayList<>();
@@ -302,7 +307,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             }
             array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description,0.0, 0.0, "Early"));
         }
-//        System.out.println("Inside search model by keyword arrays is"+ array);
 
         return array;
     }

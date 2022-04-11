@@ -67,7 +67,7 @@ public class HomeController extends Controller {
     @Inject
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session, ActorSystem actorSystem, Materializer materializer) {
         this.formFactory = formFactory;
-        this.freelancerClient = new FreeLancerServices();
+        this.freelancerClient = new FreeLancerServices(actorSystem, materializer);
         this.cache = cache;
         this.session = session;
 
@@ -134,9 +134,6 @@ public class HomeController extends Controller {
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {
-            if (freelancerClient.getWsClient() == null) {
-                freelancerClient.setWsClient(wsClient);
-            }
 
             resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
                     .thenApply(response ->
@@ -146,12 +143,11 @@ public class HomeController extends Controller {
                             List<ProjectDetails> array = new ArrayList<>();
                             array = freelancerClient.searchModelByKeyWord((JSONObject) response);
 
-                            System.out.println("Array is "+array);
                             double fkcl = 0;
                             double fkgl = 0;
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
                         } catch (Exception e) {
-System.out.println("Exception in home controller "+e);
+                            System.out.println("Exception in home controller "+e);
                         }
                         return ok(views.html.index.render(request,searchResults));
                     }
