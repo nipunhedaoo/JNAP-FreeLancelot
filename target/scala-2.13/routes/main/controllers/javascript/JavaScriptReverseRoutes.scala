@@ -18,26 +18,6 @@ package controllers.javascript {
     }
 
   
-    // @LINE:6
-    def index: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.HomeController.index",
-      """
-        function(searchKeyword0) {
-          return _wA({method:"GET", url:"""" + _prefix + """" + _qS([(searchKeyword0 == null ? null : (""" + implicitly[play.api.mvc.QueryStringBindable[String]].javascriptUnbind + """)("searchKeyword", searchKeyword0))])})
-        }
-      """
-    )
-  
-    // @LINE:7
-    def profilePage: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.HomeController.profilePage",
-      """
-        function(ownerId0) {
-          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "profilePage/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("ownerId", ownerId0))})
-        }
-      """
-    )
-  
     // @LINE:8
     def wordStats: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.HomeController.wordStats",
@@ -45,7 +25,7 @@ package controllers.javascript {
         function(query0,id1) {
         
           if (true) {
-            return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("query", query0)) + "/wordStats/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[Long]].javascriptUnbind + """)("id", id1))})
+            return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("query", query0)) + "/wordStatsGlobal" + _qS([(id1 == null ? null : (""" + implicitly[play.api.mvc.QueryStringBindable[Long]].javascriptUnbind + """)("id", id1))])})
           }
         
         }
@@ -62,9 +42,39 @@ package controllers.javascript {
       """
     )
   
+    // @LINE:7
+    def profilePage: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.profilePage",
+      """
+        function(ownerId0) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "profilePage/" + encodeURIComponent((""" + implicitly[play.api.mvc.PathBindable[String]].javascriptUnbind + """)("ownerId", ownerId0))})
+        }
+      """
+    )
+  
+    // @LINE:6
+    def index: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.index",
+      """
+        function(searchKeyword0) {
+          return _wA({method:"GET", url:"""" + _prefix + """" + _qS([(searchKeyword0 == null ? null : (""" + implicitly[play.api.mvc.QueryStringBindable[String]].javascriptUnbind + """)("searchKeyword", searchKeyword0))])})
+        }
+      """
+    )
+  
+    // @LINE:11
+    def socket: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.HomeController.socket",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "ws"})
+        }
+      """
+    )
+  
   }
 
-  // @LINE:14
+  // @LINE:15
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -72,7 +82,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:14
+    // @LINE:15
     def versioned: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.versioned",
       """

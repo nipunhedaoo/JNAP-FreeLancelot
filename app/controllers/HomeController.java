@@ -2,9 +2,11 @@ package controllers;
 
 import actors.MyWebSocketActor;
 import actors.SearchActor;
+import actors.WordStatsGlobalActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
@@ -57,6 +59,7 @@ public class HomeController extends Controller {
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
     final ActorRef searchActor;
+    final ActorRef wordstatsGlobalActor;
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
@@ -71,6 +74,7 @@ public class HomeController extends Controller {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
+        wordstatsGlobalActor = actorSystem.actorOf(WordStatsGlobalActor.getProps());
     }
 
 //    @Inject
@@ -163,17 +167,25 @@ System.out.println("Exception in home controller "+e);
      * @return Returns the word stats for a given query and an id.
      * @author Alankrit Gupta
      */
-    public Result wordStats(String query,long id,Http.Request request) {
+    public CompletionStage<Result> wordStats(String query,long id,Http.Request request) {
         List<ProjectDetails> results = searchResults.get(query) != null ? searchResults.get(query).getprojectDetails() : listTest;
         if (id != -1) {
             List<ProjectDetails> project = results
                     .stream()
                     .filter(item -> item.getProjectID() == id)
                     .collect(Collectors.toList());
-            return ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription()));
+            return CompletableFuture.completedFuture(ok(views.html.wordstats.render(request,project.get(0).getWordStats() , project.get(0).getPreviewDescription())));
         } else {
-            Map<String, Integer> wordMap = freelancerClient.wordStatsGlobal(results);
-            return ok(views.html.wordstats.render(request,wordMap, query));
+            return FutureConverters.toJava(ask(wordstatsGlobalActor, results, 1000000)).toCompletableFuture()
+                    .thenApply(response ->
+                            {
+                                System.out.println("In func");
+                                ObjectMapper oMapper = new ObjectMapper();
+                                Map<String, Integer> map = oMapper.convertValue(response, Map.class);
+                                System.out.println("Map is " +map);
+                                return ok(views.html.wordstats.render(request,map, query));
+                            }
+                    );
         }
     }
 
