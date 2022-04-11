@@ -1,10 +1,9 @@
 package controllers;
 
-import actors.MyWebSocketActor;
-import actors.SearchActor;
-import actors.WordStatsGlobalActor;
+import actors.*;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.pattern.Patterns;
 import akka.stream.Materializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
@@ -26,15 +25,24 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
+import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
 import services.FreeLancerServices;
 
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import scala.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static akka.pattern.Patterns.ask;
+import akka.dispatch.*;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.Future;
+import scala.concurrent.Await;
+import scala.concurrent.Promise;
+import akka.util.Timeout;
 
 
 /**
@@ -60,6 +68,8 @@ public class HomeController extends Controller {
 
     final ActorRef searchActor;
     final ActorRef wordstatsGlobalActor;
+    final ActorRef fleschReadabilityActor;
+    final ActorRef fleschKincadGradingActor;
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
@@ -75,6 +85,8 @@ public class HomeController extends Controller {
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
         wordstatsGlobalActor = actorSystem.actorOf(WordStatsGlobalActor.getProps());
+        fleschReadabilityActor = actorSystem.actorOf(FleschReadingIndexActor.getProps());
+        fleschKincadGradingActor = actorSystem.actorOf(FleschKincadGradingActor.getProps());
     }
 
 //    @Inject
@@ -145,6 +157,13 @@ public class HomeController extends Controller {
 
                             double fkcl = 0;
                             double fkgl = 0;
+                            Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+                            Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
+                            fkcl =  (Double) Await.result(futureFKCL, timeout.duration());
+
+                            Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
+                            fkgl = (Double) Await.result(futureFKGL, timeout.duration());
+
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
                         } catch (Exception e) {
                             System.out.println("Exception in home controller "+e);

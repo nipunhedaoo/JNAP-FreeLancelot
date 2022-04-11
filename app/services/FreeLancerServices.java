@@ -423,31 +423,38 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It updates the Flesch Readability Index for each project and returns average Flesch Readability Index of project description's.
      * @author Nipun Hedaoo
      */
-    public OptionalDouble readabilityIndex(List<ProjectDetails> searchResults) {
+    public static Double readabilityIndex(List<ProjectDetails> searchResults) {
+            double searchResultUpadted = 0.0;
+            try {
+                 searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+                    double fkcl = 0;
+                    int numOfSentence = 0;
+                    int numOfWords = 0;
+                    int numOfSyllables = 0;
 
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
-            double fkcl = 0;
-            int numOfSentence = 0;
-            int numOfWords = 0;
-            int numOfSyllables = 0;
+                    String projectDescription = project.getPreviewDescription();
+                    numOfWords = getNumOfWords(projectDescription);
+                    numOfSentence = getNumOfSentences(projectDescription);
 
-            String projectDescription = project.getPreviewDescription();
-            numOfWords = getNumOfWords(projectDescription);
-            numOfSentence = getNumOfSentences(projectDescription);
+                    numOfSyllables = getNnumOfSyllables(projectDescription);
 
-            numOfSyllables = getNnumOfSyllables(projectDescription);
+                    fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
 
-            fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
+                    project.setFleschReadabilityIndex(Math.round(fkcl));
+                    project.setReadability(Math.round(fkcl));
 
-            project.setFleschReadabilityIndex(Math.round(fkcl));
-            project.setReadability(Math.round(fkcl));
+                    return Math.round(fkcl);
 
-            return Math.round(fkcl);
+                }).average().getAsDouble();
 
-        }).average();
 
-        return searchResultUpadted;
+            }catch(Exception e){
+
+            }
+
+            return searchResultUpadted;
     }
+
 
     /**
      * <p>This function calculates the Flesch–Kincaid grade level  </p>
@@ -456,8 +463,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It updates the Flesch–Kincaid grade level   for each project and returns average Flesch–Kincaid grade level of project description's.
      * @author Nipun Hedaoo
      */
-    public OptionalDouble fleschKancidGradeLevvel(List<ProjectDetails> searchResults) {
-        OptionalDouble searchResultUpadted = searchResults.stream().mapToDouble(project -> {
+    public static Double fleschKancidGradeLevvel(List<ProjectDetails> searchResults) {
+        Double searchResultUpadted = searchResults.stream().mapToDouble(project -> {
             double fkgl = 0;
             int numOfSentence = 0;
             int numOfWords = 0;
@@ -474,35 +481,35 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             return Math.round(fkgl);
 
-        }).average();
+        }).average().getAsDouble();
 
         return searchResultUpadted;
     }
 
-    public double calculateFRI(int numOfSentence, int numOfWords, int numOfSyllables) {
+    public static double calculateFRI(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkcl = 0.0;
 
         fkcl = 206.835 - 1.015 * ( numOfWords / numOfSentence) - 84.6 * ( numOfSyllables / numOfWords );
         return fkcl;
     }
 
-    public double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
+    public static double calculateFKGL(int numOfSentence, int numOfWords, int numOfSyllables) {
         double fkgl = 0.0;
         fkgl = (0.39 * ( numOfWords / numOfSentence )) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59;
         return fkgl;
     }
 
-    public int getNumOfWords(String projectDescription) {
+    public static int getNumOfWords(String projectDescription) {
         int word = 0;
         word = projectDescription.trim().split("\\s+").length;
         return word;
     }
 
-    public int getNumOfSentences(String projectDescription) {
+    public static int getNumOfSentences(String projectDescription) {
         return projectDescription.trim().split("([.!?:;])([\\s\\n])([A-Z]*)").length;
     }
 
-    public int getNnumOfSyllables(String projectDescription) {
+    public static int getNnumOfSyllables(String projectDescription) {
         int numOfSyllables = 0;
 
         numOfSyllables = Arrays.stream(projectDescription.trim().split("\\s+")).mapToInt(word -> {
