@@ -12,7 +12,9 @@ import models.ProjectDetails;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import play.libs.ws.*;
+import play.libs.ws.WSBodyReadables;
+import play.libs.ws.WSBodyWritables;
+import play.libs.ws.WSClient;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -24,7 +26,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeoutException;
 
 import static java.util.stream.Collectors.toMap;
@@ -335,7 +336,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns employer details associated with the ownerId.
      * @author Pragya Tomar
      */
-    public List<EmployerDetails> employerResults(String ownerID) {
+    public static Object employerDetails(String ownerID) {
+        JSONObject jsonObject = null;
         List<EmployerDetails> array = new ArrayList<>();
         try {
             URL url = new URL(API + "users/0.1/users/" + ownerID);
@@ -348,36 +350,41 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 while (scan.hasNext()) {
                     temp = temp + scan.nextLine();
                 }
-                JSONObject json = new JSONObject(temp);
-                JSONObject result = json.getJSONObject("result");
-                JSONObject location = result.getJSONObject("location");
-                JSONObject country = location.getJSONObject("country");
-                JSONObject status = result.getJSONObject("status");
-                JSONObject currency = result.getJSONObject("primary_currency");
-
-                String id = result.get("id").toString();
-                String username = result.get("username").toString();
-                String registrationDate = result.get("registration_date").toString();
-                String limitedAccount = result.get("limited_account").toString();
-                String displayName = result.get("display_name").toString();
-                String countryName = country.get("name").toString();
-                String role = result.get("role").toString();
-                String chosenRole = result.get("chosen_role").toString();
-                String emailVerified = status.get("email_verified").toString();
-                String primaryCurrency = currency.get("name").toString();
-                List<ProjectDetails> employer_projects = getProjects(ownerID);
-
-
-                array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName, countryName, role, chosenRole, emailVerified, primaryCurrency, employer_projects));
-
+                jsonObject = new JSONObject(temp);
             }
-
-
         } catch (Exception e) {
+
         }
-        return array;
+        return jsonObject;
     }
 
+
+    public static List<EmployerDetails> employerResults(String ownerID, JSONObject json1) throws JSONException {
+        List<EmployerDetails> array = new ArrayList<>();
+        JSONObject result = json1.getJSONObject("result");
+        JSONObject location = result.getJSONObject("location");
+        JSONObject country = location.getJSONObject("country");
+        JSONObject status = result.getJSONObject("status");
+        JSONObject currency = result.getJSONObject("primary_currency");
+
+        String id = result.get("id").toString();
+        String username = result.get("username").toString();
+        String registrationDate = result.get("registration_date").toString();
+        String limitedAccount = result.get("limited_account").toString();
+        String displayName = result.get("display_name").toString();
+        String countryName = country.get("name").toString();
+        String role = result.get("role").toString();
+        String chosenRole = result.get("chosen_role").toString();
+        String emailVerified = status.get("email_verified").toString();
+        String primaryCurrency = currency.get("name").toString();
+        List<ProjectDetails> employer_projects = getProjects(ownerID);
+
+
+        array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName, countryName, role, chosenRole, emailVerified, primaryCurrency, employer_projects));
+
+
+        return array;
+    }
     /**
      * <p>With this function API call for fetching employer projects is made</p>
      *
@@ -385,7 +392,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns list of latest 10 projects associated with the ownerId.
      * @author Pragya Tomar
      */
-    public List<ProjectDetails> getProjects(String ownerID) {
+    public static List<ProjectDetails> getProjects(String ownerID) {
         List<ProjectDetails> array2 = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/?owners[]=" + ownerID + "&limit=10&job_details=true");

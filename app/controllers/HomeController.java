@@ -1,13 +1,11 @@
 package controllers;
 
 import actors.*;
-import actors.MyWebSocketActor;
-import actors.SearchActor;
-import actors.SkillActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.stream.Materializer;
+import akka.util.Timeout;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
 import models.EmployerDetails;
@@ -22,13 +20,13 @@ import play.cache.AsyncCacheApi;
 import play.data.FormFactory;
 import play.libs.streams.ActorFlow;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
 import scala.concurrent.Await;
+import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import services.FreeLancerServices;
 
@@ -36,16 +34,9 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import scala.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static akka.pattern.Patterns.ask;
-import akka.dispatch.*;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.Future;
-import scala.concurrent.Await;
-import scala.concurrent.Promise;
-import akka.util.Timeout;
 
 
 /**
@@ -74,6 +65,7 @@ public class HomeController extends Controller {
     final ActorRef fleschReadabilityActor;
     final ActorRef fleschKincadGradingActor;
     final ActorRef skillActor;
+    final ActorRef employerActor;
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
@@ -81,6 +73,7 @@ public class HomeController extends Controller {
     @Inject
     public HomeController(FormFactory formFactory, AsyncCacheApi cache, Session session, ActorSystem actorSystem, Materializer materializer) {
         this.formFactory = formFactory;
+
         this.freelancerClient = new FreeLancerServices(actorSystem, materializer);
         this.cache = cache;
         this.session = session;
@@ -88,6 +81,7 @@ public class HomeController extends Controller {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
+        employerActor=actorSystem.actorOf(EmployerActor.getProps());
         wordstatsGlobalActor = actorSystem.actorOf(WordStatsGlobalActor.getProps());
         fleschReadabilityActor = actorSystem.actorOf(FleschReadingIndexActor.getProps());
         fleschKincadGradingActor = actorSystem.actorOf(FleschKincadGradingActor.getProps());
@@ -249,8 +243,28 @@ public class HomeController extends Controller {
      * @author Pragya Tomar
      */
     public CompletionStage<Result> profilePage(String ownerId,Http.Request request) {
-        List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
-        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
+        CompletionStage<Result> resultCompletionStage = null;
+
+
+        resultCompletionStage = FutureConverters.toJava(ask(employerActor, ownerId, 1000000))
+                .thenApply(response ->
+                        {
+                            List<EmployerDetails> array = null;
+                            try {
+
+                                array = new ArrayList<>();
+                                array = freelancerClient.employerResults(ownerId, (JSONObject) response);
+
+                                System.out.println("Array is " + array);
+
+
+                            } catch (Exception e) {
+                                System.out.println("Exception in home controller " + e);
+                            }
+                            return ok(views.html.employerDetails.render(request,array, ownerId));
+                        }
+                );
+        return resultCompletionStage;
     }
 
     public WebSocket socket() {
