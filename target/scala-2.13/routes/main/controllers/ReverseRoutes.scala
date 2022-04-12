@@ -17,10 +17,16 @@ package controllers {
     }
 
   
-    // @LINE:6
-    def index(searchKeyword:String = ""): Call = {
+    // @LINE:8
+    def wordStats(query:String, id:Long): Call = {
       
-      Call("GET", _prefix + play.core.routing.queryString(List(if(searchKeyword == "") None else Some(implicitly[play.api.mvc.QueryStringBindable[String]].unbind("searchKeyword", searchKeyword)))))
+      Call("GET", _prefix + { _defaultPrefix } + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("query", query)) + "/wordStats/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[Long]].unbind("id", id)))
+    }
+  
+    // @LINE:9
+    def searchBySkill(skillId:String, skillName:String): Call = {
+      
+      Call("GET", _prefix + { _defaultPrefix } + "projectBySkills/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("skillId", skillId)) + "/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("skillName", skillName)))
     }
   
     // @LINE:7
@@ -29,24 +35,16 @@ package controllers {
       Call("GET", _prefix + { _defaultPrefix } + "profilePage/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("ownerId", ownerId)))
     }
   
-    // @LINE:8
-    def wordStats(query:String, id:Long): Call = {
-    
-      (query: @unchecked, id: @unchecked) match {
+    // @LINE:6
+    def index(searchKeyword:String = ""): Call = {
       
-        // @LINE:8
-        case (query, id)  =>
-          
-          Call("GET", _prefix + { _defaultPrefix } + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("query", query)) + "/wordStats/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[Long]].unbind("id", id)))
-      
-      }
-    
+      Call("GET", _prefix + play.core.routing.queryString(List(if(searchKeyword == "") None else Some(implicitly[play.api.mvc.QueryStringBindable[String]].unbind("searchKeyword", searchKeyword)))))
     }
   
     // @LINE:10
-    def searchBySkill(skillId:String, skillName:String): Call = {
+    def socket: Call = {
       
-      Call("GET", _prefix + { _defaultPrefix } + "projectBySkills/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("skillId", skillId)) + "/" + play.core.routing.dynamicString(implicitly[play.api.mvc.PathBindable[String]].unbind("skillName", skillName)))
+      Call("GET", _prefix + { _defaultPrefix } + "ws")
     }
   
   }

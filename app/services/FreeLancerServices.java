@@ -61,9 +61,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public static Object searchResults(String phrase) throws ExecutionException, InterruptedException, JSONException, IOException {
         CompletionStage<WSResponse> wsResponseCompletionStage = null;
         WSRequest request = null;
-        JSONObject json=null;
+        JSONObject json = null;
         try {
-            String temp="";
+            String temp = "";
 //            System.out.println("Phrase is " + phrase);
 //            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
 //            System.out.println("Request is " + request);
@@ -81,7 +81,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     temp = temp + scan.nextLine();
                 }
             }
-                 json = new JSONObject(temp);
+            json = new JSONObject(temp);
         } catch (UnsupportedEncodingException e) {
 
             System.out.println("Error is " + e);
@@ -90,8 +90,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         return json;
     }
-
-
 
 
     /**
@@ -186,14 +184,13 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
     public List<ProjectDetails> searchProjectsBySkill(WSResponse res) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         try {
-                System.out.println("Response + " + res);
-               JSONObject json = new JSONObject(res.getBody());
+            System.out.println("Response + " + res);
+            JSONObject json = new JSONObject(res.getBody());
 
             return searchSkillProjectsJson(json);
-            }
-        catch (Exception e) {
+        } catch (Exception e) {
         }
-  return array;
+        return array;
     }
 
     /**
@@ -208,23 +205,23 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         List<ProjectDetails> array = new ArrayList<>();
         JSONObject result = json.getJSONObject("result");
         JSONArray projects = (JSONArray) result.getJSONArray("projects");
-        System.out.println("projects are- > "+ projects);
-        for (int i = 0; i < projects.length() ; i++){
+        System.out.println("projects are- > " + projects);
+        for (int i = 0; i < projects.length(); i++) {
             JSONObject object = projects.getJSONObject(i);
-            long projectID =  Long.parseLong(object.get("id").toString());
-            long ownerId =  Long.parseLong(object.get("owner_id").toString());
+            long projectID = Long.parseLong(object.get("id").toString());
+            long ownerId = Long.parseLong(object.get("owner_id").toString());
             long timeSubmitted = Long.parseLong(object.get("submitdate").toString());
-            String title = object.get("title").toString() ;
+            String title = object.get("title").toString();
             String type = object.get("type").toString();
             String preview_description = object.get("preview_description").toString();
 
             JSONArray skills = object.getJSONArray("jobs");
-            List <List<String>> skillsList = new ArrayList<>();
-            for( int j=0; j<skills.length(); j++){
+            List<List<String>> skillsList = new ArrayList<>();
+            for (int j = 0; j < skills.length(); j++) {
                 JSONObject skillObj = skills.getJSONObject(j);
-                List<String> skill=new ArrayList<>();
+                List<String> skill = new ArrayList<>();
                 try {
-                    skill.add(skillObj.get("id").toString()+"/"+ URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
+                    skill.add(skillObj.get("id").toString() + "/" + URLEncoder.encode(skillObj.get("name").toString(), String.valueOf(StandardCharsets.UTF_8)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -232,7 +229,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 skillsList.add(skill);
 
             }
-            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description, 0.0, 0.0, "Early" ));
+            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, null, preview_description, 0.0, 0.0, "Early"));
         }
         return array;
     }
@@ -246,15 +243,14 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      */
     public List<ProjectDetails> searchModelByKeyWord(JSONObject res) throws JSONException {
         System.out.println("Inside search model1");
-        List<ProjectDetails> array =new ArrayList<>();
+        List<ProjectDetails> array = new ArrayList<>();
         try {
 //            JSONObject json = new JSONObject(res.getBody());
 //            System.out.println("Inside search model"+ json.toString());
-            array= searchModelByKeywordJson(res);
+            array = searchModelByKeywordJson(res);
+        } catch (Exception e) {
         }
-        catch (Exception e) {
-        }
-  return array;
+        return array;
     }
 
     /**
@@ -265,7 +261,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Alankrit Gupta
      */
 
-    public List<ProjectDetails>  searchModelByKeywordJson(JSONObject json) throws JSONException {
+    public List<ProjectDetails> searchModelByKeywordJson(JSONObject json) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
         List<String> descriptionArray = new ArrayList<>();
         JSONObject result = json.getJSONObject("result");
@@ -300,7 +296,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 skillsList.add(skill);
 
             }
-            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description,0.0, 0.0, "Early"));
+            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description, 0.0, 0.0, "Early"));
         }
 //        System.out.println("Inside search model by keyword arrays is"+ array);
 
@@ -314,7 +310,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns list of maximum 10 projects associated with the ownerid.
      * @author Pragya Tomar
      */
-    public List<EmployerDetails> employerResults(String ownerID) {
+
+    public static Object employerDetails(String ownerID) {
+        JSONObject jsonObject = null;
         List<EmployerDetails> array = new ArrayList<>();
         try {
             URL url = new URL(API + "users/0.1/users/" + ownerID);
@@ -327,35 +325,42 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 while (scan.hasNext()) {
                     temp = temp + scan.nextLine();
                 }
-                JSONObject json = new JSONObject(temp);
-                JSONObject result = json.getJSONObject("result");
-                JSONObject location = result.getJSONObject("location");
-                JSONObject country = location.getJSONObject("country");
-                JSONObject status = result.getJSONObject("status");
-                JSONObject currency = result.getJSONObject("primary_currency");
-
-                String id = result.get("id").toString();
-                String username = result.get("username").toString();
-                String registrationDate = result.get("registration_date").toString();
-                String limitedAccount = result.get("limited_account").toString();
-                String displayName = result.get("display_name").toString();
-                String countryName = country.get("name").toString();
-                String role = result.get("role").toString();
-                String chosenRole = result.get("chosen_role").toString();
-                String emailVerified = status.get("email_verified").toString();
-                String primaryCurrency = currency.get("name").toString();
-                List<ProjectDetails> employer_projects = getProjects(ownerID);
-
-
-                array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName, countryName, role, chosenRole, emailVerified, primaryCurrency, employer_projects));
-
+                jsonObject = new JSONObject(temp);
             }
-
-
         } catch (Exception e) {
+
         }
-        return array;
+        return jsonObject;
     }
+
+
+    public static List<EmployerDetails> employerResults(String ownerID, JSONObject json1) throws JSONException {
+        List<EmployerDetails> array = new ArrayList<>();
+        JSONObject result = json1.getJSONObject("result");
+        JSONObject location = result.getJSONObject("location");
+        JSONObject country = location.getJSONObject("country");
+        JSONObject status = result.getJSONObject("status");
+        JSONObject currency = result.getJSONObject("primary_currency");
+
+        String id = result.get("id").toString();
+        String username = result.get("username").toString();
+        String registrationDate = result.get("registration_date").toString();
+        String limitedAccount = result.get("limited_account").toString();
+        String displayName = result.get("display_name").toString();
+        String countryName = country.get("name").toString();
+        String role = result.get("role").toString();
+        String chosenRole = result.get("chosen_role").toString();
+        String emailVerified = status.get("email_verified").toString();
+        String primaryCurrency = currency.get("name").toString();
+        List<ProjectDetails> employer_projects = getProjects(ownerID);
+
+
+        array.add(new EmployerDetails(id, username, registrationDate, limitedAccount, displayName, countryName, role, chosenRole, emailVerified, primaryCurrency, employer_projects));
+
+
+    return array;
+    }
+
 
     /**
      * <p>With this function API call for fetching employer details is made</p>
@@ -364,7 +369,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns list of latest 10 projects associated with the ownerid.
      * @author Pragya Tomar
      */
-    public List<ProjectDetails> getProjects(String ownerID) {
+    public static List<ProjectDetails> getProjects(String ownerID) {
         List<ProjectDetails> array2 = new ArrayList<>();
         try {
             URL url = new URL(API + "projects/0.1/projects/?owners[]=" + ownerID + "&limit=10&job_details=true");

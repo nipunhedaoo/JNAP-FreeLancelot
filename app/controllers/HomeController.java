@@ -1,5 +1,6 @@
 package controllers;
 
+import actors.EmployerActor;
 import actors.MyWebSocketActor;
 import actors.SearchActor;
 import akka.actor.ActorRef;
@@ -56,7 +57,9 @@ public class HomeController extends Controller {
 
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
+
     final ActorRef searchActor;
+    final ActorRef employerActor;
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
@@ -71,6 +74,7 @@ public class HomeController extends Controller {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
+        employerActor=actorSystem.actorOf(EmployerActor.getProps());
     }
 
 //    @Inject
@@ -216,10 +220,34 @@ System.out.println("Exception in home controller "+e);
      * @return CompletionStage Returns the details of given ownerId
      * @author Pragya Tomar
      */
-    public CompletionStage<Result> profilePage(String ownerId,Http.Request request) {
-        List<EmployerDetails> details=freelancerClient.employerResults(ownerId);
-        return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
-    }
+    public CompletionStage<Result> profilePage(String ownerId,Http.Request request) throws JSONException {
+        CompletionStage<Result> resultCompletionStage = null;
+
+
+            resultCompletionStage = FutureConverters.toJava(ask(employerActor, ownerId, 1000000))
+                    .thenApply(response ->
+                            {
+                                List<EmployerDetails> array = null;
+                                try {
+
+                                    array = new ArrayList<>();
+                                    array = freelancerClient.employerResults(ownerId, (JSONObject) response);
+
+                                    System.out.println("Array is " + array);
+
+
+                                } catch (Exception e) {
+                                    System.out.println("Exception in home controller " + e);
+                                }
+                                return ok(views.html.employerDetails.render(request,array, ownerId));
+                            }
+                    );
+            return resultCompletionStage;
+        }
+
+
+
+
 
     public WebSocket socket() {
         return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));

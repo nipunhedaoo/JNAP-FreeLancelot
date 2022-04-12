@@ -40,10 +40,10 @@ class Routes(
 
   def documentation = List(
     ("""GET""", this.prefix, """controllers.HomeController.index(request:Request, searchKeyword:String ?= "")"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """profilePage/""" + "$" + """ownerId<[^/]+>""", """controllers.HomeController.profilePage(ownerId:String)"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""", """controllers.HomeController.wordStats(query:String, id:Long)"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStatsGlobal""", """controllers.HomeController.wordStats(query:String, id:Long ?= -1)"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillId:String, skillName:String)"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """profilePage/""" + "$" + """ownerId<[^/]+>""", """controllers.HomeController.profilePage(ownerId:String, request:Request)"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""", """controllers.HomeController.wordStats(query:String, id:Long, request:Request)"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillId:String, skillName:String, request:Request)"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """ws""", """controllers.HomeController.socket"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -77,12 +77,14 @@ class Routes(
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("profilePage/"), DynamicPart("ownerId", """[^/]+""",true)))
   )
   private[this] lazy val controllers_HomeController_profilePage1_invoker = createInvoker(
-    HomeController_0.profilePage(fakeValue[String]),
+    
+    (req:play.mvc.Http.Request) =>
+      HomeController_0.profilePage(fakeValue[String], fakeValue[play.mvc.Http.Request]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
       "profilePage",
-      Seq(classOf[String]),
+      Seq(classOf[String], classOf[play.mvc.Http.Request]),
       "GET",
       this.prefix + """profilePage/""" + "$" + """ownerId<[^/]+>""",
       """""",
@@ -95,12 +97,14 @@ class Routes(
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), DynamicPart("query", """[^/]+""",true), StaticPart("/wordStats/"), DynamicPart("id", """[^/]+""",true)))
   )
   private[this] lazy val controllers_HomeController_wordStats2_invoker = createInvoker(
-    HomeController_0.wordStats(fakeValue[String], fakeValue[Long]),
+    
+    (req:play.mvc.Http.Request) =>
+      HomeController_0.wordStats(fakeValue[String], fakeValue[Long], fakeValue[play.mvc.Http.Request]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
       "wordStats",
-      Seq(classOf[String], classOf[Long]),
+      Seq(classOf[String], classOf[Long], classOf[play.mvc.Http.Request]),
       "GET",
       this.prefix + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""",
       """""",
@@ -109,36 +113,38 @@ class Routes(
   )
 
   // @LINE:9
-  private[this] lazy val controllers_HomeController_wordStats3_route = Route("GET",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), DynamicPart("query", """[^/]+""",true), StaticPart("/wordStatsGlobal")))
+  private[this] lazy val controllers_HomeController_searchBySkill3_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("projectBySkills/"), DynamicPart("skillId", """[^/]+""",true), StaticPart("/"), DynamicPart("skillName", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_HomeController_wordStats3_invoker = createInvoker(
-    HomeController_0.wordStats(fakeValue[String], fakeValue[Long]),
+  private[this] lazy val controllers_HomeController_searchBySkill3_invoker = createInvoker(
+    
+    (req:play.mvc.Http.Request) =>
+      HomeController_0.searchBySkill(fakeValue[String], fakeValue[String], fakeValue[play.mvc.Http.Request]),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
-      "wordStats",
-      Seq(classOf[String], classOf[Long]),
+      "searchBySkill",
+      Seq(classOf[String], classOf[String], classOf[play.mvc.Http.Request]),
       "GET",
-      this.prefix + """""" + "$" + """query<[^/]+>/wordStatsGlobal""",
+      this.prefix + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""",
       """""",
       Seq()
     )
   )
 
   // @LINE:10
-  private[this] lazy val controllers_HomeController_searchBySkill4_route = Route("GET",
-    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("projectBySkills/"), DynamicPart("skillId", """[^/]+""",true), StaticPart("/"), DynamicPart("skillName", """[^/]+""",true)))
+  private[this] lazy val controllers_HomeController_socket4_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("ws")))
   )
-  private[this] lazy val controllers_HomeController_searchBySkill4_invoker = createInvoker(
-    HomeController_0.searchBySkill(fakeValue[String], fakeValue[String]),
+  private[this] lazy val controllers_HomeController_socket4_invoker = createInvoker(
+    HomeController_0.socket,
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
-      "searchBySkill",
-      Seq(classOf[String], classOf[String]),
+      "socket",
+      Nil,
       "GET",
-      this.prefix + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""",
+      this.prefix + """ws""",
       """""",
       Seq()
     )
@@ -175,25 +181,28 @@ class Routes(
     // @LINE:7
     case controllers_HomeController_profilePage1_route(params@_) =>
       call(params.fromPath[String]("ownerId", None)) { (ownerId) =>
-        controllers_HomeController_profilePage1_invoker.call(HomeController_0.profilePage(ownerId))
+        controllers_HomeController_profilePage1_invoker.call(
+          req => HomeController_0.profilePage(ownerId, req))
       }
   
     // @LINE:8
     case controllers_HomeController_wordStats2_route(params@_) =>
       call(params.fromPath[String]("query", None), params.fromPath[Long]("id", None)) { (query, id) =>
-        controllers_HomeController_wordStats2_invoker.call(HomeController_0.wordStats(query, id))
+        controllers_HomeController_wordStats2_invoker.call(
+          req => HomeController_0.wordStats(query, id, req))
       }
   
     // @LINE:9
-    case controllers_HomeController_wordStats3_route(params@_) =>
-      call(params.fromPath[String]("query", None), params.fromQuery[Long]("id", Some(-1))) { (query, id) =>
-        controllers_HomeController_wordStats3_invoker.call(HomeController_0.wordStats(query, id))
+    case controllers_HomeController_searchBySkill3_route(params@_) =>
+      call(params.fromPath[String]("skillId", None), params.fromPath[String]("skillName", None)) { (skillId, skillName) =>
+        controllers_HomeController_searchBySkill3_invoker.call(
+          req => HomeController_0.searchBySkill(skillId, skillName, req))
       }
   
     // @LINE:10
-    case controllers_HomeController_searchBySkill4_route(params@_) =>
-      call(params.fromPath[String]("skillId", None), params.fromPath[String]("skillName", None)) { (skillId, skillName) =>
-        controllers_HomeController_searchBySkill4_invoker.call(HomeController_0.searchBySkill(skillId, skillName))
+    case controllers_HomeController_socket4_route(params@_) =>
+      call { 
+        controllers_HomeController_socket4_invoker.call(HomeController_0.socket)
       }
   
     // @LINE:14

@@ -14,7 +14,6 @@ import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
-import play.mvc.Result;
 import play.test.WithApplication;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static play.test.Helpers.running;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -88,7 +87,7 @@ public class FreeLancerServicesTest extends WithApplication {
             CompletableFuture completableFuture=mock(CompletableFuture.class);
             when(freeLancerServices.searchSkillResults(any())).thenReturn(obj);
             when(obj.toCompletableFuture()).thenReturn(completableFuture);
-            CompletionStage<Result> resultCompletionStage=homeController.searchBySkill("9","Java");
+//            CompletionStage<Result> resultCompletionStage=homeController.searchBySkill("9","Java");
        });
     }
 
