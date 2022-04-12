@@ -27,6 +27,31 @@
                             </tr>
                         </thead>
                         <tbody>
+
+                            <script>
+
+
+                                    let ws = new WebSocket("ws://localhost:9000/ws");
+                                    ws.onopen = () => {
+                                        console.log('WebSocket opened');
+                                        searchKeywords();
+                                    };
+
+                                    function searchKeywords() {
+
+                                        ws.send(JSON.stringify({
+                                            "type": "Jasleen",
+                                            "data": "Kaur"
+                                        }));
+                                    }
+
+
+
+                                    ws.onmessage = function (msg) {
+                                        console.log("WebSocket message received:", msg);
+
+                                    };
+                            </script>
                         @for( project <- searchMap ) {
                             <tr>
                                 <td>
