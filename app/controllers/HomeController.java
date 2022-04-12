@@ -5,6 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.stream.Materializer;
+import akka.util.Timeout;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
 import models.EmployerDetails;
@@ -26,6 +27,7 @@ import play.mvc.Result;
 import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
 import scala.concurrent.Await;
+import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import services.FreeLancerServices;
 
@@ -33,16 +35,9 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import scala.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static akka.pattern.Patterns.ask;
-import akka.dispatch.*;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.Future;
-import scala.concurrent.Await;
-import scala.concurrent.Promise;
-import akka.util.Timeout;
 
 
 /**
@@ -96,6 +91,9 @@ public class HomeController extends Controller {
 //        searchActor = actorSystem.actorOf(SearchActor.getProps());
 //    }
 
+    public WebSocket socket() {
+        return WebSocket.Text.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
+    }
     /**
      * <p>An action that renders an HTML page with a welcome message.</p>
      * @param request It represents the WSResponse of API call made for the search keyword
@@ -248,7 +246,4 @@ public class HomeController extends Controller {
         return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
     }
 
-    public WebSocket socket() {
-        return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
-    }
 }

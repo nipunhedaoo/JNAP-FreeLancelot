@@ -3,7 +3,7 @@
 
 @(request : play.mvc.Http.Request,searchMap : Map[String, SearchResultModel])
 
-@main(request,"Welcome to Play") {
+@main("Welcome to Play") {
 <div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
@@ -13,11 +13,55 @@
     <div class="container">
         <div>
             <form action="/" method="get">
-                <input type="text" class="input-lg" size="105" name="searchKeyword" placeholder="Please Search Here" />
+                <input type="text" class="input-lg" size="105" id="myInput" name="searchKeyword" placeholder="Please Search Here" />
                 <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
             </form>
         </div>
         @if(searchMap.size > 0) {
+
+        <script>
+
+                     let ws = new WebSocket("ws://localhost:9000/ws");
+                     let jsonStorage = {};
+                     let recentKeywords = '';
+
+                     ws.onopen = () => {
+                         console.log('WebSocket opened');
+                         searchKeywords();
+
+                     };
+
+                     ws.onmessage = function (msg) {
+                          console.log("WebSocket message received:", msg);
+                     };
+
+                    let keywordsInput = document.getElementById('myInput');
+
+<!--                    keywordsInput.addEventListener('keypress', function (event) {-->
+<!--                        if (event.key === 'Enter') {-->
+<!--                        console.log(event);-->
+<!--                            searchKeywords();-->
+<!--                            event.preventDefault();-->
+<!--                        }-->
+<!--                    });-->
+
+
+
+                    function searchKeywords() {
+                        var url = new URL(window.location.href);
+
+                        let keywords = url.searchParams.get("searchKeyword");
+
+                        ws.send(JSON.stringify({
+                            type: "searchTerms",
+                            data: keywords
+                        }));
+
+                        recentKeywords = keywords;
+                    }
+                </script>
+
+
             @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
@@ -27,30 +71,6 @@
                 <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
 
-                <script>
-
-
-                     let ws = new WebSocket("ws://localhost:9000/ws");
-                     ws.onopen = () => {
-                          console.log('WebSocket opened');
-                         searchKeywords();
-                     };
-
-                     function searchKeywords() {
-
-                         ws.send(JSON.stringify({
-                             "type": "Jasleen",
-                             "data": "Kaur"
-                         }));
-                     }
-
-
-
-                     ws.onmessage = function (msg) {
-                          console.log("WebSocket message received:", msg);
-
-                     };
-                </script>
             <table border="1" class="table">
                 <thead class="thead-light">
                     <tr>

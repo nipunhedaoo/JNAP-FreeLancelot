@@ -44,7 +44,7 @@ class Routes(
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStatsGlobal""", """controllers.HomeController.wordStats(query:String, id:Long ?= -1, request:Request)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """""" + "$" + """query<[^/]+>/wordStats/""" + "$" + """id<[^/]+>""", """controllers.HomeController.wordStats(query:String, id:Long, request:Request)"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """projectBySkills/""" + "$" + """skillId<[^/]+>/""" + "$" + """skillName<[^/]+>""", """controllers.HomeController.searchBySkill(skillId:String, skillName:String, request:Request)"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """ws""", """controllers.HomeController.socket"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """ws""", """controllers.HomeController.socket()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -158,7 +158,7 @@ class Routes(
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("ws")))
   )
   private[this] lazy val controllers_HomeController_socket5_invoker = createInvoker(
-    HomeController_0.socket,
+    HomeController_0.socket(),
     play.api.routing.HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.HomeController",
@@ -230,7 +230,7 @@ class Routes(
     // @LINE:11
     case controllers_HomeController_socket5_route(params@_) =>
       call { 
-        controllers_HomeController_socket5_invoker.call(HomeController_0.socket)
+        controllers_HomeController_socket5_invoker.call(HomeController_0.socket())
       }
   
     // @LINE:15

@@ -250,7 +250,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Nipun Hedaoo
      */
     public List<ProjectDetails> searchModelByKeyWord(JSONObject res) throws JSONException {
-        System.out.println("Inside search model1");
         List<ProjectDetails> array =new ArrayList<>();
         try {
 //            JSONObject json = new JSONObject(res.getBody());

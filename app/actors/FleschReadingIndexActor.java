@@ -39,7 +39,6 @@ public class FleschReadingIndexActor extends AbstractActor{
                         list -> {
                             try {
                                 Double results = FreeLancerServices.readabilityIndex(list);
-                                System.out.println("flck actor" + results);
                                 sender().tell(results, self());
                             } catch (Exception e) {
                                 System.out.println("Error: Cannot find readabilityIndex");

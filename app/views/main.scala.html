@@ -1,4 +1,4 @@
-@(request : play.mvc.Http.Request, title: String)(content: Html)
+@(title: String)(content: Html)
 
 <!DOCTYPE html>
 
@@ -25,7 +25,7 @@
             }
         </style>
     </head>
-    <body id="freelancer" data-ws-url="@routes.HomeController.socket.webSocketURL(request)">
+    <body id="freelancer">
     @content
     </body>
 </html>

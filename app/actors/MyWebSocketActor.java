@@ -29,17 +29,12 @@ public class MyWebSocketActor extends AbstractActor {
         return receiveBuilder()
                 .match(String.class, message -> {
                     try {
-                        System.out.println(message);
                         JsonNode data = Json.parse(message);
                         String type = data.get("type").asText();
                         String keywords = data.get("data").asText();
                         ActorRef actor = null;
-                        if (type.equals("searchKeyword")) {
+                        if (type.equals("searchTerms")) {
                             actor = getContext().actorOf((SearchActor.getProps()));
-                        }
-
-                        if(type.equals("readabilityIndex")){
-                            actor = getContext().actorOf((FleschReadingIndexActor.getProps()));
                         }
 
                         if (scheduled != null) {
@@ -48,7 +43,7 @@ public class MyWebSocketActor extends AbstractActor {
                         // tell the message to searchActor
                         scheduled = getContext().getSystem().getScheduler().scheduleAtFixedRate(
                                 Duration.ZERO,
-                                Duration.ofSeconds(10),
+                                Duration.ofSeconds(4),
                                 actor, keywords,
                                 getContext().getDispatcher(),
                                 self());
