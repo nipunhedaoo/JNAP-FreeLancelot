@@ -50,7 +50,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         this.session = new Session();
         this.actorSystem = actorSystem;
         this.materializer = materializer;
-        wordstatsIndividualActor = actorSystem.actorOf(WordStatsIndividualActor.getProps());
+      wordstatsIndividualActor = actorSystem.actorOf(WordStatsIndividualActor.getProps());
     }
 
     public void setWsClient(WSClient wsClient) {
@@ -178,14 +178,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
         try {
             String temp="";
-//            System.out.println("Phrase is " + phrase);
-//            request = wsClient.url(API + "projects/0.1/projects/active?query=\"" + URLEncoder.encode(phrase, String.valueOf(StandardCharsets.UTF_8)) + "\"&limit=250&job_details=true");
-//            System.out.println("Request is " + request);
-//            wsResponseCompletionStage = request.stream();
-//
-
             URL url = new URL(API + "projects/0.1/projects/active?jobs[]=" + Integer.parseInt(skillId) + "&limit=10&job_details=true");
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
