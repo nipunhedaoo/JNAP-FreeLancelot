@@ -9,6 +9,7 @@ import play.libs.Json;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MyWebSocketActor extends AbstractActor {
 
@@ -53,10 +54,11 @@ public class MyWebSocketActor extends AbstractActor {
                         System.out.println("Error: Websocket Actor parsing error(" + message + ") " + e);
                     }
                 })
-                .match(ArrayList.class, repositories -> {
-                    JsonNode jsonData = Json.toJson(repositories);
-                    if (!out.isTerminated())
-                        out.tell(jsonData.toString(), self());
+                .match(Object.class, searchResult -> {
+                    System.out.println(searchResult);
+                    if (!out.isTerminated()) {
+                        out.tell(searchResult.toString(), self());
+                    }
                 })
                 .build();
     }

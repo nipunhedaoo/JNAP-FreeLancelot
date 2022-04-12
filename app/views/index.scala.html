@@ -1,7 +1,7 @@
 @import models.ProjectDetails
 @import models.SearchResultModel
 
-@(request : play.mvc.Http.Request,searchMap : Map[String, SearchResultModel])
+@(request : play.mvc.Http.Request, searchMap : Map[String, SearchResultModel])
 
 @main("Welcome to Play") {
 <div class=".container-fluid">
@@ -18,7 +18,6 @@
             </form>
         </div>
         @if(searchMap.size > 0) {
-
         <script>
 
                      let ws = new WebSocket("ws://localhost:9000/ws");
@@ -28,24 +27,29 @@
                      ws.onopen = () => {
                          console.log('WebSocket opened');
                          searchKeywords();
-
                      };
 
                      ws.onmessage = function (msg) {
-                          console.log("WebSocket message received:", msg);
-                     };
+                          console.log("WebSocket message received");
+                          let data = JSON.parse(msg.data);
+                          let repositories = data.result.projects;
+
+                          let table = document.getElementById("result-table-body");
+                            if (table.rows.length === 0) {
+                                for (const repository of repositories) {
+                                    addNewRow(table, repository);
+                                }
+                            }
+                            else {
+                            for (const repository of repositories) {
+                                if (!(repository.fullName in jsonStorage)) {
+                                    addNewRow(table, repository);
+                                }
+                            }
+                          }
+                     }
 
                     let keywordsInput = document.getElementById('myInput');
-
-<!--                    keywordsInput.addEventListener('keypress', function (event) {-->
-<!--                        if (event.key === 'Enter') {-->
-<!--                        console.log(event);-->
-<!--                            searchKeywords();-->
-<!--                            event.preventDefault();-->
-<!--                        }-->
-<!--                    });-->
-
-
 
                     function searchKeywords() {
                         var url = new URL(window.location.href);
@@ -59,10 +63,75 @@
 
                         recentKeywords = keywords;
                     }
+
+                    function addNewRow(table, repository) {
+                        console.log(repository.id);
+                        jsonStorage[repository.id] = repository;
+                        let row = table.insertRow(0);
+                        let ownerCell = row.insertCell(0);
+                        let subDateCell = row.insertCell(1);
+                        let titleCell = row.insertCell(2);
+                        let typeCell = row.insertCell(3);
+                        let wordStatsCell = row.insertCell(4);
+                        let skillsCell = row.insertCell(5);
+                        let readabilityCell = row.insertCell(6);
+
+                        let userAnchor = document.createElement('a');
+                        userAnchor.setAttribute('href', "profilePage" + repository.owner_id);
+                        userAnchor.innerHTML = repository.owner_id;
+                        userCell.appendChild(userAnchor);
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+<!--                        let repoAnchor = document.createElement('a');-->
+<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
+<!--                        repoAnchor.innerHTML = repository.repoName;-->
+<!--                        repoCell.appendChild(repoAnchor);-->
+
+                        for (const topic of repository.topics) {
+                            let topicAnchor = document.createElement('a');
+                            topicAnchor.setAttribute('href', "/search?topic=" + topic);
+                            topicAnchor.innerHTML = topic;
+                            topicCell.appendChild(topicAnchor);
+                        }
+                    }
+
+                    function addHeader(keywords) {
+                        let table = document.getElementById("result-table-body");
+                        let row = table.insertRow(0);
+                        let th = document.createElement('th');
+                        th.setAttribute('colspan', 3);
+                        th.setAttribute('class', 'keyword-header')
+                        th.innerText = keywords;
+                        row.appendChild(th);
+                    }
                 </script>
 
 
-            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
+<!--            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {-->
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>@phrase</h4></dd>
@@ -71,7 +140,25 @@
                 <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
 
-            <table border="1" class="table">
+        <div class="table-responsive m-4">
+            <table class="table table-bordered">
+                <thead>
+                <tr class="table-info">
+                    <th scope="col">Owner ID</th>-->
+                    <th scope="col">Submission Date</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Word Stats</th>
+                    <th scope="col">Skills</th>
+                    <th scope="col">Readability</th>
+                </tr>
+                </thead>
+                <tbody id="result-table-body">
+                </tbody>
+            </table>
+        </div>
+
+            <table border="1" class="table" id="@">
                 <thead class="thead-light">
                     <tr>
                         <th>Owner ID</th>
