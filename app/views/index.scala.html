@@ -109,11 +109,11 @@
                         }
 
                         repoAnchor = document.createElement('p');
-                        repoAnchor.innerText = fleschReadingEase(repository.preview_description);
+                        repoAnchor.innerText = "0.0";
                         fleschRI.appendChild(repoAnchor);
 
                         repoAnchor = document.createElement('p');
-                        repoAnchor.innerText = fleschKincaidGrade(repository.preview_description);
+                        repoAnchor.innerText = "0.0";
                         fleschKG.appendChild(repoAnchor);
 
                         repoAnchor = document.createElement('p');
@@ -135,32 +135,6 @@
                     window.addEventListener('beforeunload', function (e) {
                         ws.close();
                     });
-
-                    var sentenceRegex = new RegExp('[.?!]\\s[^a-z]', 'g');
-                    var syllableRegex = new RegExp('[aiouy]+e*|e(?!d$|ly).|[td]ed|le$', 'g');
-
-                    var fleschReadingEase(text) {
-                      var sentenceLength = avgSentenceLength(text);
-                      var syllablesPerWord = avgSyllablesPerWord(text);
-                      return legacyRound(
-                        freBase.base -
-                        freBase.sentenceLength * sentenceLength -
-                        freBase.syllablesPerWord * syllablesPerWord,
-                        2
-                      );
-                    };
-
-                    var fleschKincaidGrade(text){
-                      var sentenceLength = avgSentenceLength(text);
-                      var syllablesPerWord = avgSyllablesPerWord(text);
-                      return legacyRound(
-                        0.39 * sentenceLength +
-                        11.8 * syllablesPerWord -
-                        15.59,
-                        2
-                      );
-                    };
-
 
                 </script>
 

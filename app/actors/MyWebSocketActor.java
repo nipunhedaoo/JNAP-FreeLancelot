@@ -6,8 +6,8 @@ import akka.actor.Cancellable;
 import akka.actor.Props;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
-
 import java.time.Duration;
+
 
 public class MyWebSocketActor extends AbstractActor {
 
@@ -53,7 +53,6 @@ public class MyWebSocketActor extends AbstractActor {
                     }
                 })
                 .match(Object.class, searchResult -> {
-                    System.out.println(searchResult);
                     if (!out.isTerminated()) {
                         out.tell(searchResult.toString(), self());
                     }

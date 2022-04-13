@@ -75,7 +75,6 @@ public class HomeController extends Controller {
         this.freelancerClient = new FreeLancerServices(actorSystem, materializer);
         this.cache = cache;
         this.session = session;
-
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         searchActor = actorSystem.actorOf(SearchActor.getProps());
