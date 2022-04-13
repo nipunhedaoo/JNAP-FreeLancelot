@@ -1,5 +1,4 @@
 package actors;
-
 import akka.actor.AbstractActor;
 import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
@@ -8,21 +7,20 @@ import akka.japi.pf.DeciderBuilder;
 import services.FreeLancerServices;
 
 import java.time.Duration;
-import java.util.List;
+
 
 /**
- * This actor is used to implement the flesch kincad grading page
- * @Nipun Hedaoo
+ * This actor is used to implement the employer's information page
+ * @author Pragya Tomar
  */
-public class FleschKincadGradingActor extends AbstractActor {
+public class EmployerActor extends AbstractActor {
 
     /**
      * These are the props
      * @return Props
      */
-
     public static Props getProps() {
-        return Props.create(FleschKincadGradingActor.class);
+        return Props.create(EmployerActor.class);
     }
 
     private static final SupervisorStrategy strategy =
@@ -46,22 +44,21 @@ public class FleschKincadGradingActor extends AbstractActor {
      * on different behaviours.
      *
      */
-
     @Override
-    public AbstractActor.Receive createReceive() {
+    public Receive createReceive() {
         return receiveBuilder()
                 .match(
-                        List.class,
-                        list -> {
+                        String.class,
+                        ownerID -> {
                             try {
-                                Double results = FreeLancerServices.fleschKancidGradeLevvel(list);
+                                System.out.println(ownerID);
+                                Object results = FreeLancerServices.employerDetails(ownerID);
                                 sender().tell(results, self());
                             } catch (Exception e) {
-                                System.out.println("Error: Cannot find readabilityIndex");
+                                System.out.println("Error: Websocket Actor parsing error(" + ownerID + ") " + e);
                             }
                         })
                 .build();
     }
-
 
 }

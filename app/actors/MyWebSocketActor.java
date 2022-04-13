@@ -9,7 +9,19 @@ import play.libs.Json;
 
 import java.time.Duration;
 
+/**
+ * This actor is used to implement the web socket page
+ * @Alankrit Gupta
+ * Nipun Hedaoo
+ * Jasleen Kaur
+ * Pragya Tomar
+ */
 public class MyWebSocketActor extends AbstractActor {
+
+    /**
+     * These are the props
+     * @return Props
+     */
 
     public static Props props(ActorRef out) {
         return Props.create(MyWebSocketActor.class, out);
@@ -22,6 +34,13 @@ public class MyWebSocketActor extends AbstractActor {
     public MyWebSocketActor(ActorRef out) {
         this.out = out;
     }
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public Receive createReceive() {

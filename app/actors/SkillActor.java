@@ -9,7 +9,17 @@ import services.FreeLancerServices;
 
 import java.time.Duration;
 
+/**
+ * @author Jasleen Kaur
+ * This actor is used to implement the skills information page
+ */
 public class SkillActor extends AbstractActor {
+
+    /**
+     * These are the props
+     * @return Props
+     */
+
     public static Props getProps() {
         return Props.create(SkillActor.class);
     }
@@ -28,6 +38,13 @@ public class SkillActor extends AbstractActor {
     public SupervisorStrategy supervisorStrategy() {
         return strategy;
     }
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public Receive createReceive() {
