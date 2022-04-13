@@ -432,9 +432,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     int numOfSyllables = 0;
 
                     String projectDescription = project.getPreviewDescription();
+
                     numOfWords = getNumOfWords(projectDescription);
                     numOfSentence = getNumOfSentences(projectDescription);
-
                     numOfSyllables = getNnumOfSyllables(projectDescription);
 
                     fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
@@ -489,6 +489,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         double fkcl = 0.0;
 
         fkcl = 206.835 - 1.015 * ( numOfWords / numOfSentence) - 84.6 * ( numOfSyllables / numOfWords );
+
         return fkcl;
     }
 

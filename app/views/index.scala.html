@@ -41,22 +41,19 @@
                           let data = JSON.parse(msg.data);
                           let projects = data.result.projects.slice(0,10);
 
+
+
                           let table = document.getElementById(keywords);
                             for (const project of projects) {
                                 if (jsonStorage[project.id]) {
                                     addNewRow(table, project);
                                 }
-<!--                                if (!(project.id in jsonStorage)) {-->
-<!--                                    addNewRow(table, project);-->
-<!--                                }-->
                             }
-
                      }
 
                     let keywordsInput = document.getElementById('myInput');
 
                     function searchKeywords() {
-
                         ws.send(JSON.stringify({
                             type: "searchTerms",
                             data: keywords
@@ -74,7 +71,9 @@
                         let typeCell = row.insertCell(3);
                         let wordStatsCell = row.insertCell(4);
                         let skillsCell = row.insertCell(5);
-                        let readabilityCell = row.insertCell(6);
+                        let fleschRI = row.insertCell(6);
+                        let fleschKG = row.insertCell(7);
+                        let readabilityCell = row.insertCell(8);
 
                         let userAnchor = document.createElement('a');
                         userAnchor.setAttribute('href', "/profilePage/" + repository.owner_id);
@@ -110,6 +109,14 @@
                         }
 
                         repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = fleschReadingEase(repository.preview_description);
+                        fleschRI.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = fleschKincaidGrade(repository.preview_description);
+                        fleschKG.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
                         repoAnchor.innerText = "Early";
                         readabilityCell.appendChild(repoAnchor);
 
@@ -128,6 +135,33 @@
                     window.addEventListener('beforeunload', function (e) {
                         ws.close();
                     });
+
+                    var sentenceRegex = new RegExp('[.?!]\\s[^a-z]', 'g');
+                    var syllableRegex = new RegExp('[aiouy]+e*|e(?!d$|ly).|[td]ed|le$', 'g');
+
+                    var fleschReadingEase(text) {
+                      var sentenceLength = avgSentenceLength(text);
+                      var syllablesPerWord = avgSyllablesPerWord(text);
+                      return legacyRound(
+                        freBase.base -
+                        freBase.sentenceLength * sentenceLength -
+                        freBase.syllablesPerWord * syllablesPerWord,
+                        2
+                      );
+                    };
+
+                    var fleschKincaidGrade(text){
+                      var sentenceLength = avgSentenceLength(text);
+                      var syllablesPerWord = avgSyllablesPerWord(text);
+                      return legacyRound(
+                        0.39 * sentenceLength +
+                        11.8 * syllablesPerWord -
+                        15.59,
+                        2
+                      );
+                    };
+
+
                 </script>
 
 
@@ -149,6 +183,8 @@
                         <th>Type</th>
                         <th>Word Stats</th>
                         <th>Skills</th>
+                        <th>FKCL</th>
+                        <th>FKGL</th>
                         <th>Readability</th>
                     </tr>
                 </thead>
@@ -174,6 +210,12 @@
                     @for(skill<-project.getSkills()){
                     <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
                     }
+                    </td>
+                    <td>
+                        <p>@project.getFleschReadabilityIndex()</p>
+                    </td>
+                    <td>
+                        <p>@project.getFleschKincaidGradeLevel()</p>
                     </td>
                     <td>
                         <p>@project.getReadability()</p>

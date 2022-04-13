@@ -142,7 +142,11 @@ public class HomeController extends Controller {
 //        return resultCompletionStage;
 
         if (searchKeyword == "") {
-            return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (!session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
+            } else {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
         } else {
 
             resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
@@ -166,7 +170,21 @@ public class HomeController extends Controller {
                         } catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
-                        return ok(views.html.index.render(request,searchResults));
+
+                        LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
+                        List<String> keys = new ArrayList<String>(searchResults.keySet());
+                        List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
+                        for (int i = searchResults.size() - 1; i >= 0; i--)
+                            m.put(keys.get(i), values.get(i));
+
+
+                        session.setSessionSearchResultsHashMap(request, searchKeyword);
+
+                        if (!session.isSessionExist(request)) {
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
+                        } else {
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m)));
+                        }
                     }
                     );
             return resultCompletionStage;
