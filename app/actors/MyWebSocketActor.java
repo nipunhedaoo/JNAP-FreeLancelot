@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 
 import java.time.Duration;
-import java.util.ArrayList;
 
 public class MyWebSocketActor extends AbstractActor {
 
@@ -29,17 +28,12 @@ public class MyWebSocketActor extends AbstractActor {
         return receiveBuilder()
                 .match(String.class, message -> {
                     try {
-                        System.out.println(message);
                         JsonNode data = Json.parse(message);
                         String type = data.get("type").asText();
                         String keywords = data.get("data").asText();
                         ActorRef actor = null;
-                        if (type.equals("searchKeyword")) {
+                        if (type.equals("searchTerms")) {
                             actor = getContext().actorOf((SearchActor.getProps()));
-                        }
-
-                        if(type.equals("readabilityIndex")){
-                            actor = getContext().actorOf((FleschReadingIndexActor.getProps()));
                         }
 
                         if (scheduled != null) {
@@ -58,10 +52,11 @@ public class MyWebSocketActor extends AbstractActor {
                         System.out.println("Error: Websocket Actor parsing error(" + message + ") " + e);
                     }
                 })
-                .match(ArrayList.class, repositories -> {
-                    JsonNode jsonData = Json.toJson(repositories);
-                    if (!out.isTerminated())
-                        out.tell(jsonData.toString(), self());
+                .match(Object.class, searchResult -> {
+                    System.out.println(searchResult);
+                    if (!out.isTerminated()) {
+                        out.tell(searchResult.toString(), self());
+                    }
                 })
                 .build();
     }

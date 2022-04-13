@@ -50,7 +50,7 @@ package controllers {
     }
   
     // @LINE:11
-    def socket: Call = {
+    def socket(): Call = {
       
       Call("GET", _prefix + { _defaultPrefix } + "ws")
     }

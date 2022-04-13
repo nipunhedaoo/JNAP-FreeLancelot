@@ -8,7 +8,7 @@ GET     /profilePage/:ownerId       controllers.HomeController.profilePage(owner
 GET     /:query/wordStatsGlobal     controllers.HomeController.wordStats(query: String, id: Long ?= -1, request : Request)
 GET     /:query/wordStats/:id       controllers.HomeController.wordStats(query: String, id: Long,request : Request)
 GET     /projectBySkills/:skillId/:skillName            controllers.HomeController.searchBySkill(skillId:String,skillName :String,request : Request)
-GET     /ws                         controllers.HomeController.socket
+GET     /ws                         controllers.HomeController.socket()
 + nocsrf
 
 # Map static resources from the /public folder to the /assets URL path

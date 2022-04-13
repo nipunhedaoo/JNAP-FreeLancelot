@@ -1,9 +1,9 @@
 @import models.ProjectDetails
 @import models.SearchResultModel
 
-@(request : play.mvc.Http.Request,searchMap : Map[String, SearchResultModel])
+@(request : play.mvc.Http.Request, searchMap : Map[String, SearchResultModel])
 
-@main(request,"Welcome to Play") {
+@main("Welcome to Play") {
 <div class=".container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <h1 id="mainBanner" >FreeLancelot</h1>
@@ -13,11 +13,158 @@
     <div class="container">
         <div>
             <form action="/" method="get">
-                <input type="text" class="input-lg" size="105" name="searchKeyword" placeholder="Please Search Here" />
+                <input type="text" class="input-lg" size="105" id="myInput" name="searchKeyword" placeholder="Please Search Here" />
                 <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>  Search</button>
             </form>
         </div>
         @if(searchMap.size > 0) {
+        <script>
+
+                     let ws = new WebSocket("ws://localhost:9000/ws");
+                     let jsonStorage = {};
+                     let recentKeywords = '';
+                     var url = new URL(window.location.href);
+
+                     let keywords = url.searchParams.get("searchKeyword");
+
+                     ws.onopen = () => {
+                         console.log('WebSocket opened');
+                         searchKeywords();
+                         let table = document.getElementById(keywords);
+                         for(var i = 1; i < table.rows.length ; i++){
+                            jsonStorage[table.rows[i].cells[0].innerText] = table.rows;
+                         }
+                     };
+
+                     ws.onmessage = function (msg) {
+                          console.log("WebSocket message received");
+                          let data = JSON.parse(msg.data);
+                          let projects = data.result.projects.slice(0,10);
+
+
+
+                          let table = document.getElementById(keywords);
+                            for (const project of projects) {
+                                if (jsonStorage[project.id]) {
+                                    addNewRow(table, project);
+                                }
+                            }
+                     }
+
+                    let keywordsInput = document.getElementById('myInput');
+
+                    function searchKeywords() {
+                        ws.send(JSON.stringify({
+                            type: "searchTerms",
+                            data: keywords
+                        }));
+
+                        recentKeywords = keywords;
+                    }
+
+                    function addNewRow(table, repository) {
+                        jsonStorage[repository.id] = repository;
+                        let row = table.insertRow(0);
+                        let ownerCell = row.insertCell(0);
+                        let subDateCell = row.insertCell(1);
+                        let titleCell = row.insertCell(2);
+                        let typeCell = row.insertCell(3);
+                        let wordStatsCell = row.insertCell(4);
+                        let skillsCell = row.insertCell(5);
+                        let fleschRI = row.insertCell(6);
+                        let fleschKG = row.insertCell(7);
+                        let readabilityCell = row.insertCell(8);
+
+                        let userAnchor = document.createElement('a');
+                        userAnchor.setAttribute('href', "/profilePage/" + repository.owner_id);
+                        userAnchor.setAttribute("target", "_blank");
+                        userAnchor.innerHTML = repository.owner_id;
+                        ownerCell.appendChild(userAnchor);
+
+                        let repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.submitdate;
+                        subDateCell.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.title;
+                        titleCell.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.type;
+                        typeCell.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('a');
+                        repoAnchor.setAttribute('href', keywords  + "/wordStats/" + repository.id);
+                        repoAnchor.setAttribute("target", "_blank");
+                        repoAnchor.innerHTML = repository.wordStats;
+                        repoAnchor.innerText = "Stats";
+                        wordStatsCell.appendChild(repoAnchor);
+
+                        for (const topic of repository.jobs) {
+                            let topicAnchor = document.createElement('a');
+                            topicAnchor.setAttribute('href', "/projectBySkills/" + topic.id + "/"+ topic.name);
+                            topicAnchor.setAttribute("target", "_blank");
+                            topicAnchor.innerHTML = topic.name + " ,";
+                            skillsCell.appendChild(topicAnchor);
+                        }
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = fleschReadingEase(repository.preview_description);
+                        fleschRI.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = fleschKincaidGrade(repository.preview_description);
+                        fleschKG.appendChild(repoAnchor);
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = "Early";
+                        readabilityCell.appendChild(repoAnchor);
+
+                    }
+
+                    function addHeader(keywords) {
+                        let table = document.getElementById("result-table-body");
+                        let row = table.insertRow(0);
+                        let th = document.createElement('th');
+                        th.setAttribute('colspan', 3);
+                        th.setAttribute('class', 'keyword-header')
+                        th.innerText = keywords;
+                        row.appendChild(th);
+                    }
+
+                    window.addEventListener('beforeunload', function (e) {
+                        ws.close();
+                    });
+
+                    var sentenceRegex = new RegExp('[.?!]\\s[^a-z]', 'g');
+                    var syllableRegex = new RegExp('[aiouy]+e*|e(?!d$|ly).|[td]ed|le$', 'g');
+
+                    var fleschReadingEase(text) {
+                      var sentenceLength = avgSentenceLength(text);
+                      var syllablesPerWord = avgSyllablesPerWord(text);
+                      return legacyRound(
+                        freBase.base -
+                        freBase.sentenceLength * sentenceLength -
+                        freBase.syllablesPerWord * syllablesPerWord,
+                        2
+                      );
+                    };
+
+                    var fleschKincaidGrade(text){
+                      var sentenceLength = avgSentenceLength(text);
+                      var syllablesPerWord = avgSyllablesPerWord(text);
+                      return legacyRound(
+                        0.39 * sentenceLength +
+                        11.8 * syllablesPerWord -
+                        15.59,
+                        2
+                      );
+                    };
+
+
+                </script>
+
+
             @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
@@ -27,31 +174,7 @@
                 <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
 
-                <script>
-
-
-                     let ws = new WebSocket("ws://localhost:9000/ws");
-                     ws.onopen = () => {
-                          console.log('WebSocket opened');
-                         searchKeywords();
-                     };
-
-                     function searchKeywords() {
-
-                         ws.send(JSON.stringify({
-                             "type": "Jasleen",
-                             "data": "Kaur"
-                         }));
-                     }
-
-
-
-                     ws.onmessage = function (msg) {
-                          console.log("WebSocket message received:", msg);
-
-                     };
-                </script>
-            <table border="1" class="table">
+            <table border="1" class="table" id="@phrase">
                 <thead class="thead-light">
                     <tr>
                         <th>Owner ID</th>
@@ -60,6 +183,8 @@
                         <th>Type</th>
                         <th>Word Stats</th>
                         <th>Skills</th>
+                        <th>FKCL</th>
+                        <th>FKGL</th>
                         <th>Readability</th>
                     </tr>
                 </thead>
@@ -85,6 +210,12 @@
                     @for(skill<-project.getSkills()){
                     <a href="/projectBySkills/@skill(0)" target="_blank">@skill(1) ,</a>
                     }
+                    </td>
+                    <td>
+                        <p>@project.getFleschReadabilityIndex()</p>
+                    </td>
+                    <td>
+                        <p>@project.getFleschKincaidGradeLevel()</p>
                     </td>
                     <td>
                         <p>@project.getReadability()</p>

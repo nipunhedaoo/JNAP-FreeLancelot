@@ -8,6 +8,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.stream.Materializer;
+import akka.util.Timeout;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helper.Session;
 import models.EmployerDetails;
@@ -29,6 +30,7 @@ import play.mvc.Result;
 import play.mvc.WebSocket;
 import scala.compat.java8.FutureConverters;
 import scala.concurrent.Await;
+import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import services.FreeLancerServices;
 
@@ -36,16 +38,9 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import scala.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static akka.pattern.Patterns.ask;
-import akka.dispatch.*;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.Future;
-import scala.concurrent.Await;
-import scala.concurrent.Promise;
-import akka.util.Timeout;
 
 
 /**
@@ -101,6 +96,9 @@ public class HomeController extends Controller {
 //        searchActor = actorSystem.actorOf(SearchActor.getProps());
 //    }
 
+    public WebSocket socket() {
+        return WebSocket.Text.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
+    }
     /**
      * <p>An action that renders an HTML page with a welcome message.</p>
      * @param request It represents the WSResponse of API call made for the search keyword
@@ -149,7 +147,11 @@ public class HomeController extends Controller {
 //        return resultCompletionStage;
 
         if (searchKeyword == "") {
-            return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
+            if (!session.isSessionExist(request)) {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
+            } else {
+                return CompletableFuture.completedFuture(ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults))));
+            }
         } else {
 
             resultCompletionStage = FutureConverters.toJava(ask(searchActor, searchKeyword, 1000000))
@@ -174,7 +176,21 @@ public class HomeController extends Controller {
                         } catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
-                        return ok(views.html.index.render(request,searchResults));
+
+                        LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
+                        List<String> keys = new ArrayList<String>(searchResults.keySet());
+                        List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
+                        for (int i = searchResults.size() - 1; i >= 0; i--)
+                            m.put(keys.get(i), values.get(i));
+
+
+                        session.setSessionSearchResultsHashMap(request, searchKeyword);
+
+                        if (!session.isSessionExist(request)) {
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
+                        } else {
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m)));
+                        }
                     }
                     );
             return resultCompletionStage;
@@ -253,7 +269,4 @@ public class HomeController extends Controller {
         return CompletableFuture.completedFuture(ok(views.html.employerDetails.render(request,details,ownerId)));
     }
 
-    public WebSocket socket() {
-        return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
-    }
 }

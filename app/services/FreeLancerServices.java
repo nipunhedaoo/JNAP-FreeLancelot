@@ -267,7 +267,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @author Nipun Hedaoo
      */
     public List<ProjectDetails> searchModelByKeyWord(JSONObject res) throws JSONException {
-        System.out.println("Inside search model1");
         List<ProjectDetails> array =new ArrayList<>();
         try {
 //            JSONObject json = new JSONObject(res.getBody());
@@ -450,9 +449,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                     int numOfSyllables = 0;
 
                     String projectDescription = project.getPreviewDescription();
+
                     numOfWords = getNumOfWords(projectDescription);
                     numOfSentence = getNumOfSentences(projectDescription);
-
                     numOfSyllables = getNnumOfSyllables(projectDescription);
 
                     fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
@@ -507,6 +506,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
         double fkcl = 0.0;
 
         fkcl = 206.835 - 1.015 * ( numOfWords / numOfSentence) - 84.6 * ( numOfSyllables / numOfWords );
+
         return fkcl;
     }
 
