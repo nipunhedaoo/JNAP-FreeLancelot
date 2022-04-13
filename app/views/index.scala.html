@@ -23,38 +23,39 @@
                      let ws = new WebSocket("ws://localhost:9000/ws");
                      let jsonStorage = {};
                      let recentKeywords = '';
+                     var url = new URL(window.location.href);
+
+                     let keywords = url.searchParams.get("searchKeyword");
 
                      ws.onopen = () => {
                          console.log('WebSocket opened');
                          searchKeywords();
+                         let table = document.getElementById(keywords);
+                         for(var i = 1; i < table.rows.length ; i++){
+                            jsonStorage[table.rows[i].cells[0].innerText] = table.rows;
+                         }
                      };
 
                      ws.onmessage = function (msg) {
                           console.log("WebSocket message received");
                           let data = JSON.parse(msg.data);
-                          let repositories = data.result.projects;
+                          let projects = data.result.projects.slice(0,10);
 
-                          let table = document.getElementById("result-table-body");
-                            if (table.rows.length === 0) {
-                                for (const repository of repositories) {
-                                    addNewRow(table, repository);
+                          let table = document.getElementById(keywords);
+                            for (const project of projects) {
+                                if (jsonStorage[project.id]) {
+                                    addNewRow(table, project);
                                 }
+<!--                                if (!(project.id in jsonStorage)) {-->
+<!--                                    addNewRow(table, project);-->
+<!--                                }-->
                             }
-                            else {
-                            for (const repository of repositories) {
-                                if (!(repository.fullName in jsonStorage)) {
-                                    addNewRow(table, repository);
-                                }
-                            }
-                          }
+
                      }
 
                     let keywordsInput = document.getElementById('myInput');
 
                     function searchKeywords() {
-                        var url = new URL(window.location.href);
-
-                        let keywords = url.searchParams.get("searchKeyword");
 
                         ws.send(JSON.stringify({
                             type: "searchTerms",
@@ -65,7 +66,6 @@
                     }
 
                     function addNewRow(table, repository) {
-                        console.log(repository.id);
                         jsonStorage[repository.id] = repository;
                         let row = table.insertRow(0);
                         let ownerCell = row.insertCell(0);
@@ -77,46 +77,42 @@
                         let readabilityCell = row.insertCell(6);
 
                         let userAnchor = document.createElement('a');
-                        userAnchor.setAttribute('href', "profilePage" + repository.owner_id);
+                        userAnchor.setAttribute('href', "/profilePage/" + repository.owner_id);
+                        userAnchor.setAttribute("target", "_blank");
                         userAnchor.innerHTML = repository.owner_id;
-                        userCell.appendChild(userAnchor);
+                        ownerCell.appendChild(userAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        let repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.submitdate;
+                        subDateCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.title;
+                        titleCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.type;
+                        typeCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('a');
+                        repoAnchor.setAttribute('href', keywords  + "/wordStats/" + repository.id);
+                        repoAnchor.setAttribute("target", "_blank");
+                        repoAnchor.innerHTML = repository.wordStats;
+                        repoAnchor.innerText = "Stats";
+                        wordStatsCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
-
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
-
-                        for (const topic of repository.topics) {
+                        for (const topic of repository.jobs) {
                             let topicAnchor = document.createElement('a');
-                            topicAnchor.setAttribute('href', "/search?topic=" + topic);
-                            topicAnchor.innerHTML = topic;
-                            topicCell.appendChild(topicAnchor);
+                            topicAnchor.setAttribute('href', "/projectBySkills/" + topic.id + "/"+ topic.name);
+                            topicAnchor.setAttribute("target", "_blank");
+                            topicAnchor.innerHTML = topic.name + " ,";
+                            skillsCell.appendChild(topicAnchor);
                         }
+
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.readability;
+                        readabilityCell.appendChild(repoAnchor);
+
                     }
 
                     function addHeader(keywords) {
@@ -128,10 +124,14 @@
                         th.innerText = keywords;
                         row.appendChild(th);
                     }
+
+                    window.addEventListener('beforeunload', function (e) {
+                        ws.close();
+                    });
                 </script>
 
 
-<!--            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {-->
+            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>@phrase</h4></dd>
@@ -139,24 +139,6 @@
                 <dd class="col-sm-3"><h4>FKCL : @projectModal.getfleschReadabilityIndex()</h4></dd>
                 <dd class="col-sm-3"><h4>FKGL : @projectModal.getfleschKincaidGradeLevel()</h4></dd>
             </dl>
-
-        <div class="table-responsive m-4">
-            <table class="table table-bordered">
-                <thead>
-                <tr class="table-info">
-                    <th scope="col">Owner ID</th>-->
-                    <th scope="col">Submission Date</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Word Stats</th>
-                    <th scope="col">Skills</th>
-                    <th scope="col">Readability</th>
-                </tr>
-                </thead>
-                <tbody id="result-table-body">
-                </tbody>
-            </table>
-        </div>
 
             <table border="1" class="table" id="@phrase">
                 <thead class="thead-light">

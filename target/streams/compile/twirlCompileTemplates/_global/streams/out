@@ -1,3 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m[Error] C:\Users\nipun\OneDrive\Documents\GitHub\JNAP-FreeLancelot\app\views\index.scala.html:161[0m
-[0m[[0m[31merror[0m] [0m[0m            <table border="1" class="table" id="@">: Expected '}' but found '@'[0m
-[0m[[0m[31merror[0m] [0m[0m(Compile / [31mtwirlCompileTemplates[0m) Twirl compilation failed[0m

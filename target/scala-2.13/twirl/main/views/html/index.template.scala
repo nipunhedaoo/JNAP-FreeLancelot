@@ -53,50 +53,50 @@ Seq[Any](format.raw/*4.79*/("""
                      let ws = new WebSocket("ws://localhost:9000/ws");
                      let jsonStorage = """),format.raw/*24.40*/("""{"""),format.raw/*24.41*/("""}"""),format.raw/*24.42*/(""";
                      let recentKeywords = '';
+                     var url = new URL(window.location.href);
 
-                     ws.onopen = () => """),format.raw/*27.40*/("""{"""),format.raw/*27.41*/("""
-                         """),format.raw/*28.26*/("""console.log('WebSocket opened');
+                     let keywords = url.searchParams.get("searchKeyword");
+
+                     ws.onopen = () => """),format.raw/*30.40*/("""{"""),format.raw/*30.41*/("""
+                         """),format.raw/*31.26*/("""console.log('WebSocket opened');
                          searchKeywords();
-                     """),format.raw/*30.22*/("""}"""),format.raw/*30.23*/(""";
+                         let table = document.getElementById(keywords);
+                         for(var i = 1; i < table.rows.length ; i++)"""),format.raw/*34.69*/("""{"""),format.raw/*34.70*/("""
+                            """),format.raw/*35.29*/("""jsonStorage[table.rows[i].cells[0].innerText] = table.rows;
+                         """),format.raw/*36.26*/("""}"""),format.raw/*36.27*/("""
+                     """),format.raw/*37.22*/("""}"""),format.raw/*37.23*/(""";
 
-                     ws.onmessage = function (msg) """),format.raw/*32.52*/("""{"""),format.raw/*32.53*/("""
-                          """),format.raw/*33.27*/("""console.log("WebSocket message received");
+                     ws.onmessage = function (msg) """),format.raw/*39.52*/("""{"""),format.raw/*39.53*/("""
+                          """),format.raw/*40.27*/("""console.log("WebSocket message received");
                           let data = JSON.parse(msg.data);
-                          let repositories = data.result.projects;
+                          let projects = data.result.projects.slice(0,10);
 
-                          let table = document.getElementById("result-table-body");
-                            if (table.rows.length === 0) """),format.raw/*38.58*/("""{"""),format.raw/*38.59*/("""
-                                """),format.raw/*39.33*/("""for (const repository of repositories) """),format.raw/*39.72*/("""{"""),format.raw/*39.73*/("""
-                                    """),format.raw/*40.37*/("""addNewRow(table, repository);
-                                """),format.raw/*41.33*/("""}"""),format.raw/*41.34*/("""
-                            """),format.raw/*42.29*/("""}"""),format.raw/*42.30*/("""
-                            """),format.raw/*43.29*/("""else """),format.raw/*43.34*/("""{"""),format.raw/*43.35*/("""
-                            """),format.raw/*44.29*/("""for (const repository of repositories) """),format.raw/*44.68*/("""{"""),format.raw/*44.69*/("""
-                                """),format.raw/*45.33*/("""if (!(repository.fullName in jsonStorage)) """),format.raw/*45.76*/("""{"""),format.raw/*45.77*/("""
-                                    """),format.raw/*46.37*/("""addNewRow(table, repository);
-                                """),format.raw/*47.33*/("""}"""),format.raw/*47.34*/("""
-                            """),format.raw/*48.29*/("""}"""),format.raw/*48.30*/("""
-                          """),format.raw/*49.27*/("""}"""),format.raw/*49.28*/("""
-                     """),format.raw/*50.22*/("""}"""),format.raw/*50.23*/("""
+                          let table = document.getElementById(keywords);
+                            for (const project of projects) """),format.raw/*45.61*/("""{"""),format.raw/*45.62*/("""
+                                """),format.raw/*46.33*/("""if (jsonStorage[project.id]) """),format.raw/*46.62*/("""{"""),format.raw/*46.63*/("""
+                                    """),format.raw/*47.37*/("""addNewRow(table, project);
+                                """),format.raw/*48.33*/("""}"""),format.raw/*48.34*/("""
+"""),format.raw/*49.1*/("""<!--                                if (!(project.id in jsonStorage)) """),format.raw/*49.71*/("""{"""),format.raw/*49.72*/("""-->
+<!--                                    addNewRow(table, project);-->
+<!--                                """),format.raw/*51.37*/("""}"""),format.raw/*51.38*/("""-->
+                            """),format.raw/*52.29*/("""}"""),format.raw/*52.30*/("""
 
-                    """),format.raw/*52.21*/("""let keywordsInput = document.getElementById('myInput');
+                     """),format.raw/*54.22*/("""}"""),format.raw/*54.23*/("""
 
-                    function searchKeywords() """),format.raw/*54.47*/("""{"""),format.raw/*54.48*/("""
-                        """),format.raw/*55.25*/("""var url = new URL(window.location.href);
+                    """),format.raw/*56.21*/("""let keywordsInput = document.getElementById('myInput');
 
-                        let keywords = url.searchParams.get("searchKeyword");
+                    function searchKeywords() """),format.raw/*58.47*/("""{"""),format.raw/*58.48*/("""
 
-                        ws.send(JSON.stringify("""),format.raw/*59.48*/("""{"""),format.raw/*59.49*/("""
-                            """),format.raw/*60.29*/("""type: "searchTerms",
+                        """),format.raw/*60.25*/("""ws.send(JSON.stringify("""),format.raw/*60.48*/("""{"""),format.raw/*60.49*/("""
+                            """),format.raw/*61.29*/("""type: "searchTerms",
                             data: keywords
-                        """),format.raw/*62.25*/("""}"""),format.raw/*62.26*/("""));
+                        """),format.raw/*63.25*/("""}"""),format.raw/*63.26*/("""));
 
                         recentKeywords = keywords;
-                    """),format.raw/*65.21*/("""}"""),format.raw/*65.22*/("""
+                    """),format.raw/*66.21*/("""}"""),format.raw/*66.22*/("""
 
-                    """),format.raw/*67.21*/("""function addNewRow(table, repository) """),format.raw/*67.59*/("""{"""),format.raw/*67.60*/("""
-                        """),format.raw/*68.25*/("""console.log(repository.id);
-                        jsonStorage[repository.id] = repository;
+                    """),format.raw/*68.21*/("""function addNewRow(table, repository) """),format.raw/*68.59*/("""{"""),format.raw/*68.60*/("""
+                        """),format.raw/*69.25*/("""jsonStorage[repository.id] = repository;
                         let row = table.insertRow(0);
                         let ownerCell = row.insertCell(0);
                         let subDateCell = row.insertCell(1);
@@ -107,62 +107,62 @@ Seq[Any](format.raw/*4.79*/("""
                         let readabilityCell = row.insertCell(6);
 
                         let userAnchor = document.createElement('a');
-                        userAnchor.setAttribute('href', "profilePage" + repository.owner_id);
+                        userAnchor.setAttribute('href', "/profilePage/" + repository.owner_id);
+                        userAnchor.setAttribute("target", "_blank");
                         userAnchor.innerHTML = repository.owner_id;
-                        userCell.appendChild(userAnchor);
+                        ownerCell.appendChild(userAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        let repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.submitdate;
+                        subDateCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.title;
+                        titleCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.type;
+                        typeCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        repoAnchor = document.createElement('a');
+                        repoAnchor.setAttribute('href', keywords  + "/wordStats/" + repository.id);
+                        repoAnchor.setAttribute("target", "_blank");
+                        repoAnchor.innerHTML = repository.wordStats;
+                        repoAnchor.innerText = "Stats";
+                        wordStatsCell.appendChild(repoAnchor);
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        for (const topic of repository.jobs) """),format.raw/*104.62*/("""{"""),format.raw/*104.63*/("""
+                            """),format.raw/*105.29*/("""let topicAnchor = document.createElement('a');
+                            topicAnchor.setAttribute('href', "/projectBySkills/" + topic.id + "/"+ topic.name);
+                            topicAnchor.setAttribute("target", "_blank");
+                            topicAnchor.innerHTML = topic.name + " ,";
+                            skillsCell.appendChild(topicAnchor);
+                        """),format.raw/*110.25*/("""}"""),format.raw/*110.26*/("""
 
-<!--                        let repoAnchor = document.createElement('a');-->
-<!--                        repoAnchor.setAttribute('href', "/repo/" + repository.fullName);-->
-<!--                        repoAnchor.innerHTML = repository.repoName;-->
-<!--                        repoCell.appendChild(repoAnchor);-->
+                        """),format.raw/*112.25*/("""repoAnchor = document.createElement('p');
+                        repoAnchor.innerText = repository.readability;
+                        readabilityCell.appendChild(repoAnchor);
 
-                        for (const topic of repository.topics) """),format.raw/*114.64*/("""{"""),format.raw/*114.65*/("""
-                            """),format.raw/*115.29*/("""let topicAnchor = document.createElement('a');
-                            topicAnchor.setAttribute('href', "/search?topic=" + topic);
-                            topicAnchor.innerHTML = topic;
-                            topicCell.appendChild(topicAnchor);
-                        """),format.raw/*119.25*/("""}"""),format.raw/*119.26*/("""
-                    """),format.raw/*120.21*/("""}"""),format.raw/*120.22*/("""
+                    """),format.raw/*116.21*/("""}"""),format.raw/*116.22*/("""
 
-                    """),format.raw/*122.21*/("""function addHeader(keywords) """),format.raw/*122.50*/("""{"""),format.raw/*122.51*/("""
-                        """),format.raw/*123.25*/("""let table = document.getElementById("result-table-body");
+                    """),format.raw/*118.21*/("""function addHeader(keywords) """),format.raw/*118.50*/("""{"""),format.raw/*118.51*/("""
+                        """),format.raw/*119.25*/("""let table = document.getElementById("result-table-body");
                         let row = table.insertRow(0);
                         let th = document.createElement('th');
                         th.setAttribute('colspan', 3);
                         th.setAttribute('class', 'keyword-header')
                         th.innerText = keywords;
                         row.appendChild(th);
-                    """),format.raw/*130.21*/("""}"""),format.raw/*130.22*/("""
-                """),format.raw/*131.17*/("""</script>
+                    """),format.raw/*126.21*/("""}"""),format.raw/*126.22*/("""
+
+                    """),format.raw/*128.21*/("""window.addEventListener('beforeunload', function (e) """),format.raw/*128.74*/("""{"""),format.raw/*128.75*/("""
+                        """),format.raw/*129.25*/("""ws.close();
+                    """),format.raw/*130.21*/("""}"""),format.raw/*130.22*/(""");
+                </script>
 
 
-<!--            """),_display_(/*134.18*/for((phrase, projectModal : SearchResultModel ) <- searchMap) yield /*134.79*/ {_display_(Seq[Any](format.raw/*134.81*/("""-->
-            <dl class="row" style="margin-top: 50px;">
+            """),_display_(/*134.14*/for((phrase, projectModal : SearchResultModel ) <- searchMap) yield /*134.75*/ {_display_(Seq[Any](format.raw/*134.77*/("""
+            """),format.raw/*135.13*/("""<dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>"""),_display_(/*137.43*/phrase),format.raw/*137.49*/("""</h4></dd>
                 <dd class="col-sm-6"><h4><a href="/"""),_display_(/*138.53*/phrase),format.raw/*138.59*/("""/wordStatsGlobal" target="_blank">Global Stats</a></h4></dd>
@@ -170,25 +170,7 @@ Seq[Any](format.raw/*4.79*/("""
                 <dd class="col-sm-3"><h4>FKGL : """),_display_(/*140.50*/projectModal/*140.62*/.getfleschKincaidGradeLevel()),format.raw/*140.91*/("""</h4></dd>
             </dl>
 
-        <div class="table-responsive m-4">
-            <table class="table table-bordered">
-                <thead>
-                <tr class="table-info">
-                    <th scope="col">Owner ID</th>-->
-                    <th scope="col">Submission Date</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Word Stats</th>
-                    <th scope="col">Skills</th>
-                    <th scope="col">Readability</th>
-                </tr>
-                </thead>
-                <tbody id="result-table-body">
-                </tbody>
-            </table>
-        </div>
-
-            <table border="1" class="table" id=""""),_display_(/*161.50*/phrase),format.raw/*161.56*/("""">
+            <table border="1" class="table" id=""""),_display_(/*143.50*/phrase),format.raw/*143.56*/("""">
                 <thead class="thead-light">
                     <tr>
                         <th>Owner ID</th>
@@ -201,40 +183,40 @@ Seq[Any](format.raw/*4.79*/("""
                     </tr>
                 </thead>
                 <tbody>
-                """),_display_(/*174.18*/for( project <- projectModal.getprojectDetails().slice(0, 10) ) yield /*174.81*/ {_display_(Seq[Any](format.raw/*174.83*/("""
-                """),format.raw/*175.17*/("""<tr>
+                """),_display_(/*156.18*/for( project <- projectModal.getprojectDetails().slice(0, 10) ) yield /*156.81*/ {_display_(Seq[Any](format.raw/*156.83*/("""
+                """),format.raw/*157.17*/("""<tr>
                     <td>
-                        <p><a href="profilePage/"""),_display_(/*177.50*/project/*177.57*/.getOwnerID()),format.raw/*177.70*/("""" target="_blank">"""),_display_(/*177.89*/project/*177.96*/.getOwnerID()),format.raw/*177.109*/("""</a></p>
+                        <p><a href="profilePage/"""),_display_(/*159.50*/project/*159.57*/.getOwnerID()),format.raw/*159.70*/("""" target="_blank">"""),_display_(/*159.89*/project/*159.96*/.getOwnerID()),format.raw/*159.109*/("""</a></p>
                     </td>
                     <td>
-                        <p>"""),_display_(/*180.29*/project/*180.36*/.getTimeSubmitted().format("MMMM dd, yyyy")),format.raw/*180.79*/("""</p>
+                        <p>"""),_display_(/*162.29*/project/*162.36*/.getTimeSubmitted().format("MMMM dd, yyyy")),format.raw/*162.79*/("""</p>
                     </td>
                     <td>
-                        <p>"""),_display_(/*183.29*/project/*183.36*/.getTitle()),format.raw/*183.47*/("""</p>
+                        <p>"""),_display_(/*165.29*/project/*165.36*/.getTitle()),format.raw/*165.47*/("""</p>
                     </td>
                     <td>
-                        <p>"""),_display_(/*186.29*/project/*186.36*/.getType()),format.raw/*186.46*/("""</p>
+                        <p>"""),_display_(/*168.29*/project/*168.36*/.getType()),format.raw/*168.46*/("""</p>
                     </td>
                     <td>
-                        <p><a href="/"""),_display_(/*189.39*/phrase),format.raw/*189.45*/("""/wordStats/"""),_display_(/*189.57*/project/*189.64*/.getProjectID()),format.raw/*189.79*/("""" target="_blank">Stats</a></p>
+                        <p><a href="/"""),_display_(/*171.39*/phrase),format.raw/*171.45*/("""/wordStats/"""),_display_(/*171.57*/project/*171.64*/.getProjectID()),format.raw/*171.79*/("""" target="_blank">Stats</a></p>
                     </td>
                     <td>
-                    """),_display_(/*192.22*/for(skill<-project.getSkills()) yield /*192.53*/{_display_(Seq[Any](format.raw/*192.54*/("""
-                    """),format.raw/*193.21*/("""<a href="/projectBySkills/"""),_display_(/*193.48*/skill(0)),format.raw/*193.56*/("""" target="_blank">"""),_display_(/*193.75*/skill(1)),format.raw/*193.83*/(""" """),format.raw/*193.84*/(""",</a>
-                    """)))}),format.raw/*194.22*/("""
-                    """),format.raw/*195.21*/("""</td>
+                    """),_display_(/*174.22*/for(skill<-project.getSkills()) yield /*174.53*/{_display_(Seq[Any](format.raw/*174.54*/("""
+                    """),format.raw/*175.21*/("""<a href="/projectBySkills/"""),_display_(/*175.48*/skill(0)),format.raw/*175.56*/("""" target="_blank">"""),_display_(/*175.75*/skill(1)),format.raw/*175.83*/(""" """),format.raw/*175.84*/(""",</a>
+                    """)))}),format.raw/*176.22*/("""
+                    """),format.raw/*177.21*/("""</td>
                     <td>
-                        <p>"""),_display_(/*197.29*/project/*197.36*/.getReadability()),format.raw/*197.53*/("""</p>
+                        <p>"""),_display_(/*179.29*/project/*179.36*/.getReadability()),format.raw/*179.53*/("""</p>
                     </td>
                 </tr>
-                """)))}),format.raw/*200.18*/("""
-                """),format.raw/*201.17*/("""</tbody>
+                """)))}),format.raw/*182.18*/("""
+                """),format.raw/*183.17*/("""</tbody>
             </table>
-            """)))}),format.raw/*203.14*/("""
-        """)))}),format.raw/*204.10*/("""
-    """),format.raw/*205.5*/("""</div>
+            """)))}),format.raw/*185.14*/("""
+        """)))}),format.raw/*186.10*/("""
+    """),format.raw/*187.5*/("""</div>
 </div>
-""")))}),format.raw/*207.2*/("""
+""")))}),format.raw/*189.2*/("""
 
 """))
       }
@@ -253,9 +235,9 @@ Seq[Any](format.raw/*4.79*/("""
               /*
                   -- GENERATED --
                   SOURCE: app/views/index.scala.html
-                  HASH: d2de90da569d66423e0054a65db470399d583bb3
-                  MATRIX: 610->1|646->32|1028->68|1200->145|1230->150|1261->173|1300->175|1328->177|1920->742|1951->764|1991->766|2028->776|2179->899|2208->900|2237->901|2356->992|2385->993|2440->1020|2567->1119|2596->1120|2680->1176|2709->1177|2765->1205|3109->1521|3138->1522|3200->1556|3267->1595|3296->1596|3362->1634|3453->1697|3482->1698|3540->1728|3569->1729|3627->1759|3660->1764|3689->1765|3747->1795|3814->1834|3843->1835|3905->1869|3976->1912|4005->1913|4071->1951|4162->2014|4191->2015|4249->2045|4278->2046|4334->2074|4363->2075|4414->2098|4443->2099|4495->2123|4628->2228|4657->2229|4711->2255|4911->2427|4940->2428|4998->2458|5116->2548|5145->2549|5252->2628|5281->2629|5333->2653|5399->2691|5428->2692|5482->2718|8368->5575|8398->5576|8457->5606|8772->5892|8802->5893|8853->5915|8883->5916|8936->5940|8994->5969|9024->5970|9079->5996|9526->6414|9556->6415|9603->6433|9663->6465|9741->6526|9782->6528|9980->6698|10008->6704|10100->6768|10128->6774|10267->6885|10289->6897|10339->6925|10428->6986|10450->6998|10501->7027|11297->7795|11325->7801|11827->8275|11907->8338|11948->8340|11995->8358|12104->8439|12121->8446|12156->8459|12203->8478|12220->8485|12256->8498|12375->8589|12392->8596|12457->8639|12572->8726|12589->8733|12622->8744|12737->8831|12754->8838|12786->8848|12911->8945|12939->8951|12979->8963|12996->8970|13033->8985|13168->9092|13216->9123|13256->9124|13307->9146|13362->9173|13392->9181|13439->9200|13469->9208|13499->9209|13559->9237|13610->9259|13699->9320|13716->9327|13755->9344|13860->9417|13907->9435|13984->9480|14027->9491|14061->9497|14109->9514
-                  LINES: 23->1|24->2|29->4|34->4|36->6|36->6|36->6|37->7|50->20|50->20|50->20|51->21|54->24|54->24|54->24|57->27|57->27|58->28|60->30|60->30|62->32|62->32|63->33|68->38|68->38|69->39|69->39|69->39|70->40|71->41|71->41|72->42|72->42|73->43|73->43|73->43|74->44|74->44|74->44|75->45|75->45|75->45|76->46|77->47|77->47|78->48|78->48|79->49|79->49|80->50|80->50|82->52|84->54|84->54|85->55|89->59|89->59|90->60|92->62|92->62|95->65|95->65|97->67|97->67|97->67|98->68|144->114|144->114|145->115|149->119|149->119|150->120|150->120|152->122|152->122|152->122|153->123|160->130|160->130|161->131|164->134|164->134|164->134|167->137|167->137|168->138|168->138|169->139|169->139|169->139|170->140|170->140|170->140|191->161|191->161|204->174|204->174|204->174|205->175|207->177|207->177|207->177|207->177|207->177|207->177|210->180|210->180|210->180|213->183|213->183|213->183|216->186|216->186|216->186|219->189|219->189|219->189|219->189|219->189|222->192|222->192|222->192|223->193|223->193|223->193|223->193|223->193|223->193|224->194|225->195|227->197|227->197|227->197|230->200|231->201|233->203|234->204|235->205|237->207
+                  HASH: a917c527d722df889e5a8b44cbdfd689f638dff7
+                  MATRIX: 610->1|646->32|1028->68|1200->145|1230->150|1261->173|1300->175|1328->177|1920->742|1951->764|1991->766|2028->776|2179->899|2208->900|2237->901|2497->1133|2526->1134|2581->1161|2828->1380|2857->1381|2915->1411|3029->1497|3058->1498|3109->1521|3138->1522|3222->1578|3251->1579|3307->1607|3651->1923|3680->1924|3742->1958|3799->1987|3828->1988|3894->2026|3982->2086|4011->2087|4040->2089|4138->2159|4167->2160|4307->2272|4336->2273|4397->2306|4426->2307|4479->2332|4508->2333|4560->2357|4693->2462|4722->2463|4778->2491|4829->2514|4858->2515|4916->2545|5034->2635|5063->2636|5170->2715|5199->2716|5251->2740|5317->2778|5346->2779|5400->2805|7415->4791|7445->4792|7504->4822|7931->5220|7961->5221|8018->5249|8250->5452|8280->5453|8333->5477|8391->5506|8421->5507|8476->5533|8923->5951|8953->5952|9006->5976|9088->6029|9118->6030|9173->6056|9235->6089|9265->6090|9341->6138|9419->6199|9460->6201|9503->6215|9684->6368|9712->6374|9804->6438|9832->6444|9971->6555|9993->6567|10043->6595|10132->6656|10154->6668|10205->6697|10315->6779|10343->6785|10845->7259|10925->7322|10966->7324|11013->7342|11122->7423|11139->7430|11174->7443|11221->7462|11238->7469|11274->7482|11393->7573|11410->7580|11475->7623|11590->7710|11607->7717|11640->7728|11755->7815|11772->7822|11804->7832|11929->7929|11957->7935|11997->7947|12014->7954|12051->7969|12186->8076|12234->8107|12274->8108|12325->8130|12380->8157|12410->8165|12457->8184|12487->8192|12517->8193|12577->8221|12628->8243|12717->8304|12734->8311|12773->8328|12878->8401|12925->8419|13002->8464|13045->8475|13079->8481|13127->8498
+                  LINES: 23->1|24->2|29->4|34->4|36->6|36->6|36->6|37->7|50->20|50->20|50->20|51->21|54->24|54->24|54->24|60->30|60->30|61->31|64->34|64->34|65->35|66->36|66->36|67->37|67->37|69->39|69->39|70->40|75->45|75->45|76->46|76->46|76->46|77->47|78->48|78->48|79->49|79->49|79->49|81->51|81->51|82->52|82->52|84->54|84->54|86->56|88->58|88->58|90->60|90->60|90->60|91->61|93->63|93->63|96->66|96->66|98->68|98->68|98->68|99->69|134->104|134->104|135->105|140->110|140->110|142->112|146->116|146->116|148->118|148->118|148->118|149->119|156->126|156->126|158->128|158->128|158->128|159->129|160->130|160->130|164->134|164->134|164->134|165->135|167->137|167->137|168->138|168->138|169->139|169->139|169->139|170->140|170->140|170->140|173->143|173->143|186->156|186->156|186->156|187->157|189->159|189->159|189->159|189->159|189->159|189->159|192->162|192->162|192->162|195->165|195->165|195->165|198->168|198->168|198->168|201->171|201->171|201->171|201->171|201->171|204->174|204->174|204->174|205->175|205->175|205->175|205->175|205->175|205->175|206->176|207->177|209->179|209->179|209->179|212->182|213->183|215->185|216->186|217->187|219->189
                   -- GENERATED --
               */
           
