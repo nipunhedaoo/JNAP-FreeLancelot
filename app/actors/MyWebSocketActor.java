@@ -8,8 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class MyWebSocketActor extends AbstractActor {
 
@@ -44,7 +42,7 @@ public class MyWebSocketActor extends AbstractActor {
                         // tell the message to searchActor
                         scheduled = getContext().getSystem().getScheduler().scheduleAtFixedRate(
                                 Duration.ZERO,
-                                Duration.ofSeconds(4),
+                                Duration.ofSeconds(10),
                                 actor, keywords,
                                 getContext().getDispatcher(),
                                 self());
