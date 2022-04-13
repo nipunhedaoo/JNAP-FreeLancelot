@@ -31,6 +31,7 @@ public class FleschKincadGradingActorTest {
                 Props props = Props.create(FleschKincadGradingActor.class);
                 Object results = new Object();
                 TestActorRef<FleschKincadGradingActor> ref = TestActorRef.create(actorSystem, props);
+
                 ref.tell(results, testProbe.getRef());
             }
 

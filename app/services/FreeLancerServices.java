@@ -303,10 +303,6 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
             String preview_description = object.get("preview_description").toString();
             descriptionArray.add(preview_description);
 
-            Timeout timeout =  new Timeout(Duration.create(5, "seconds"));
-            Future<Object> future = Patterns.ask(wordstatsIndividualActor, object.get("preview_description").toString(), timeout);
-            Map<String, Integer> wordStats = (Map<String, Integer>) Await.result(future, timeout.duration());
-
             JSONArray skills = object.getJSONArray("jobs");
             List<List<String>> skillsList = new ArrayList<>();
             for (int j = 0; j < skills.length(); j++) {
@@ -321,6 +317,10 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 skillsList.add(skill);
 
             }
+            Timeout timeout =  new Timeout(Duration.create(5, "seconds"));
+            Future<Object> future = Patterns.ask(wordstatsIndividualActor, object.get("preview_description").toString(), timeout);
+            Map<String, Integer> wordStats = (Map<String, Integer>) Await.result(future, timeout.duration());
+
             array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description,0.0, 0.0, "Early"));
         }
 
