@@ -29,7 +29,7 @@ public class WordStatsIndividualActorTest {
                 final TestKit testProbe = new TestKit(actorSystem);
                 Props props = Props.create(WordStatsIndividualActor.class);
                 Object results = new Object();
-                TestActorRef<FleschReadingIndexActor> ref = TestActorRef.create(actorSystem, props);
+                TestActorRef<WordStatsIndividualActor> ref = TestActorRef.create(actorSystem, props);
                 ref.tell(results, testProbe.getRef());
             }
 
