@@ -10,7 +10,16 @@ import services.FreeLancerServices;
 import java.time.Duration;
 import java.util.List;
 
+/**
+ * This actor is used to implement the flesch kincad grading page
+ * @Nipun Hedaoo
+ */
 public class FleschKincadGradingActor extends AbstractActor {
+
+    /**
+     * These are the props
+     * @return Props
+     */
 
     public static Props getProps() {
         return Props.create(FleschKincadGradingActor.class);
@@ -30,6 +39,13 @@ public class FleschKincadGradingActor extends AbstractActor {
     public SupervisorStrategy supervisorStrategy() {
         return strategy;
     }
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public AbstractActor.Receive createReceive() {

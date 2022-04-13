@@ -10,7 +10,16 @@ import services.FreeLancerServices;
 import java.time.Duration;
 import java.util.Map;
 
+/**
+ * @Alankrit Gupta
+ * This actor is used to implement the individual word stats information page
+ */
 public class WordStatsIndividualActor extends AbstractActor {
+
+    /**
+     * These are the props
+     * @return Props
+     */
 
     public static Props getProps() {
         return Props.create(WordStatsIndividualActor.class);
@@ -30,6 +39,13 @@ public class WordStatsIndividualActor extends AbstractActor {
     public SupervisorStrategy supervisorStrategy() {
         return strategy;
     }
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public Receive createReceive() {

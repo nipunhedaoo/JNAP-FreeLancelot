@@ -9,8 +9,16 @@ import services.FreeLancerServices;
 import java.time.Duration;
 
 
+/**
+ * This actor is used to implement the employer's information page
+ * @author Pragya Tomar
+ */
 public class EmployerActor extends AbstractActor {
 
+    /**
+     * These are the props
+     * @return Props
+     */
     public static Props getProps() {
         return Props.create(EmployerActor.class);
     }
@@ -30,6 +38,12 @@ public class EmployerActor extends AbstractActor {
         return strategy;
     }
 
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
     @Override
     public Receive createReceive() {
         return receiveBuilder()

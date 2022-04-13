@@ -10,7 +10,16 @@ import services.FreeLancerServices;
 import java.time.Duration;
 import java.util.List;
 
+/**
+ * This actor is used to implement the flesch reading index page
+ * @Nipun Hedaoo
+ */
 public class FleschReadingIndexActor extends AbstractActor{
+
+    /**
+     * These are the props
+     * @return Props
+     */
 
     public static Props getProps() {
         return Props.create(FleschReadingIndexActor.class);
@@ -30,6 +39,13 @@ public class FleschReadingIndexActor extends AbstractActor{
     public SupervisorStrategy supervisorStrategy() {
         return strategy;
     }
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public AbstractActor.Receive createReceive() {

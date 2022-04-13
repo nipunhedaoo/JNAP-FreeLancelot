@@ -267,6 +267,9 @@ public class HomeController extends Controller {
         return resultCompletionStage;
     }
 
+    /**
+     * @return
+     */
     public WebSocket socket() {
         return WebSocket.Json.accept(request -> ActorFlow.actorRef(MyWebSocketActor::props, actorSystem, materializer));
     }

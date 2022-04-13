@@ -11,7 +11,16 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Alankrit Gupta
+ * This actor is used to implement the global word stats information page
+ */
 public class WordStatsGlobalActor extends AbstractActor {
+
+    /**
+     * These are the props
+     * @return Props
+     */
 
     public static Props getProps() {
         return Props.create(WordStatsGlobalActor.class);
@@ -31,6 +40,14 @@ public class WordStatsGlobalActor extends AbstractActor {
     public SupervisorStrategy supervisorStrategy() {
         return strategy;
     }
+
+
+    /**
+     *
+     *This method decides which method will be called based
+     * on different behaviours.
+     *
+     */
 
     @Override
     public Receive createReceive() {

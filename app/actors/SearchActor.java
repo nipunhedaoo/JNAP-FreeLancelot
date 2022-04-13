@@ -5,14 +5,22 @@ import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
 import akka.actor.SupervisorStrategy;
 import akka.japi.pf.DeciderBuilder;
-import play.libs.ws.WSResponse;
 import services.FreeLancerServices;
 
 import java.time.Duration;
-import java.util.concurrent.CompletionStage;
 
+/**
+ * This actor is used to implement the searches.
+ * @author Pragya Tomar
+ * @author Jasleen Kaur
+ * @author Nipun Hedaoo
+ * @author Alankrit Gupta
+ */
 public class SearchActor extends AbstractActor {
 
+    /**
+     * These are the props
+     */
     public static Props getProps() {
         return Props.create(SearchActor.class);
     }
@@ -32,6 +40,11 @@ public class SearchActor extends AbstractActor {
         return strategy;
     }
 
+
+    /**
+     * This method decides which method will be called based
+     * on different behaviours.
+     */
     @Override
     public Receive createReceive() {
         return receiveBuilder()
