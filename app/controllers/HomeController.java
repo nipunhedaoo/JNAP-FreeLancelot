@@ -111,43 +111,6 @@ public class HomeController extends Controller {
      */
     public CompletionStage<Result> index(Http.Request request, String searchKeyword) {
         CompletionStage<Result> resultCompletionStage = null;
-//        DecimalFormat df = new DecimalFormat("#.##");
-//
-//        if (searchKeyword == "") {
-//            if (!session.isSessionExist(request)) {
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue()));
-//            } else {
-//                return CompletableFuture.completedFuture(ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))));
-//            }
-//
-//        } else {
-//            if (freelancerClient.getWsClient() == null) {
-//                freelancerClient.setWsClient(wsClient);
-//            }
-//
-//
-//
-//            resultCompletionStage = cache.getOrElseUpdate((searchKeyword), () -> freelancerClient.searchResults(searchKeyword).toCompletableFuture().thenApplyAsync(res -> {
-//                try {
-//
-//                    List<ProjectDetails> array = new ArrayList<>();
-//                    array = freelancerClient.searchModelByKeyWord(res);
-//                    double fkcl = freelancerClient.readabilityIndex( array).orElse(0.0);
-//                    double fkgl = freelancerClient.fleschKancidGradeLevvel(array).orElse(0.0);
-//                    searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
-//                } catch (Exception e) {
-//                }
-//
-//                session.setSessionSearchResultsHashMap(request, searchKeyword);
-//                if (!session.isSessionExist(request)) {
-//                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
-//                } else {
-//                    return ok(views.html.index.render(session.getSearchResultsHashMapFromSession(request, searchResults)));
-//                }
-//            }));
-//        }
-//        return resultCompletionStage;
-
         if (searchKeyword == "") {
             return CompletableFuture.completedFuture(ok(views.html.index.render(request,session.getSearchResultsHashMapFromSession(request, searchResults))));
         } else {

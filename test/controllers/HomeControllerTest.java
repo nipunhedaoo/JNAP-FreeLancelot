@@ -31,6 +31,15 @@ public class HomeControllerTest extends WithApplication {
     }
 
     @Test
+    public void testIndex2() {
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method(GET).uri("/?searchKeyword=scala");
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+
+    }
+
+    @Test
     public void testSearchBySkill() {
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
