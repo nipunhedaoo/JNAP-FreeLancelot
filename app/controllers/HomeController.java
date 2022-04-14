@@ -163,6 +163,7 @@ public class HomeController extends Controller {
      * This method is used to get the wordStats for a given query and Project Id.
      * @param query The query to get the word stats.
      * @param id The ProjectId used to get the word stats.
+     * @param request Http request
      * @return Returns the word stats for a given query and an id.
      * @author Alankrit Gupta
      */
@@ -192,6 +193,7 @@ public class HomeController extends Controller {
      * <p>With this function all the lastest projects associated with skill can be fetched.</p>
      * @param skillId It represents the skillId associated with the skill
      * @param skillName It represents the name of the skill
+     * @param request It respresent the Http request
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
      */
@@ -223,6 +225,7 @@ public class HomeController extends Controller {
     /**
      * This method is used to get the employer details for a given ownerId
      * @param ownerId This ownerId is used to get the details of an employer
+     * @param request This represent the HTTP request
      * @return CompletionStage Returns the details of given ownerId
      * @author Pragya Tomar
      */

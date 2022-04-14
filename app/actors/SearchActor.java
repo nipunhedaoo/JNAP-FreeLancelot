@@ -19,7 +19,8 @@ import java.time.Duration;
 public class SearchActor extends AbstractActor {
 
     /**
-     * These are the props
+     * Creates a Search Actor
+     * @return Props
      */
     public static Props getProps() {
         return Props.create(SearchActor.class);

@@ -18,7 +18,7 @@ import java.util.Map;
 public class WordStatsGlobalActor extends AbstractActor {
 
     /**
-     * These are the props
+     * Creates a Word Stats Actor
      * @return Props
      */
 

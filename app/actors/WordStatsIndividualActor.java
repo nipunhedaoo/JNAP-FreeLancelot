@@ -11,13 +11,13 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
- * @Alankrit Gupta
+ * @author Alankrit Gupta
  * This actor is used to implement the individual word stats information page
  */
 public class WordStatsIndividualActor extends AbstractActor {
 
     /**
-     * These are the props
+     * Creates a Word Stats Actor
      * @return Props
      */
 

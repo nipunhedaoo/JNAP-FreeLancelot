@@ -143,7 +143,7 @@ public class ProjectDetails {
 
     /**
      * This method is used to set the Kincaid Grade Level
-     * @param fleschKincaidGradeLevel
+     * @param fleschKincaidGradeLevel Level number
      */
     public void setFleschKincaidGradeLevel(double fleschKincaidGradeLevel) {
         this.fleschKincaidGradeLevel = fleschKincaidGradeLevel;
@@ -159,7 +159,7 @@ public class ProjectDetails {
 
     /**
      * This method is used to set the Flesch Readability Index
-     * @param fleschReadabilityIndex
+     * @param fleschReadabilityIndex index number
      */
     public void setFleschReadabilityIndex(double fleschReadabilityIndex) {
         this.fleschReadabilityIndex = fleschReadabilityIndex;
@@ -175,7 +175,7 @@ public class ProjectDetails {
 
     /**
      * This method is used to set the readability index
-     * @param fkcl
+     * @param fkcl fkcl number
      */
     public void setReadability(double fkcl){
         String educationalLevel = "";

@@ -72,6 +72,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @return It returns the API response for active projects
      * @author Nipun Hedaoo
      * @author Alankrit Gupta
+     * @throws JSONException jsonException
+     * @throws IOException IOException
      */
 
     public static Object searchResults(String phrase) throws  JSONException, IOException {
@@ -206,6 +208,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      * @param res It represents API response from function searchSkillResults()
      * @return It returns list of maximum 10 projects associated with the skill.
      * @author Jasleen Kaur
+     * @throws JSONException jsonException
      */
     public List<ProjectDetails> searchProjectsBySkill(JSONObject res) throws JSONException {
         List<ProjectDetails> array = new ArrayList<>();
@@ -224,6 +227,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      *
      * @param json It represents API response in JSON format for computation
      * @return It returns list of maximum 10 projects associated with the skill.
+     * @throws JSONException jsonException
      * @author Jasleen Kaur
      */
 
@@ -265,6 +269,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      *
      * @param res It represents API response for search keywords
      * @return It returns list of maximum 10 projects associated with the skill.
+     * @throws JSONException jsonException
      * @author Nipun Hedaoo
      */
     public List<ProjectDetails> searchModelByKeyWord(JSONObject res) throws JSONException {
@@ -284,6 +289,9 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
      *
      * @param json It represents API response in JSON format for computation
      * @return It returns list of maximum 10 projects associated with the skill.
+     * @throws JSONException jsonException
+     * @throws InterruptedException interruptedException
+     * @throws TimeoutException timeoutException
      * @author Alankrit Gupta
      */
 

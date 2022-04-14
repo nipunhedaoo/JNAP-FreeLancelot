@@ -16,7 +16,7 @@ import java.time.Duration;
 public class SkillActor extends AbstractActor {
 
     /**
-     * These are the props
+     * Creates a Skill Actor
      * @return Props
      */
 

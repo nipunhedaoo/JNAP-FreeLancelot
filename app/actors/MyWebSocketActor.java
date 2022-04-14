@@ -11,7 +11,8 @@ import java.time.Duration;
 
 /**
  * This actor is used to implement the web socket page
- * @Alankrit Gupta
+ * @author
+ * Alankrit Gupta
  * Nipun Hedaoo
  * Jasleen Kaur
  * Pragya Tomar
@@ -19,7 +20,8 @@ import java.time.Duration;
 public class MyWebSocketActor extends AbstractActor {
 
     /**
-     * These are the props
+     * Creates the MyWebsocket actor
+     * @param  out actorref
      * @return Props
      */
 

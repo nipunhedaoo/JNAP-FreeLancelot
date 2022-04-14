@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * This actor is used to implement the flesch reading index page
- * @Nipun Hedaoo
+ * @author  Nipun Hedaoo
  */
 public class FleschReadingIndexActor extends AbstractActor{
 
