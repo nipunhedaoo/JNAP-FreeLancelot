@@ -1,6 +1,7 @@
 @import models.ProjectDetails
 @import models.SearchResultModel
 
+@import scala.collection.SortedMap
 @(request : play.mvc.Http.Request, searchMap : Map[String, SearchResultModel])
 
 @main("Welcome to Play") {
@@ -165,7 +166,7 @@
                 </script>
 
 
-            @for((phrase, projectModal : SearchResultModel ) <- searchMap) {
+            @for((phrase, projectModal : SearchResultModel ) <-  SortedMap[String, SearchResultModel]() ++ searchMap.asScala) {
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>@phrase</h4></dd>

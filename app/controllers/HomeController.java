@@ -121,31 +121,41 @@ public class HomeController extends Controller {
                     {
                         try {
 
-                            List<ProjectDetails> array = new ArrayList<>();
-                            array = freelancerClient.searchModelByKeyWord((JSONObject) response);
+                            if(searchResults.containsKey(searchKeyword))
+                            {
+                                SearchResultModel temp=searchResults.get(searchKeyword);
+                                searchResults.remove(searchKeyword);
+                                searchResults.put(searchKeyword,temp);
+                                logger.info("Search result is if it contains" +searchResults);
+                            }
+                            else {
+                                List<ProjectDetails> array = new ArrayList<>();
+                                array = freelancerClient.searchModelByKeyWord((JSONObject) response);
 
-                            System.out.println("Array is "+array);
-                            double fkcl = 0;
-                            double fkgl = 0;
-                            Timeout timeout = new Timeout(Duration.create(5, "seconds"));
-                            Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
-                            fkcl =  (Double) Await.result(futureFKCL, timeout.duration());
+                                System.out.println("Array is " + array);
+                                double fkcl = 0;
+                                double fkgl = 0;
+                                Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+                                Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
+                                fkcl = (Double) Await.result(futureFKCL, timeout.duration());
 
-                            Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
-                            fkgl = (Double) Await.result(futureFKGL, timeout.duration());
+                                Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
+                                fkgl = (Double) Await.result(futureFKGL, timeout.duration());
 
-                            searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
-                        } catch (Exception e) {
+                                searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
+
+                            }  } catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
 
+                        logger.info("Search results map before reverse  is"+searchResults);
                         LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
                         List<String> keys = new ArrayList<String>(searchResults.keySet());
                         List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
                         for (int i = searchResults.size() - 1; i >= 0; i--)
                             m.put(keys.get(i), values.get(i));
 
-
+                        logger.info("M result is if it contains" +m);
                         session.setSessionSearchResultsHashMap(request, searchKeyword);
 
                         if (!session.isSessionExist(request)) {
