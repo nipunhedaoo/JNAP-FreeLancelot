@@ -9,6 +9,7 @@ import akka.util.Timeout;
 import helper.Session;
 import models.EmployerDetails;
 import models.ProjectDetails;
+import models.SearchResultModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
+import play.mvc.Result;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -326,14 +328,33 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
                 skillsList.add(skill);
 
             }
-            Timeout timeout =  new Timeout(Duration.create(5, "seconds"));
-            Future<Object> future = Patterns.ask(wordstatsIndividualActor, object.get("preview_description").toString(), timeout);
-            Map<String, Integer> wordStats = (Map<String, Integer>) Await.result(future, timeout.duration());
 
-            array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description,0.0, 0.0, "Early"));
-        }
+            try {
+                Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+                Future<Object> future = Patterns.ask(wordstatsIndividualActor, object.get("preview_description").toString(), timeout);
+                Map<String, Integer> wordStats = (Map<String, Integer>) Await.result(future, timeout.duration());
+
+                array.add(new ProjectDetails(projectID, ownerId, skillsList, timeSubmitted, title, type, wordStats, preview_description, 0.0, 0.0, "Early"));
+            }catch(Exception e){
+                System.out.println("Word Stats error" + e);
+            }
+            }
 
         return array;
+    }
+
+    public static LinkedHashMap<String, SearchResultModel> reverseFunc(LinkedHashMap<String, SearchResultModel> searchResults){
+        LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
+        List<String> keys = new ArrayList<String>(searchResults.keySet());
+           Collections.reverse(keys);
+
+           System.out.println(keys);
+
+//        List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
+        for (String key : keys)
+            m.put(key, searchResults.get(key));
+
+        return m;
     }
 
     /**

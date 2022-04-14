@@ -41,7 +41,7 @@
                           console.log("WebSocket message received");
                           let data = JSON.parse(msg.data);
                           let projects = data.result.projects.slice(0,10);
-
+                           console.log(projects);
 
 
                           let table = document.getElementById(keywords);
@@ -137,101 +137,102 @@
                         ws.close();
                     });
 
-                    function getSyllables(word) {
-                      word = word.toLowerCase();
-                      if(word.length <= 3) { return 1; }
-                      word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-                      word = word.replace(/^y/, '');
-                      var syl = word.match(/[aeiouy]{1,2}/g);
-                      return (syl && syl.length) || 0;
-                    }
+<!--                    function getSyllables(word) {-->
+<!--                      word = word.toLowerCase();-->
+<!--                      if(word.length <= 3) { return 1; }-->
+<!--                      word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');-->
+<!--                      word = word.replace(/^y/, '');-->
+<!--                      var syl = word.match(/[aeiouy]{1,2}/g);-->
+<!--                      return (syl && syl.length) || 0;-->
+<!--                    }-->
 
 
-                    function fleschReadingEase(text) {
-                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;
+<!--                    function fleschReadingEase(text) {-->
+<!--                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;-->
 
-                        var sentences = text.split(/[\\.!\?]/);
+<!--                        var sentences = text.split(/[\\.!\?]/);-->
 
-                         numOfSentence = sentences.length;
-                          sentences.forEach(function (sentence) {
-                            var word = "";
-                            for (var i = 0; i < sentence.length; i++) {
-                              word += sentence[i];
-                              if(sentence[i] == " ") {
-                                numOfWords++;
-                                numOfSyllables += getSyllables(word);
-                                word = "";
-                              }
-                            }
+<!--                         numOfSentence = sentences.length;-->
+<!--                          sentences.forEach(function (sentence) {-->
+<!--                            var word = "";-->
+<!--                            for (var i = 0; i < sentence.length; i++) {-->
+<!--                              word += sentence[i];-->
+<!--                              if(sentence[i] == " ") {-->
+<!--                                numOfWords++;-->
+<!--                                numOfSyllables += getSyllables(word);-->
+<!--                                word = "";-->
+<!--                              }-->
+<!--                            }-->
 
-                            if(word.length > 0) {
-                              numOfWords++;
-                              numOfSyllables += getSyllables(word);
-                              word = ""
-                            }
-                          });
+<!--                            if(word.length > 0) {-->
+<!--                              numOfWords++;-->
+<!--                              numOfSyllables += getSyllables(word);-->
+<!--                              word = ""-->
+<!--                            }-->
+<!--                          });-->
 
-                      return (206.835 - (1.015 * (numOfWords/numOfSentence)) - (84.6 *(numOfSyllables/numOfWords)));
-                    };
+<!--                      return (206.835 - (1.015 * (numOfWords/numOfSentence)) - (84.6 *(numOfSyllables/numOfWords)));-->
+<!--                    };-->
 
-                    function fleschKincaidGrade(text){
-                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;
+<!--                    function fleschKincaidGrade(text){-->
+<!--                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;-->
 
-                            var sentences = text.split(/[\\.!\?]/);
+<!--                            var sentences = text.split(/[\\.!\?]/);-->
 
-                             numOfSentence = sentences.length;
-                              sentences.forEach(function (sentence) {
-                                var word = "";
-                                for (var i = 0; i < sentence.length; i++) {
-                                  word += sentence[i];
-                                  if(sentence[i] == " ") {
-                                    numOfWords++;
-                                    numOfSyllables += getSyllables(word);
-                                    word = "";
-                                  }
-                                }
+<!--                             numOfSentence = sentences.length;-->
+<!--                              sentences.forEach(function (sentence) {-->
+<!--                                var word = "";-->
+<!--                                for (var i = 0; i < sentence.length; i++) {-->
+<!--                                  word += sentence[i];-->
+<!--                                  if(sentence[i] == " ") {-->
+<!--                                    numOfWords++;-->
+<!--                                    numOfSyllables += getSyllables(word);-->
+<!--                                    word = "";-->
+<!--                                  }-->
+<!--                                }-->
 
-                                if(word.length > 0) {
-                                  numOfWords++;
-                                  numOfSyllables += getSyllables(word);
-                                  word = ""
-                                }
-                              });
-                      return ((0.39 * ( numOfWords / numOfSentence )) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59);
-                    };
+<!--                                if(word.length > 0) {-->
+<!--                                  numOfWords++;-->
+<!--                                  numOfSyllables += getSyllables(word);-->
+<!--                                  word = ""-->
+<!--                                }-->
+<!--                              });-->
+<!--                      return ((0.39 * ( numOfWords / numOfSentence )) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59);-->
+<!--                    };-->
 
-                    function educationLevel(fkcl){
-                    var educationalLevel = "";
-                    if(fkcl > 100){
-                        educationalLevel = "Early" ;
-                    }else if(fkcl > 91){
-                        educationalLevel = "5th grade" ;
-                    }else if(fkcl > 81){
-                        educationalLevel = "6th grade" ;
-                    }else if(fkcl > 71 ){
-                        educationalLevel = "7th grade" ;
-                    }else if(fkcl > 66 ){
-                        educationalLevel = "8th grade" ;
-                    }else if(fkcl > 61 ){
-                        educationalLevel = "9th grade" ;
-                    }else if(fkcl > 51 ){
-                        educationalLevel = "High School" ;
-                    }else if(fkcl > 31 ){
-                        educationalLevel = "Some College" ;
-                    } else if(fkcl > 0 ){
-                        educationalLevel = "College Graduate" ;
-                    }else{
-                        educationalLevel = "Law School Graduate" ;
-                    }
+<!--                    function educationLevel(fkcl){-->
+<!--                    var educationalLevel = "";-->
+<!--                    if(fkcl > 100){-->
+<!--                        educationalLevel = "Early" ;-->
+<!--                    }else if(fkcl > 91){-->
+<!--                        educationalLevel = "5th grade" ;-->
+<!--                    }else if(fkcl > 81){-->
+<!--                        educationalLevel = "6th grade" ;-->
+<!--                    }else if(fkcl > 71 ){-->
+<!--                        educationalLevel = "7th grade" ;-->
+<!--                    }else if(fkcl > 66 ){-->
+<!--                        educationalLevel = "8th grade" ;-->
+<!--                    }else if(fkcl > 61 ){-->
+<!--                        educationalLevel = "9th grade" ;-->
+<!--                    }else if(fkcl > 51 ){-->
+<!--                        educationalLevel = "High School" ;-->
+<!--                    }else if(fkcl > 31 ){-->
+<!--                        educationalLevel = "Some College" ;-->
+<!--                    } else if(fkcl > 0 ){-->
+<!--                        educationalLevel = "College Graduate" ;-->
+<!--                    }else{-->
+<!--                        educationalLevel = "Law School Graduate" ;-->
+<!--                    }-->
 
-                        return educationalLevel;
-                    }
+<!--                        return educationalLevel;-->
+<!--                    }-->
 
 
                 </script>
 
 
-            @for((phrase, projectModal : SearchResultModel ) <-  SortedMap[String, SearchResultModel]() ++ searchMap.asScala) {
+            @for((phrase, projectModal ) <- searchMap) {
+
             <dl class="row" style="margin-top: 50px;">
                 <dt class="col-sm-3"><h4>Search term : </h4></dt>
                 <dd class="col-sm-3"><h4>@phrase</h4></dd>

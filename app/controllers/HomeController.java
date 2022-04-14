@@ -55,8 +55,8 @@ public class HomeController extends Controller {
     final Logger logger = LoggerFactory.getLogger("play");
 
     public  FreeLancerServices freelancerClient;
-    static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<>();
-    static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<>();
+    static LinkedHashMap<String, SearchResultModel> searchResults = new LinkedHashMap<String, SearchResultModel>();
+    static LinkedHashMap<String, List<ProjectDetails>> skillSearchResults = new LinkedHashMap<String, List<ProjectDetails>>();
 
     List<ProjectDetails> listTest = new ArrayList<>(Arrays.asList(new ProjectDetails()));
 
@@ -135,6 +135,7 @@ public class HomeController extends Controller {
                                 System.out.println("Array is " + array);
                                 double fkcl = 0;
                                 double fkgl = 0;
+
                                 Timeout timeout = new Timeout(Duration.create(5, "seconds"));
                                 Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
                                 fkcl = (Double) Await.result(futureFKCL, timeout.duration());
@@ -142,24 +143,21 @@ public class HomeController extends Controller {
                                 Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
                                 fkgl = (Double) Await.result(futureFKGL, timeout.duration());
 
+                                searchResults = FreeLancerServices.reverseFunc(searchResults);
+
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(Math.abs(fkgl))));
                         } }catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
 
-                        LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
-                        List<String> keys = new ArrayList<String>(searchResults.keySet());
-                        List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
-                        for (int i = searchResults.size() - 1; i >= 0; i--)
-                            m.put(keys.get(i), values.get(i));
-
+                        searchResults = FreeLancerServices.reverseFunc(searchResults);
 
                         session.setSessionSearchResultsHashMap(request, searchKeyword);
 
                         if (!session.isSessionExist(request)) {
-                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults))).addingToSession(request, session.getSessionKey(), session.generateSessionValue());
                         } else {
-                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, m)));
+                            return ok(views.html.index.render(request, session.getSearchResultsHashMapFromSession(request, searchResults)));
                         }
                     }
                     );

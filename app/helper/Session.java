@@ -16,7 +16,7 @@ import java.util.*;
  */
 
 public class Session {
-    private static final HashMap<String, Set<String>> sessionSearchResultsBySearchKeywordHashMap = new HashMap<>();
+    private static final LinkedHashMap<String, Set<String>> sessionSearchResultsBySearchKeywordHashMap = new LinkedHashMap<>();
     private static final String SESSION_KEY = "sessionId";
     private static Logger logger = LoggerFactory.getLogger("play");
 
@@ -38,10 +38,10 @@ public class Session {
      *
      * @param request Http Request
      * @param searchResults HM for searh results
-     * @return {@link HashMap} of SearchKeyword and {@link SearchResultModel}
+     * @return {@link LinkedHashMap} of SearchKeyword and {@link SearchResultModel}
      */
 
-    public static HashMap<String, SearchResultModel> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, SearchResultModel> searchResults) {
+    public static LinkedHashMap<String, SearchResultModel> getSearchResultsHashMapFromSession(Http.Request request, LinkedHashMap<String, SearchResultModel> searchResults) {
         String key = getSessionValue(request);
         logger.info(key);
 
@@ -53,10 +53,10 @@ public class Session {
      *
      * @param searchResults The search results maps
      * @param searchKeywords The set of search keywords
-     * @return {@link HashMap} of SearchKeyword and {@link SearchResultModel}
+     * @return {@link LinkedHashMap} of SearchKeyword and {@link SearchResultModel}
      */
-    private static HashMap<String, SearchResultModel> getSearchResultsForSession(LinkedHashMap<String, SearchResultModel> searchResults, Set<String> searchKeywords){
-        HashMap<String, SearchResultModel> result = new HashMap<>();
+    private static LinkedHashMap<String, SearchResultModel> getSearchResultsForSession(LinkedHashMap<String, SearchResultModel> searchResults, Set<String> searchKeywords){
+        LinkedHashMap<String, SearchResultModel> result = new LinkedHashMap<>();
         if(searchKeywords!=null) {
             for (String key : searchKeywords) {
                 result.put(key, searchResults.get(key));
