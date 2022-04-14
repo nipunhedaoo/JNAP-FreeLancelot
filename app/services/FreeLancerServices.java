@@ -471,8 +471,8 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
                     fkcl = calculateFRI(numOfSentence, numOfWords, numOfSyllables);
 
-                    project.setFleschReadabilityIndex(Math.round(fkcl));
-                    project.setReadability(Math.round(fkcl));
+                    project.setFleschReadabilityIndex(Math.round(fkcl)-10);
+                    project.setReadability(Math.round(fkcl)-10);
 
                     return Math.round(fkcl);
 
