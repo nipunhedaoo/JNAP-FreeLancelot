@@ -74,7 +74,6 @@ public class MyWebSocketActor extends AbstractActor {
                     }
                 })
                 .match(Object.class, searchResult -> {
-                    System.out.println(searchResult);
                     if (!out.isTerminated()) {
                         out.tell(searchResult.toString(), self());
                     }

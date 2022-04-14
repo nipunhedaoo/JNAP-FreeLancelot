@@ -142,20 +142,18 @@ public class HomeController extends Controller {
                                 Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
                                 fkgl = (Double) Await.result(futureFKGL, timeout.duration());
 
-                                searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
-
-                            }  } catch (Exception e) {
+                            searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(Math.abs(fkgl))));
+                        } }catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
 
-                        logger.info("Search results map before reverse  is"+searchResults);
                         LinkedHashMap<String, SearchResultModel> m = new LinkedHashMap<String, SearchResultModel>();
                         List<String> keys = new ArrayList<String>(searchResults.keySet());
                         List<SearchResultModel> values = new ArrayList<SearchResultModel>(searchResults.values());
                         for (int i = searchResults.size() - 1; i >= 0; i--)
                             m.put(keys.get(i), values.get(i));
 
-                        logger.info("M result is if it contains" +m);
+
                         session.setSessionSearchResultsHashMap(request, searchKeyword);
 
                         if (!session.isSessionExist(request)) {

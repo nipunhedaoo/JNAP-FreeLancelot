@@ -109,16 +109,16 @@
                             skillsCell.appendChild(topicAnchor);
                         }
 
-                        repoAnchor = document.createElement('p');
-                        repoAnchor.innerText = fleschReadingEase(repository.preview_description);
-                        fleschRI.appendChild(repoAnchor);
+                        let repoAnchorFRE = document.createElement('p');
+                        repoAnchorFRE.innerText = fleschReadingEase(repository.preview_description);
+                        fleschRI.appendChild(repoAnchorFRE);
 
                         repoAnchor = document.createElement('p');
                         repoAnchor.innerText = fleschKincaidGrade(repository.preview_description);
                         fleschKG.appendChild(repoAnchor);
 
                         repoAnchor = document.createElement('p');
-                        repoAnchor.innerText = "Early";
+                        repoAnchor.innerText = educationLevel(repoAnchorFRE.innerText);
                         readabilityCell.appendChild(repoAnchor);
 
                     }
@@ -137,30 +137,95 @@
                         ws.close();
                     });
 
-                    var sentenceRegex = new RegExp('[.?!]\\s[^a-z]', 'g');
-                    var syllableRegex = new RegExp('[aiouy]+e*|e(?!d$|ly).|[td]ed|le$', 'g');
+                    function getSyllables(word) {
+                      word = word.toLowerCase();
+                      if(word.length <= 3) { return 1; }
+                      word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+                      word = word.replace(/^y/, '');
+                      var syl = word.match(/[aeiouy]{1,2}/g);
+                      return (syl && syl.length) || 0;
+                    }
 
-                    var fleschReadingEase(text) {
-                      var sentenceLength = avgSentenceLength(text);
-                      var syllablesPerWord = avgSyllablesPerWord(text);
-                      return legacyRound(
-                        freBase.base -
-                        freBase.sentenceLength * sentenceLength -
-                        freBase.syllablesPerWord * syllablesPerWord,
-                        2
-                      );
+
+                    function fleschReadingEase(text) {
+                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;
+
+                        var sentences = text.split(/[\\.!\?]/);
+
+                         numOfSentence = sentences.length;
+                          sentences.forEach(function (sentence) {
+                            var word = "";
+                            for (var i = 0; i < sentence.length; i++) {
+                              word += sentence[i];
+                              if(sentence[i] == " ") {
+                                numOfWords++;
+                                numOfSyllables += getSyllables(word);
+                                word = "";
+                              }
+                            }
+
+                            if(word.length > 0) {
+                              numOfWords++;
+                              numOfSyllables += getSyllables(word);
+                              word = ""
+                            }
+                          });
+
+                      return (206.835 - (1.015 * (numOfWords/numOfSentence)) - (84.6 *(numOfSyllables/numOfWords)));
                     };
 
-                    var fleschKincaidGrade(text){
-                      var sentenceLength = avgSentenceLength(text);
-                      var syllablesPerWord = avgSyllablesPerWord(text);
-                      return legacyRound(
-                        0.39 * sentenceLength +
-                        11.8 * syllablesPerWord -
-                        15.59,
-                        2
-                      );
+                    function fleschKincaidGrade(text){
+                        var numOfSentence = 0, numOfWords = 0, numOfSyllables = 0;
+
+                            var sentences = text.split(/[\\.!\?]/);
+
+                             numOfSentence = sentences.length;
+                              sentences.forEach(function (sentence) {
+                                var word = "";
+                                for (var i = 0; i < sentence.length; i++) {
+                                  word += sentence[i];
+                                  if(sentence[i] == " ") {
+                                    numOfWords++;
+                                    numOfSyllables += getSyllables(word);
+                                    word = "";
+                                  }
+                                }
+
+                                if(word.length > 0) {
+                                  numOfWords++;
+                                  numOfSyllables += getSyllables(word);
+                                  word = ""
+                                }
+                              });
+                      return ((0.39 * ( numOfWords / numOfSentence )) + 11.8 * ( numOfSyllables / numOfWords ) - 15.59);
                     };
+
+                    function educationLevel(fkcl){
+                    var educationalLevel = "";
+                    if(fkcl > 100){
+                        educationalLevel = "Early" ;
+                    }else if(fkcl > 91){
+                        educationalLevel = "5th grade" ;
+                    }else if(fkcl > 81){
+                        educationalLevel = "6th grade" ;
+                    }else if(fkcl > 71 ){
+                        educationalLevel = "7th grade" ;
+                    }else if(fkcl > 66 ){
+                        educationalLevel = "8th grade" ;
+                    }else if(fkcl > 61 ){
+                        educationalLevel = "9th grade" ;
+                    }else if(fkcl > 51 ){
+                        educationalLevel = "High School" ;
+                    }else if(fkcl > 31 ){
+                        educationalLevel = "Some College" ;
+                    } else if(fkcl > 0 ){
+                        educationalLevel = "College Graduate" ;
+                    }else{
+                        educationalLevel = "Law School Graduate" ;
+                    }
+
+                        return educationalLevel;
+                    }
 
 
                 </script>
