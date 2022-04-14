@@ -508,7 +508,7 @@ public class FreeLancerServices implements WSBodyReadables, WSBodyWritables {
 
             fkgl = calculateFKGL(numOfSentence, numOfWords, numOfSyllables);
 
-            project.setFleschKincaidGradeLevel(Math.round(fkgl));
+            project.setFleschKincaidGradeLevel(Math.round(Math.abs(fkgl)));
 
             return Math.round(fkgl);
 

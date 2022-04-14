@@ -134,7 +134,7 @@ public class HomeController extends Controller {
                             Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
                             fkgl = (Double) Await.result(futureFKGL, timeout.duration());
 
-                            searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(fkgl)));
+                            searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(Math.abs(fkgl))));
                         } catch (Exception e) {
                             System.out.println("Exception in home controller "+e);
                         }
