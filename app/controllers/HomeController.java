@@ -132,17 +132,17 @@ public class HomeController extends Controller {
                                 List<ProjectDetails> array = new ArrayList<>();
                                 array = freelancerClient.searchModelByKeyWord((JSONObject) response);
 
-                                System.out.println("Array is " + array);
                                 double fkcl = 0;
                                 double fkgl = 0;
 
                                 Timeout timeout = new Timeout(Duration.create(5, "seconds"));
-                                Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
-                                fkcl = (Double) Await.result(futureFKCL, timeout.duration());
+                                if(array.size() > 0) {
+                                    Future<Object> futureFKCL = Patterns.ask(fleschReadabilityActor, array, 1000000);
+                                    fkcl = (Double) Await.result(futureFKCL, timeout.duration());
 
-                                Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
-                                fkgl = (Double) Await.result(futureFKGL, timeout.duration());
-
+                                    Future<Object> futureFKGL = Patterns.ask(fleschKincadGradingActor, array, 1000000);
+                                    fkgl = (Double) Await.result(futureFKGL, timeout.duration());
+                                }
                                 searchResults = FreeLancerServices.reverseFunc(searchResults);
 
                             searchResults.put(searchKeyword, new SearchResultModel(array, Math.round(fkcl), Math.round(Math.abs(fkgl))));
@@ -247,8 +247,6 @@ public class HomeController extends Controller {
 
                                 array = new ArrayList<>();
                                 array = freelancerClient.employerResults(ownerId, (JSONObject) response);
-
-                                System.out.println("Array is " + array);
 
 
                             } catch (Exception e) {
